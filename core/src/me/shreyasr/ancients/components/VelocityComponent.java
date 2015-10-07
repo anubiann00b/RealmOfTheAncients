@@ -9,6 +9,13 @@ public class VelocityComponent implements Component, Pool.Poolable {
     public static ComponentMapper<VelocityComponent> MAPPER
             = ComponentMapper.getFor(VelocityComponent.class);
 
+    public static VelocityComponent create(float dx, float dy) {
+        VelocityComponent v = new VelocityComponent();
+        v.dx = dx;
+        v.dy = dy;
+        return v;
+    }
+
     public float dx;
     public float dy;
 

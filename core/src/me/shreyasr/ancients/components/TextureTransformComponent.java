@@ -9,6 +9,10 @@ public class TextureTransformComponent implements Component, Pool.Poolable {
     public static ComponentMapper<TextureTransformComponent> MAPPER
             = ComponentMapper.getFor(TextureTransformComponent.class);
 
+    public static TextureTransformComponent create() {
+        return new TextureTransformComponent();
+    }
+
     public int screenWidth;
     public int screenHeight;
 

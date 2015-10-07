@@ -9,6 +9,10 @@ public class SquareDirectionComponent implements Component, Pool.Poolable {
     public static ComponentMapper<SquareDirectionComponent> MAPPER
             = ComponentMapper.getFor(SquareDirectionComponent.class);
 
+    public static SquareDirectionComponent create() {
+        return new SquareDirectionComponent();
+    }
+
     public enum Direction {
 
         RIGHT(0), UP(1), LEFT(2), DOWN(3);

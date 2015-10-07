@@ -6,6 +6,5 @@ import net.dermetfan.gdx.assets.AnnotationAssetManager;
 @SuppressWarnings("SpellCheckingInspection")
 public class Assets {
 
-    @AnnotationAssetManager.Asset(Texture.class)
-    public static final String BADLOGIC = "badlogic.jpg";
+    @AnnotationAssetManager.Asset(Texture.class) public static final String PLAYER = "player.png";
 }

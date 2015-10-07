@@ -9,6 +9,16 @@ public class SquareAnimationComponent implements Component, Pool.Poolable {
     public static ComponentMapper<SquareAnimationComponent> MAPPER
             = ComponentMapper.getFor(SquareAnimationComponent.class);
 
+    public static SquareAnimationComponent create(int length, int frameWidth, int frameHeight,
+                                                  int frameTime) {
+        SquareAnimationComponent anim = new SquareAnimationComponent();
+        anim.length = length;
+        anim.frameWidth = frameWidth;
+        anim.frameHeight = frameHeight;
+        anim.frameTime = frameTime;
+        return anim;
+    }
+
     public int length; // number of frames in an animation
     public int frameWidth;  // width of a frame, in pixels
     public int frameHeight; // height of a frame, in pixels

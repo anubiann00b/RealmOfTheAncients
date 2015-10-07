@@ -33,8 +33,8 @@ public class SquareAnimationSystem extends IteratingSystem {
             }
         }
 
-        transform.screenWidth = anim.frameWidth *4;
-        transform.screenHeight = anim.frameHeight *4;
+        transform.screenWidth = anim.frameWidth * 4;
+        transform.screenHeight = anim.frameHeight * 4;
         transform.originX = transform.screenWidth/2;
         transform.originY = transform.screenHeight/2;
         transform.srcX = anim.currentFrame * anim.frameWidth;
