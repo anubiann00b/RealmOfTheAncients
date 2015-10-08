@@ -3,7 +3,7 @@ package me.shreyasr.ancients.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import me.shreyasr.ancients.Game;
+import me.shreyasr.ancients.AncientsGame;
 
 public class HtmlLauncher extends GwtApplication {
 
@@ -14,6 +14,6 @@ public class HtmlLauncher extends GwtApplication {
 
     @Override
     public ApplicationListener getApplicationListener() {
-        return new Game();
+        return new AncientsGame();
     }
 }

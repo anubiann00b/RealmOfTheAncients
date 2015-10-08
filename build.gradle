@@ -28,6 +28,18 @@ allprojects {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        maven { url "http://clojars.org/repo" }
+    }
+}
+
+project(":server") {
+    apply plugin: "java"
+
+
+    dependencies {
+        compile project(":core")
+        compile "com.esotericsoftware:kryo:3.0.3"
+        compile "kryonet:kryonet:2.21"
     }
 }
 
@@ -100,6 +112,8 @@ project(":core") {
         compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:0.13.1"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+        compile "com.esotericsoftware:kryo:3.0.3"
+        compile "kryonet:kryonet:2.21"
     }
 }
 
