@@ -18,7 +18,7 @@ public class Game extends ApplicationAdapter {
     public void create() {
         assetManager = new AssetManager();
         Assets.loadAll(assetManager);
-        entityFactory = new EntityFactory();
+        entityFactory = new EntityFactory(640, 480);
 
         batch = new SpriteBatch();
 
