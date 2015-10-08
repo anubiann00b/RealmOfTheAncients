@@ -3,19 +3,19 @@ package me.shreyasr.ancients.systems;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.TextureComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
-import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
 public class RenderSystem extends IteratingSystem {
 
     private final SpriteBatch batch;
-    private final AnnotationAssetManager assetManager;
+    private final AssetManager assetManager;
 
-    public RenderSystem(int priority, SpriteBatch batch, AnnotationAssetManager assetManager) {
+    public RenderSystem(int priority, SpriteBatch batch, AssetManager assetManager) {
         super(
                 Family.all(PositionComponent.class,
                            TextureComponent.class,

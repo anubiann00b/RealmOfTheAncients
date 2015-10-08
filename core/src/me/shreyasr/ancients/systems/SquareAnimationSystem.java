@@ -6,6 +6,7 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import me.shreyasr.ancients.components.SquareAnimationComponent;
 import me.shreyasr.ancients.components.SquareDirectionComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
+import me.shreyasr.ancients.components.VelocityComponent;
 
 public class SquareAnimationSystem extends IteratingSystem {
 
@@ -23,13 +24,19 @@ public class SquareAnimationSystem extends IteratingSystem {
         SquareAnimationComponent anim = SquareAnimationComponent.MAPPER.get(entity);
         TextureTransformComponent transform = TextureTransformComponent.MAPPER.get(entity);
         SquareDirectionComponent direction = SquareDirectionComponent.MAPPER.get(entity);
+        VelocityComponent vel = VelocityComponent.MAPPER.get(entity);
 
-        anim.timeSinceLastFrame += deltaTime;
-        if (anim.timeSinceLastFrame >= anim.frameTime) {
+        if (vel.dx == 0 && vel.dy == 0) {
             anim.timeSinceLastFrame = 0;
-            anim.currentFrame++;
-            if (anim.currentFrame >= anim.length) {
-                anim.currentFrame = 0;
+            anim.currentFrame = 0;
+        } else {
+            anim.timeSinceLastFrame += deltaTime;
+            if (anim.timeSinceLastFrame >= anim.frameTime) {
+                anim.timeSinceLastFrame = 0;
+                anim.currentFrame++;
+                if (anim.currentFrame >= anim.length) {
+                    anim.currentFrame = 0;
+                }
             }
         }
 

@@ -20,7 +20,10 @@ public class PositionUpdateSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         PositionComponent pos = PositionComponent.MAPPER.get(entity);
         VelocityComponent vel = VelocityComponent.MAPPER.get(entity);
-        pos.x += vel.dx;
-        pos.y += vel.dy;
+
+        double speedMult = deltaTime * 60 / 1000;
+
+        pos.x += vel.dx * speedMult;
+        pos.y += vel.dy * speedMult;
     }
 }

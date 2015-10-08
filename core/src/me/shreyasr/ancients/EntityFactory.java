@@ -12,11 +12,17 @@ public class EntityFactory {
         e.add(PositionComponent.create(100, 100));
 //        e.add(PositionComponent.create((float) Math.random()*1000, (float) Math.random()*1000));
         e.add(VelocityComponent.create(0, 0));
-        e.add(TextureComponent.create(Assets.PLAYER));
+        e.add(TextureComponent.create(Assets.PLAYER.get()));
         e.add(SquareDirectionComponent.create());
         e.add(SquareAnimationComponent.create(4, 16, 16, 166));
         e.add(TextureTransformComponent.create());
 
+        return e;
+    }
+
+    public Entity createPlayer(PooledEngine engine) {
+        Entity e = createDumbPlayer(engine);
+        e.add(new PlayerComponent());
         return e;
     }
 }
