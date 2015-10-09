@@ -24,8 +24,9 @@ public class RemoveOldEntitySystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         if (System.currentTimeMillis()
                 - LastUpdateTimeComponent.MAPPER.get(entity).lastUpdateTime > 5000) {
-            System.out.println("Removing old player");
-            server.sendToAllTCP(ClientPlayerRemovePacket.create(UUIDComponent.MAPPER.get(entity)));
+            UUIDComponent uuid = UUIDComponent.MAPPER.get(entity);
+            System.out.println("Removing old player: " + uuid);
+            server.sendToAllTCP(ClientPlayerRemovePacket.create(uuid));
             engine.removeEntity(entity);
         }
     }
