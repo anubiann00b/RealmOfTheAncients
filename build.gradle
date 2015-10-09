@@ -32,14 +32,23 @@ allprojects {
     }
 }
 
+project(":kryonet") {
+    apply plugin: "java"
+
+    dependencies {
+        compile "com.esotericsoftware.kryo:kryo:2.24.0"
+        compile "com.esotericsoftware.minlog:minlog:1.2"
+        compile "com.esotericsoftware:jsonbeans:0.7"
+    }
+}
+
 project(":server") {
     apply plugin: "java"
 
 
     dependencies {
+        compile project(":kryonet")
         compile project(":core")
-        compile "com.esotericsoftware:kryo:3.0.3"
-        compile "kryonet:kryonet:2.21"
     }
 }
 
@@ -105,6 +114,7 @@ project(":core") {
 
 
     dependencies {
+        compile project(":kryonet")
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
@@ -112,8 +122,6 @@ project(":core") {
         compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:0.13.1"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
-        compile "com.esotericsoftware:kryo:3.0.3"
-        compile "kryonet:kryonet:2.21"
     }
 }
 

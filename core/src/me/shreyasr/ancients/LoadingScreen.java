@@ -17,6 +17,7 @@ public class LoadingScreen extends ScreenAdapter {
     @Override
     public void show() {
         final Client client = new Client();
+        KryoRegistrar.register(client.getKryo());
         client.start();
 
         new Thread(new Runnable() {
