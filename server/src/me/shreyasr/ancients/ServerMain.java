@@ -29,28 +29,19 @@ public class ServerMain {
 
         server.addListener(queuedListener);
 
-        engine.addSystem(new PacketHandleSystem(1, queuedListener));
-        engine.addSystem(new ClientUpdateSystem(2, 16, server));
+        engine.addSystem(    new PacketHandleSystem(1, queuedListener));
+        engine.addSystem(    new ClientUpdateSystem(2, 16, server));
+        engine.addSystem( new RemoveOldEntitySystem(3, engine, server));
 
         queuedListener.setListener(
                 new ServerListener(engine, engine.getSystem(PacketHandleSystem.class)));
 
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-                long lastTime = System.currentTimeMillis();
-                //noinspection InfiniteLoopStatement
-                while (true) {
-//                    try {
-//                        Thread.sleep(16);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-                    long currentTime = System.currentTimeMillis();
-                    engine.update(currentTime - lastTime);
-                    lastTime = currentTime;
-                }
-//            }
-//        }).start();
+        long lastTime = System.currentTimeMillis();
+        //noinspection InfiniteLoopStatement
+        while (true) {
+            long currentTime = System.currentTimeMillis();
+            engine.update(currentTime - lastTime);
+            lastTime = currentTime;
+        }
     }
 }

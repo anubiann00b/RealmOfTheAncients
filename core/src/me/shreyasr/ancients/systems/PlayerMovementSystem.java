@@ -5,7 +5,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import me.shreyasr.ancients.components.PlayerComponent;
+import me.shreyasr.ancients.components.MyPlayerComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.SquareDirectionComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
@@ -14,7 +14,7 @@ public class PlayerMovementSystem extends IteratingSystem {
 
     public PlayerMovementSystem(int priority) {
         super(
-                Family.all(PlayerComponent.class,
+                Family.all(MyPlayerComponent.class,
                            PositionComponent.class,
                            VelocityComponent.class,
                            SquareDirectionComponent.class)

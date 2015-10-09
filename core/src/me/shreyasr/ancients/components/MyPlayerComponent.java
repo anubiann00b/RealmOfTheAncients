@@ -4,12 +4,12 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.gdx.utils.Pool;
 
-public class PlayerComponent implements Component, Pool.Poolable {
+public class MyPlayerComponent implements Component, Pool.Poolable {
 
-    public static ComponentMapper<PlayerComponent> MAPPER
-            = ComponentMapper.getFor(PlayerComponent.class);
+    public static ComponentMapper<MyPlayerComponent> MAPPER
+            = ComponentMapper.getFor(MyPlayerComponent.class);
 
-    public PlayerComponent() {
+    public MyPlayerComponent() {
         reset();
     }
 

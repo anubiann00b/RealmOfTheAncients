@@ -1,18 +1,11 @@
 package me.shreyasr.ancients.packet;
 
-import com.badlogic.ashley.core.Component;
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.esotericsoftware.kryonet.Connection;
-import me.shreyasr.ancients.PacketHandleSystem;
-import me.shreyasr.ancients.components.PeerComponent;
-import me.shreyasr.ancients.components.PlayerComponent;
-import me.shreyasr.ancients.components.PositionComponent;
-import me.shreyasr.ancients.components.SquareDirectionComponent;
+import me.shreyasr.ancients.components.*;
 
-public class ClientPlayerUpdatePacket implements Packet {
+public class ClientPlayerUpdatePacket implements ClientPacket {
 
     public static ClientPlayerUpdatePacket create(Component[] components) {
         ClientPlayerUpdatePacket packet = new ClientPlayerUpdatePacket();
@@ -23,24 +16,29 @@ public class ClientPlayerUpdatePacket implements Packet {
     private Component[] components;
 
     @Override
-    public void handle(PooledEngine engine, Connection conn, PacketHandleSystem packetHandleSystem) {
-        PeerComponent peer = getPeerFromComponents();
+    public void handle(PooledEngine engine, Connection conn,
+                       UUIDComponent myUUID, EntityListener entityListener) {
+        UUIDComponent recvUUID = getUUIDFromComponents();
+
+        if (myUUID.equals(recvUUID)) {
+            return;
+        }
+
         ImmutableArray<Entity> otherPlayers = getOtherPlayers(engine);
 
         boolean done = false;
         for (Entity otherPlayer : otherPlayers) {
-            if (PeerComponent.MAPPER.get(otherPlayer).equals(peer)) {
+            if (UUIDComponent.MAPPER.get(otherPlayer).equals(recvUUID)) {
                 updatePlayer(otherPlayer);
-//                System.out.println("Edited player");
                 done = true;
                 break;
             }
         }
 
         if (!done) {
-            createAndAddPlayer(engine);
+            Entity e = createAndAddPlayer(engine);
             System.out.println("Added new player");
-            packetHandleSystem.entityAdded();
+            entityListener.entityAdded(e);
         }
     }
 
@@ -49,6 +47,7 @@ public class ClientPlayerUpdatePacket implements Packet {
         for (Component c : components) {
             e.add(c);
         }
+        e.remove(LastUpdateTimeComponent.class);
         engine.addEntity(e);
         return e;
     }
@@ -65,15 +64,15 @@ public class ClientPlayerUpdatePacket implements Packet {
     private ImmutableArray<Entity> getOtherPlayers(PooledEngine engine) {
         return engine.getEntitiesFor(
                 Family
-                        .all(PeerComponent.class)
-                        .exclude(PlayerComponent.class)
+                        .all(UUIDComponent.class)
+                        .exclude(MyPlayerComponent.class)
                         .get());
     }
 
-    private PeerComponent getPeerFromComponents() {
+    private UUIDComponent getUUIDFromComponents() {
         for (Component c : components) {
-            if (c instanceof PeerComponent) {
-                return ((PeerComponent) c);
+            if (c instanceof UUIDComponent) {
+                return ((UUIDComponent) c);
             }
         }
         return null;

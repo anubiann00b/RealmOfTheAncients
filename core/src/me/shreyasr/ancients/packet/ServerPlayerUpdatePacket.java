@@ -3,17 +3,12 @@ package me.shreyasr.ancients.packet;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.esotericsoftware.kryonet.Connection;
-import me.shreyasr.ancients.NetworkUtils;
-import me.shreyasr.ancients.PacketHandleSystem;
-import me.shreyasr.ancients.components.PeerComponent;
-import me.shreyasr.ancients.components.PlayerComponent;
-import me.shreyasr.ancients.components.PositionComponent;
-import me.shreyasr.ancients.components.SquareDirectionComponent;
+import me.shreyasr.ancients.components.*;
 
 /**
  * A packet containing a client's player data, consumed by the server.
  */
-public class ServerPlayerUpdatePacket implements Packet {
+public class ServerPlayerUpdatePacket implements ServerPacket {
 
     public static ServerPlayerUpdatePacket create(Component[] components) {
         ServerPlayerUpdatePacket packet = new ServerPlayerUpdatePacket();
@@ -24,13 +19,13 @@ public class ServerPlayerUpdatePacket implements Packet {
     private Component[] components;
 
     @Override
-    public void handle(PooledEngine engine, Connection conn, PacketHandleSystem packetHandleSystem) {
-        String peer = NetworkUtils.getNameFromConnection(conn);
+    public void handle(PooledEngine engine, Connection conn, EntityListener entityListener) {
+        UUIDComponent uuid = getUUIDComponent();
         ImmutableArray<Entity> otherPlayers = getOtherPlayers(engine);
 
         boolean done = false;
         for (Entity otherPlayer : otherPlayers) {
-            if (PeerComponent.MAPPER.get(otherPlayer).name.equals(peer)) {
+            if (UUIDComponent.MAPPER.get(otherPlayer).equals(uuid)) {
                 updatePlayer(otherPlayer);
                 done = true;
                 break;
@@ -39,9 +34,8 @@ public class ServerPlayerUpdatePacket implements Packet {
 
         if (!done) {
             Entity newPlayer = createAndAddPlayer(engine);
-            newPlayer.add(PeerComponent.create(peer));
-            System.out.println("Added new player");
-            packetHandleSystem.entityAdded();
+            System.out.println("Added new player: " + uuid);
+            entityListener.entityAdded(newPlayer);
         }
     }
 
@@ -50,21 +44,32 @@ public class ServerPlayerUpdatePacket implements Packet {
         for (Component c : components) {
             e.add(c);
         }
-        e.remove(PlayerComponent.class);
+        e.remove(MyPlayerComponent.class);
+        e.add(LastUpdateTimeComponent.create(System.currentTimeMillis()));
         engine.addEntity(e);
         return e;
     }
 
-    private void updatePlayer(Entity otherPlayer) {
+    private void updatePlayer(Entity player) {
         for (Component c : components) {
             if (c instanceof PositionComponent
                     || c instanceof SquareDirectionComponent) {
-                otherPlayer.add(c);
+                player.add(c);
             }
         }
+        player.add(LastUpdateTimeComponent.create(System.currentTimeMillis()));
+    }
+
+    private UUIDComponent getUUIDComponent() {
+        for (Component c : components) {
+            if (c instanceof UUIDComponent) {
+                return (UUIDComponent) c;
+            }
+        }
+        return null;
     }
 
     private ImmutableArray<Entity> getOtherPlayers(Engine engine) {
-        return engine.getEntitiesFor(Family.all(PeerComponent.class).get());
+        return engine.getEntitiesFor(Family.all(UUIDComponent.class).get());
     }
 }

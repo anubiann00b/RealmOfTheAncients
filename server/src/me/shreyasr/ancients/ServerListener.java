@@ -3,7 +3,7 @@ package me.shreyasr.ancients;
 import com.badlogic.ashley.core.PooledEngine;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import me.shreyasr.ancients.packet.Packet;
+import me.shreyasr.ancients.packet.ServerPacket;
 
 public class ServerListener extends Listener {
 
@@ -17,8 +17,8 @@ public class ServerListener extends Listener {
 
     @Override
     public void received(Connection conn, Object obj) {
-        if (obj instanceof Packet) {
-            ((Packet)obj).handle(engine, conn, packetHandleSystem);
+        if (obj instanceof ServerPacket) {
+            ((ServerPacket)obj).handle(engine, conn, packetHandleSystem);
         }
     }
 }

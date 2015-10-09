@@ -1,8 +1,10 @@
 package me.shreyasr.ancients;
 
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 
-public class PacketHandleSystem extends EntitySystem {
+public class PacketHandleSystem extends EntitySystem implements EntityListener {
 
     private final LinkedListQueuedListener queuedListener;
 
@@ -25,11 +27,13 @@ public class PacketHandleSystem extends EntitySystem {
         }
     }
 
-    public void entityAdded() {
+    @Override
+    public void entityAdded(Entity entity) {
         breakingModification = true;
     }
 
-    public void entityRemoved() {
+    @Override
+    public void entityRemoved(Entity entity) {
         breakingModification = true;
     }
 }

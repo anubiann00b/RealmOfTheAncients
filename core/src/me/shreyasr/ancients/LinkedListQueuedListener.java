@@ -28,13 +28,8 @@ public class LinkedListQueuedListener extends Listener.QueuedListener {
     }
 
     public void runOne() {
-        System.out.println(queue.size() + " " + Thread.currentThread().getName());
-        if (!queue.isEmpty()) {
-            Runnable r = queue.poll();
-            if (r == null) {
-                System.out.println("WHOOOOOAAA");
-            }
-            System.out.println(r);
+        Runnable r = queue.poll();
+        if (r != null) {
             r.run();
         }
     }

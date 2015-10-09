@@ -31,8 +31,11 @@ public class GameScreen extends ScreenAdapter {
 
         engine = new PooledEngine();
 
+        CustomUUID playerUUID = CustomUUID.randomUUID();
+        System.out.println("My UUID: " + playerUUID);
+
 //        engine.addEntity(entityFactory.createDumbPlayer(engine));
-        engine.addEntity(entityFactory.createPlayer(engine));
+        engine.addEntity(entityFactory.createPlayer(engine, playerUUID));
 
         // lowest first
         engine.addSystem(new    PacketHandleSystem(0, queuedListener));
@@ -45,7 +48,7 @@ public class GameScreen extends ScreenAdapter {
         engine.addSystem(new   NetworkUpdateSystem(7, client));
 
         queuedListener.setListener(
-                new ClientPacketListener(engine, engine.getSystem(PacketHandleSystem.class)));
+                new ClientPacketListener(engine, playerUUID, engine.getSystem(PacketHandleSystem.class)));
 
         client.addListener(queuedListener);
 
