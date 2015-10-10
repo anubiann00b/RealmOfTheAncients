@@ -5,6 +5,9 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.esotericsoftware.kryonet.Connection;
 import me.shreyasr.ancients.components.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A packet containing a client's player data, consumed by the server.
  */
@@ -12,7 +15,14 @@ public class ServerPlayerUpdatePacket implements ServerPacket {
 
     public static ServerPlayerUpdatePacket create(Component[] components) {
         ServerPlayerUpdatePacket packet = new ServerPlayerUpdatePacket();
-        packet.components = components;
+        List<Component> finalComponents = new ArrayList<Component>();
+        for (Component c : components) {
+            if (!(c instanceof LastUpdateTimeComponent)) {
+                finalComponents.add(c);
+            }
+        }
+
+        packet.components = finalComponents.toArray(new Component[finalComponents.size()]);
         return packet;
     }
 

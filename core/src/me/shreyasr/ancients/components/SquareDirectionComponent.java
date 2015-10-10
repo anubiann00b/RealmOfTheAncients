@@ -22,6 +22,14 @@ public class SquareDirectionComponent implements Component, Pool.Poolable {
         Direction(int index) {
             this.index = index;
         }
+
+        public int getX() {
+            return -(index-1) % 2;
+        }
+
+        public int getY() {
+            return -(index-2) % 2;
+        }
     }
 
 

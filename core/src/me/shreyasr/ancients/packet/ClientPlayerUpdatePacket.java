@@ -5,11 +5,20 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.esotericsoftware.kryonet.Connection;
 import me.shreyasr.ancients.components.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ClientPlayerUpdatePacket implements ClientPacket {
 
     public static ClientPlayerUpdatePacket create(Component[] components) {
         ClientPlayerUpdatePacket packet = new ClientPlayerUpdatePacket();
-        packet.components = components;
+        List<Component> finalComponents = new ArrayList<Component>();
+        for (Component c : components) {
+            if (!(c instanceof LastUpdateTimeComponent)) {
+                finalComponents.add(c);
+            }
+        }
+        packet.components = finalComponents.toArray(new Component[finalComponents.size()]);
         return packet;
     }
 
@@ -47,18 +56,25 @@ public class ClientPlayerUpdatePacket implements ClientPacket {
         for (Component c : components) {
             e.add(c);
         }
-        e.remove(LastUpdateTimeComponent.class);
+        e.add(LastUpdateTimeComponent.create(System.currentTimeMillis()));
         engine.addEntity(e);
         return e;
     }
 
     private void updatePlayer(Entity otherPlayer) {
+        long currentTime = System.currentTimeMillis();
+        LastUpdateTimeComponent lastUpdateComponent = LastUpdateTimeComponent.MAPPER.get(otherPlayer);
+
+        if (lastUpdateComponent.lastUpdateTime > currentTime) {
+            return;
+        }
         for (Component c : components) {
             if (c instanceof PositionComponent
                     || c instanceof SquareDirectionComponent) {
                     otherPlayer.add(c);
             }
         }
+        lastUpdateComponent.lastUpdateTime = currentTime;
     }
 
     private ImmutableArray<Entity> getOtherPlayers(PooledEngine engine) {

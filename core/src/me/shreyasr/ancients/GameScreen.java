@@ -41,11 +41,12 @@ public class GameScreen extends ScreenAdapter {
         engine.addSystem(new    PacketHandleSystem(0, queuedListener));
         engine.addSystem(new       PreRenderSystem(1, game.batch));
         engine.addSystem(new  PlayerMovementSystem(2));
-        engine.addSystem(new  PositionUpdateSystem(3));
-        engine.addSystem(new SquareAnimationSystem(4));
-        engine.addSystem(new          RenderSystem(5, game.batch, game.assetManager));
-        engine.addSystem(new      PostRenderSystem(6, game.batch));
-        engine.addSystem(new   NetworkUpdateSystem(7, client));
+        engine.addSystem(new       PredictorSystem(3));
+        engine.addSystem(new  PositionUpdateSystem(4));
+        engine.addSystem(new SquareAnimationSystem(5));
+        engine.addSystem(new          RenderSystem(6, game.batch, game.assetManager));
+        engine.addSystem(new      PostRenderSystem(7, game.batch));
+        engine.addSystem(new   NetworkUpdateSystem(8, client));
 
         queuedListener.setListener(
                 new ClientPacketListener(engine, playerUUID, engine.getSystem(PacketHandleSystem.class)));
