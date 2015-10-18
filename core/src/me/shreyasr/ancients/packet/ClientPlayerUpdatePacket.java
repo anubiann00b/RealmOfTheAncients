@@ -1,12 +1,26 @@
 package me.shreyasr.ancients.packet;
 
-import com.badlogic.ashley.core.*;
+import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntityListener;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.esotericsoftware.kryonet.Connection;
-import me.shreyasr.ancients.components.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import me.shreyasr.ancients.components.LastUpdateTimeComponent;
+import me.shreyasr.ancients.components.MyPlayerComponent;
+import me.shreyasr.ancients.components.PositionComponent;
+import me.shreyasr.ancients.components.SpeedComponent;
+import me.shreyasr.ancients.components.SquareAnimationComponent;
+import me.shreyasr.ancients.components.SquareDirectionComponent;
+import me.shreyasr.ancients.components.TextureComponent;
+import me.shreyasr.ancients.components.TextureTransformComponent;
+import me.shreyasr.ancients.components.UUIDComponent;
+import me.shreyasr.ancients.components.VelocityComponent;
 
 public class ClientPlayerUpdatePacket implements ClientPacket {
 
@@ -14,7 +28,15 @@ public class ClientPlayerUpdatePacket implements ClientPacket {
         ClientPlayerUpdatePacket packet = new ClientPlayerUpdatePacket();
         List<Component> finalComponents = new ArrayList<Component>();
         for (Component c : components) {
-            if (!(c instanceof LastUpdateTimeComponent)) {
+            if (c instanceof LastUpdateTimeComponent
+                    || c instanceof PositionComponent
+                    || c instanceof SpeedComponent
+                    || c instanceof SquareAnimationComponent
+                    || c instanceof SquareDirectionComponent
+                    || c instanceof TextureComponent
+                    || c instanceof TextureTransformComponent
+                    || c instanceof UUIDComponent
+                    || c instanceof VelocityComponent) {
                 finalComponents.add(c);
             }
         }
@@ -35,46 +57,34 @@ public class ClientPlayerUpdatePacket implements ClientPacket {
 
         ImmutableArray<Entity> otherPlayers = getOtherPlayers(engine);
 
-        boolean done = false;
         for (Entity otherPlayer : otherPlayers) {
             if (UUIDComponent.MAPPER.get(otherPlayer).equals(recvUUID)) {
-                updatePlayer(otherPlayer);
-                done = true;
-                break;
+                LastUpdateTimeComponent thisPacketLastUpdate = getLastUpdateFromComponents();
+                LastUpdateTimeComponent existingPlayerLastUpdate = LastUpdateTimeComponent.MAPPER.get(otherPlayer);
+
+                if (thisPacketLastUpdate.lastUpdateTime > existingPlayerLastUpdate.lastUpdateTime) {
+                    updatePlayer(otherPlayer);
+                }
+                return;
             }
         }
 
-        if (!done) {
-            Entity e = createAndAddPlayer(engine);
-            System.out.println("Added new player");
-            entityListener.entityAdded(e);
-        }
+        Entity e = createAndAddPlayer(engine);
+        System.out.println("Added new player");
+        entityListener.entityAdded(e);
     }
 
     private Entity createAndAddPlayer(PooledEngine engine) {
         Entity e = engine.createEntity();
-        for (Component c : components) {
-            e.add(c);
-        }
-        e.add(LastUpdateTimeComponent.create(System.currentTimeMillis()));
+        updatePlayer(e);
         engine.addEntity(e);
         return e;
     }
 
     private void updatePlayer(Entity otherPlayer) {
-        long currentTime = System.currentTimeMillis();
-        LastUpdateTimeComponent lastUpdateComponent = LastUpdateTimeComponent.MAPPER.get(otherPlayer);
-
-        if (lastUpdateComponent.lastUpdateTime > currentTime) {
-            return;
-        }
         for (Component c : components) {
-            if (c instanceof PositionComponent
-                    || c instanceof SquareDirectionComponent) {
-                    otherPlayer.add(c);
-            }
+            otherPlayer.add(c);
         }
-        lastUpdateComponent.lastUpdateTime = currentTime;
     }
 
     private ImmutableArray<Entity> getOtherPlayers(PooledEngine engine) {
@@ -92,5 +102,14 @@ public class ClientPlayerUpdatePacket implements ClientPacket {
             }
         }
         return null;
+    }
+
+    private LastUpdateTimeComponent getLastUpdateFromComponents() {
+        for (Component c : components) {
+            if (c instanceof LastUpdateTimeComponent) {
+                return ((LastUpdateTimeComponent) c);
+            }
+        }
+        return LastUpdateTimeComponent.create(-1);
     }
 }

@@ -15,10 +15,10 @@ public class PredictorSystem extends IteratingSystem {
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        VelocityComponent vel = VelocityComponent.MAPPER.get(entity);
-        SquareDirectionComponent dir = SquareDirectionComponent.MAPPER.get(entity);
-
-        vel.dx = dir.dir.getX();
-        vel.dy = dir.dir.getY();
+//        VelocityComponent vel = VelocityComponent.MAPPER.get(entity);
+//        SquareDirectionComponent dir = SquareDirectionComponent.MAPPER.get(entity);
+//
+//        vel.dx = dir.dir.getX();
+//        vel.dy = dir.dir.getY();
     }
 }
