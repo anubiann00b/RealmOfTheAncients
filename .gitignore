@@ -63,4 +63,6 @@ build/
 ## OS Specific
 .DS_Store
 
+## Custom
 /*.jar
+/classes/
