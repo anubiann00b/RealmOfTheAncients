@@ -2,6 +2,7 @@ package me.shreyasr.ancients.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.utils.Pool;
 
 public class SquareAnimationComponent implements Component, Pool.Poolable {
@@ -9,9 +10,9 @@ public class SquareAnimationComponent implements Component, Pool.Poolable {
     public static ComponentMapper<SquareAnimationComponent> MAPPER
             = ComponentMapper.getFor(SquareAnimationComponent.class);
 
-    public static SquareAnimationComponent create(int length, int frameWidth, int frameHeight,
-                                                  int frameTime) {
-        SquareAnimationComponent anim = new SquareAnimationComponent();
+    public static SquareAnimationComponent create(PooledEngine engine, int length,
+                                                  int frameWidth, int frameHeight, int frameTime) {
+        SquareAnimationComponent anim = engine.createComponent(SquareAnimationComponent.class);
         anim.length = length;
         anim.frameWidth = frameWidth;
         anim.frameHeight = frameHeight;

@@ -2,6 +2,7 @@ package me.shreyasr.ancients.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.utils.Pool;
 
 public class SquareDirectionComponent implements Component, Pool.Poolable {
@@ -9,8 +10,8 @@ public class SquareDirectionComponent implements Component, Pool.Poolable {
     public static ComponentMapper<SquareDirectionComponent> MAPPER
             = ComponentMapper.getFor(SquareDirectionComponent.class);
 
-    public static SquareDirectionComponent create() {
-        return new SquareDirectionComponent();
+    public static SquareDirectionComponent create(PooledEngine engine) {
+        return engine.createComponent(SquareDirectionComponent.class);
     }
 
     public enum Direction {

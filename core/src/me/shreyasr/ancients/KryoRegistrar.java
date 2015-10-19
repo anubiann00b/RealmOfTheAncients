@@ -4,6 +4,9 @@ import com.badlogic.ashley.core.Component;
 import com.esotericsoftware.kryo.Kryo;
 import me.shreyasr.ancients.components.*;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
+import me.shreyasr.ancients.components.type.TypeComponent;
+import me.shreyasr.ancients.components.weapon.OwnerUUIDComponent;
+import me.shreyasr.ancients.components.weapon.WeaponAnimationComponent;
 import me.shreyasr.ancients.packet.client.ClientPlayerRemovePacket;
 import me.shreyasr.ancients.packet.client.ClientPlayerUpdatePacket;
 import me.shreyasr.ancients.packet.server.ServerPlayerUpdatePacket;
@@ -29,5 +32,11 @@ public class KryoRegistrar {
         kryo.register(TextureTransformComponent.class);
         kryo.register(UUIDComponent.class);
         kryo.register(VelocityComponent.class);
+
+        kryo.register(OwnerUUIDComponent.class);
+        kryo.register(WeaponAnimationComponent.class);
+
+        kryo.register(TypeComponent.Player.class);
+        kryo.register(TypeComponent.Weapon.class);
     }
 }

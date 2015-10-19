@@ -2,6 +2,7 @@ package me.shreyasr.ancients.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.utils.Pool;
 import me.shreyasr.ancients.CustomUUID;
 
@@ -10,16 +11,10 @@ public class UUIDComponent implements Component, Pool.Poolable {
     public static ComponentMapper<UUIDComponent> MAPPER
             = ComponentMapper.getFor(UUIDComponent.class);
 
-    public static UUIDComponent create() {
-        UUIDComponent uuid = new UUIDComponent();
-        uuid.val = CustomUUID.randomUUID();
+    public static UUIDComponent create(PooledEngine engine, CustomUUID customUUID) {
+        UUIDComponent uuid = engine.createComponent(UUIDComponent.class);
+        uuid.val = customUUID;
         return uuid;
-    }
-
-    public static UUIDComponent create(CustomUUID uuid) {
-        UUIDComponent uuidComponent = new UUIDComponent();
-        uuidComponent.val = uuid;
-        return uuidComponent;
     }
 
     public CustomUUID val;

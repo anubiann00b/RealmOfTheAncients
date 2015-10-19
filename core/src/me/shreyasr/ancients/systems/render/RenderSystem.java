@@ -36,7 +36,8 @@ public class RenderSystem extends IteratingSystem {
 
         texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
-        batch.draw(texture, pos.x, pos.y, ttc.originX, ttc.originY, ttc.screenWidth, ttc.screenHeight,
-                1, 1, ttc.rotation, ttc.srcX, ttc.srcY, ttc.srcWidth, ttc.srcHeight, false, false);
+        batch.draw(texture, pos.x-ttc.originX, pos.y-ttc.originY, ttc.originX, ttc.originY,
+                ttc.screenWidth, ttc.screenHeight, 1, 1, ttc.rotation,
+                ttc.srcX, ttc.srcY, ttc.srcWidth, ttc.srcHeight, false, false);
     }
 }

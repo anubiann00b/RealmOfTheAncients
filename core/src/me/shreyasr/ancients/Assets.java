@@ -5,7 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 
 public enum Assets {
 
-    PLAYER("player.png");
+    PLAYER      ("player.png"),
+    SWORD_SLASH ("sword_slash.png");
 
     private final String file;
 

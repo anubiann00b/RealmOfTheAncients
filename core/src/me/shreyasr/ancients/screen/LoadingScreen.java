@@ -27,8 +27,8 @@ public class LoadingScreen extends ScreenAdapter {
             @Override
             public void run() {
                 try {
-                    client.connect(5000, "104.131.149.236", 54555, 54777);
-//                    client.connect(5000, "127.0.0.1", 54555, 54777);
+//                    client.connect(5000, "104.131.149.236", 54555, 54777);
+                    client.connect(5000, "127.0.0.1", 54555, 54777);
                     game.setScreen(new GameScreen(game, client));
                 } catch (IOException e) {
                     System.out.println(e.getMessage());

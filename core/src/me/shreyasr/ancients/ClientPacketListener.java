@@ -16,7 +16,7 @@ public class ClientPacketListener extends Listener {
     public ClientPacketListener(PooledEngine engine, CustomUUID uuid, EntityListener entityListener) {
         this.engine = engine;
         this.entityListener = entityListener;
-        this.uuid = UUIDComponent.create(uuid);
+        this.uuid = UUIDComponent.create(engine, uuid);
     }
 
     @Override

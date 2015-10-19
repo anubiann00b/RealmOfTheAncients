@@ -10,9 +10,9 @@ import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.SquareDirectionComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
 
-public class PlayerMovementSystem extends IteratingSystem {
+public class MyPlayerMovementSystem extends IteratingSystem {
 
-    public PlayerMovementSystem(int priority) {
+    public MyPlayerMovementSystem(int priority) {
         super(
                 Family.all(MyPlayerComponent.class,
                            PositionComponent.class,

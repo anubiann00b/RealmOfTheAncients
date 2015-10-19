@@ -10,7 +10,7 @@ public class MyPlayerComponent implements Component, Pool.Poolable {
             = ComponentMapper.getFor(MyPlayerComponent.class);
 
     public MyPlayerComponent() {
-        reset();
+
     }
 
     @Override

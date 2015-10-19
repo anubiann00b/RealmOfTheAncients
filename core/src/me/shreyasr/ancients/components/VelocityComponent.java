@@ -2,6 +2,7 @@ package me.shreyasr.ancients.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.utils.Pool;
 
 public class VelocityComponent implements Component, Pool.Poolable {
@@ -9,8 +10,8 @@ public class VelocityComponent implements Component, Pool.Poolable {
     public static ComponentMapper<VelocityComponent> MAPPER
             = ComponentMapper.getFor(VelocityComponent.class);
 
-    public static VelocityComponent create(float dx, float dy) {
-        VelocityComponent v = new VelocityComponent();
+    public static VelocityComponent create(PooledEngine engine, float dx, float dy) {
+        VelocityComponent v = engine.createComponent(VelocityComponent.class);
         v.dx = dx;
         v.dy = dy;
         return v;

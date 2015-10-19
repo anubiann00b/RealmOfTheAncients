@@ -12,8 +12,7 @@ public class SquareAnimationSystem extends IteratingSystem {
 
     public SquareAnimationSystem(int priority) {
         super(
-                Family.all(SquareDirectionComponent.class,
-                           SquareAnimationComponent.class,
+                Family.all(SquareAnimationComponent.class,
                            TextureTransformComponent.class)
                       .get(),
                 priority);
@@ -26,7 +25,7 @@ public class SquareAnimationSystem extends IteratingSystem {
         SquareDirectionComponent direction = SquareDirectionComponent.MAPPER.get(entity);
         VelocityComponent vel = VelocityComponent.MAPPER.get(entity);
 
-        if (vel.dx == 0 && vel.dy == 0) {
+        if (vel != null && vel.dx == 0 && vel.dy == 0) {
             anim.timeSinceLastFrame = 0;
             anim.currentFrame = 0;
         } else {
@@ -40,12 +39,14 @@ public class SquareAnimationSystem extends IteratingSystem {
             }
         }
 
+        int dirIndex = direction == null ? 0 : direction.dir.index;
+
         transform.screenWidth = anim.frameWidth * 4;
         transform.screenHeight = anim.frameHeight * 4;
         transform.originX = transform.screenWidth/2;
         transform.originY = transform.screenHeight/2;
         transform.srcX = anim.currentFrame * anim.frameWidth;
-        transform.srcY = direction.dir.index * anim.frameHeight;
+        transform.srcY = dirIndex * anim.frameHeight;
         transform.srcWidth = anim.frameWidth;
         transform.srcHeight = anim.frameHeight;
         transform.rotation = 0;
