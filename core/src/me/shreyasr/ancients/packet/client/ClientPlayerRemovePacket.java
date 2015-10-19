@@ -1,4 +1,4 @@
-package me.shreyasr.ancients.packet;
+package me.shreyasr.ancients.packet.client;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
@@ -6,7 +6,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.esotericsoftware.kryonet.Connection;
-import me.shreyasr.ancients.components.MyPlayerComponent;
+import me.shreyasr.ancients.components.player.MyPlayerComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 
 public class ClientPlayerRemovePacket implements ClientPacket {

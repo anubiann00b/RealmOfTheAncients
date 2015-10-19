@@ -11,16 +11,16 @@ import me.shreyasr.ancients.ClientPacketListener;
 import me.shreyasr.ancients.CustomUUID;
 import me.shreyasr.ancients.EntityFactory;
 import me.shreyasr.ancients.LinkedListQueuedListener;
-import me.shreyasr.ancients.systems.MiscRenderSystem;
-import me.shreyasr.ancients.systems.NetworkUpdateSystem;
-import me.shreyasr.ancients.systems.PacketHandleSystem;
-import me.shreyasr.ancients.systems.PingUpdateSystem;
-import me.shreyasr.ancients.systems.PlayerMovementSystem;
-import me.shreyasr.ancients.systems.PositionUpdateSystem;
-import me.shreyasr.ancients.systems.PostRenderSystem;
-import me.shreyasr.ancients.systems.PreRenderSystem;
-import me.shreyasr.ancients.systems.RenderSystem;
-import me.shreyasr.ancients.systems.SquareAnimationSystem;
+import me.shreyasr.ancients.systems.render.MiscRenderSystem;
+import me.shreyasr.ancients.systems.network.NetworkUpdateSystem;
+import me.shreyasr.ancients.systems.network.PacketHandleSystem;
+import me.shreyasr.ancients.systems.network.PingUpdateSystem;
+import me.shreyasr.ancients.systems.update.PlayerMovementSystem;
+import me.shreyasr.ancients.systems.update.PositionUpdateSystem;
+import me.shreyasr.ancients.systems.render.PostRenderSystem;
+import me.shreyasr.ancients.systems.render.PreRenderSystem;
+import me.shreyasr.ancients.systems.render.RenderSystem;
+import me.shreyasr.ancients.systems.render.SquareAnimationSystem;
 
 public class GameScreen extends ScreenAdapter {
 

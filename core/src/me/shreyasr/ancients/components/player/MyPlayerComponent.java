@@ -1,4 +1,4 @@
-package me.shreyasr.ancients.components;
+package me.shreyasr.ancients.components.player;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;

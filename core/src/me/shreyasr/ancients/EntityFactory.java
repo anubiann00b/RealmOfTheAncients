@@ -3,6 +3,7 @@ package me.shreyasr.ancients;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import me.shreyasr.ancients.components.*;
+import me.shreyasr.ancients.components.player.MyPlayerComponent;
 
 public class EntityFactory {
 

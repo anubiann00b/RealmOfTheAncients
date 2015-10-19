@@ -6,7 +6,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IntervalIteratingSystem;
 import com.esotericsoftware.kryonet.Server;
 import me.shreyasr.ancients.components.UUIDComponent;
-import me.shreyasr.ancients.packet.ClientPlayerUpdatePacket;
+import me.shreyasr.ancients.packet.client.ClientPlayerUpdatePacket;
 
 public class ClientUpdateSystem extends IntervalIteratingSystem {
 

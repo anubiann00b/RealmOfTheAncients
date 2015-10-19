@@ -1,4 +1,4 @@
-package me.shreyasr.ancients.systems;
+package me.shreyasr.ancients.systems.network;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;

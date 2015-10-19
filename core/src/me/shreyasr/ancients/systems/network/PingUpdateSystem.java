@@ -1,4 +1,4 @@
-package me.shreyasr.ancients.systems;
+package me.shreyasr.ancients.systems.network;
 
 import com.badlogic.ashley.systems.IntervalSystem;
 import com.esotericsoftware.kryonet.Client;

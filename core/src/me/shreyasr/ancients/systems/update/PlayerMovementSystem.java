@@ -1,11 +1,11 @@
-package me.shreyasr.ancients.systems;
+package me.shreyasr.ancients.systems.update;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import me.shreyasr.ancients.components.MyPlayerComponent;
+import me.shreyasr.ancients.components.player.MyPlayerComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.SquareDirectionComponent;
 import me.shreyasr.ancients.components.VelocityComponent;

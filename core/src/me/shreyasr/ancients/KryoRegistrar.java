@@ -3,9 +3,10 @@ package me.shreyasr.ancients;
 import com.badlogic.ashley.core.Component;
 import com.esotericsoftware.kryo.Kryo;
 import me.shreyasr.ancients.components.*;
-import me.shreyasr.ancients.packet.ClientPlayerRemovePacket;
-import me.shreyasr.ancients.packet.ClientPlayerUpdatePacket;
-import me.shreyasr.ancients.packet.ServerPlayerUpdatePacket;
+import me.shreyasr.ancients.components.player.MyPlayerComponent;
+import me.shreyasr.ancients.packet.client.ClientPlayerRemovePacket;
+import me.shreyasr.ancients.packet.client.ClientPlayerUpdatePacket;
+import me.shreyasr.ancients.packet.server.ServerPlayerUpdatePacket;
 
 public class KryoRegistrar {
 

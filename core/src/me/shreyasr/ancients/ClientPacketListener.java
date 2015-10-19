@@ -5,7 +5,7 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import me.shreyasr.ancients.components.UUIDComponent;
-import me.shreyasr.ancients.packet.ClientPacket;
+import me.shreyasr.ancients.packet.client.ClientPacket;
 
 public class ClientPacketListener extends Listener {
 

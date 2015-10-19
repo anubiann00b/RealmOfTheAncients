@@ -1,4 +1,4 @@
-package me.shreyasr.ancients.systems;
+package me.shreyasr.ancients.systems.render;
 
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;

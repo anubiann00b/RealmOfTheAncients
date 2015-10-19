@@ -1,7 +1,6 @@
-package me.shreyasr.ancients.packet;
+package me.shreyasr.ancients.packet.client;
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
@@ -12,8 +11,8 @@ import com.esotericsoftware.kryonet.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.shreyasr.ancients.Time;
 import me.shreyasr.ancients.components.LastUpdateTimeComponent;
+import me.shreyasr.ancients.components.player.MyPlayerComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.SpeedComponent;
 import me.shreyasr.ancients.components.SquareAnimationComponent;
@@ -23,19 +22,14 @@ import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
 
-/**
- * A packet containing a client's player data, consumed by the server.
- */
-public class ServerPlayerUpdatePacket implements ServerPacket {
+public class ClientPlayerUpdatePacket implements ClientPacket {
 
-    /**
-     * Called in the client to create a packet to be sent to the server.
-     */
-    public static ServerPlayerUpdatePacket create(Component[] components) {
-        ServerPlayerUpdatePacket packet = new ServerPlayerUpdatePacket();
+    public static ClientPlayerUpdatePacket create(Component[] components) {
+        ClientPlayerUpdatePacket packet = new ClientPlayerUpdatePacket();
         List<Component> finalComponents = new ArrayList<Component>();
         for (Component c : components) {
-            if (c instanceof PositionComponent
+            if (c instanceof LastUpdateTimeComponent
+                    || c instanceof PositionComponent
                     || c instanceof SpeedComponent
                     || c instanceof SquareAnimationComponent
                     || c instanceof SquareDirectionComponent
@@ -46,7 +40,6 @@ public class ServerPlayerUpdatePacket implements ServerPacket {
                 finalComponents.add(c);
             }
         }
-        finalComponents.add(LastUpdateTimeComponent.create(Time.getMillis()));
         packet.components = finalComponents.toArray(new Component[finalComponents.size()]);
         return packet;
     }
@@ -54,12 +47,18 @@ public class ServerPlayerUpdatePacket implements ServerPacket {
     private Component[] components;
 
     @Override
-    public void handle(PooledEngine engine, Connection conn, EntityListener entityListener) {
-        UUIDComponent uuid = getUUIDComponent();
+    public void handle(PooledEngine engine, Connection conn,
+                       UUIDComponent myUUID, EntityListener entityListener) {
+        UUIDComponent recvUUID = getUUIDFromComponents();
+
+        if (myUUID.equals(recvUUID)) {
+            return;
+        }
+
         ImmutableArray<Entity> otherPlayers = getOtherPlayers(engine);
 
         for (Entity otherPlayer : otherPlayers) {
-            if (UUIDComponent.MAPPER.get(otherPlayer).equals(uuid)) {
+            if (UUIDComponent.MAPPER.get(otherPlayer).equals(recvUUID)) {
                 LastUpdateTimeComponent thisPacketLastUpdate = getLastUpdateFromComponents();
                 LastUpdateTimeComponent existingPlayerLastUpdate = LastUpdateTimeComponent.MAPPER.get(otherPlayer);
 
@@ -70,9 +69,9 @@ public class ServerPlayerUpdatePacket implements ServerPacket {
             }
         }
 
-        Entity newPlayer = createAndAddPlayer(engine);
-        System.out.println("Added new player: " + uuid);
-        entityListener.entityAdded(newPlayer);
+        Entity e = createAndAddPlayer(engine);
+        System.out.println("Added new player");
+        entityListener.entityAdded(e);
     }
 
     private Entity createAndAddPlayer(PooledEngine engine) {
@@ -82,20 +81,24 @@ public class ServerPlayerUpdatePacket implements ServerPacket {
         return e;
     }
 
-    private void updatePlayer(Entity player) {
+    private void updatePlayer(Entity otherPlayer) {
         for (Component c : components) {
-            player.add(c);
+            otherPlayer.add(c);
         }
     }
 
-    private ImmutableArray<Entity> getOtherPlayers(Engine engine) {
-        return engine.getEntitiesFor(Family.all(UUIDComponent.class).get());
+    private ImmutableArray<Entity> getOtherPlayers(PooledEngine engine) {
+        return engine.getEntitiesFor(
+                Family
+                        .all(UUIDComponent.class)
+                        .exclude(MyPlayerComponent.class)
+                        .get());
     }
 
-    private UUIDComponent getUUIDComponent() {
+    private UUIDComponent getUUIDFromComponents() {
         for (Component c : components) {
             if (c instanceof UUIDComponent) {
-                return (UUIDComponent) c;
+                return ((UUIDComponent) c);
             }
         }
         return null;

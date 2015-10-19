@@ -3,8 +3,8 @@ package me.shreyasr.ancients;
 import com.badlogic.ashley.core.PooledEngine;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import me.shreyasr.ancients.packet.ServerPacket;
-import me.shreyasr.ancients.systems.PacketHandleSystem;
+import me.shreyasr.ancients.packet.server.ServerPacket;
+import me.shreyasr.ancients.systems.network.PacketHandleSystem;
 
 public class ServerListener extends Listener {
 

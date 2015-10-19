@@ -7,7 +7,7 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.esotericsoftware.kryonet.Server;
 import me.shreyasr.ancients.components.LastUpdateTimeComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
-import me.shreyasr.ancients.packet.ClientPlayerRemovePacket;
+import me.shreyasr.ancients.packet.client.ClientPlayerRemovePacket;
 
 public class RemoveOldEntitySystem extends IteratingSystem {
 

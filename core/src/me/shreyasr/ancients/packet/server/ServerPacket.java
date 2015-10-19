@@ -1,4 +1,4 @@
-package me.shreyasr.ancients.packet;
+package me.shreyasr.ancients.packet.server;
 
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.PooledEngine;

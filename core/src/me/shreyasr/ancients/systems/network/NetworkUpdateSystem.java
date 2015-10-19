@@ -1,9 +1,9 @@
-package me.shreyasr.ancients.systems;
+package me.shreyasr.ancients.systems.network;
 
 import com.badlogic.ashley.core.*;
 import com.esotericsoftware.kryonet.Client;
-import me.shreyasr.ancients.components.MyPlayerComponent;
-import me.shreyasr.ancients.packet.ServerPlayerUpdatePacket;
+import me.shreyasr.ancients.components.player.MyPlayerComponent;
+import me.shreyasr.ancients.packet.server.ServerPlayerUpdatePacket;
 
 public class NetworkUpdateSystem extends EntitySystem {
 
