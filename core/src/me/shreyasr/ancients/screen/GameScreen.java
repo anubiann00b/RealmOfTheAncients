@@ -19,7 +19,6 @@ import me.shreyasr.ancients.systems.PlayerMovementSystem;
 import me.shreyasr.ancients.systems.PositionUpdateSystem;
 import me.shreyasr.ancients.systems.PostRenderSystem;
 import me.shreyasr.ancients.systems.PreRenderSystem;
-import me.shreyasr.ancients.systems.PredictorSystem;
 import me.shreyasr.ancients.systems.RenderSystem;
 import me.shreyasr.ancients.systems.SquareAnimationSystem;
 
@@ -57,7 +56,6 @@ public class GameScreen extends ScreenAdapter {
         int priority = 0;
         engine.addSystem(new PacketHandleSystem(++priority, queuedListener));
         engine.addSystem(new  PlayerMovementSystem(++priority));
-        engine.addSystem(new       PredictorSystem(++priority));
         engine.addSystem(new  PositionUpdateSystem(++priority));
         engine.addSystem(new SquareAnimationSystem(++priority));
         engine.addSystem(new       PreRenderSystem(++priority, game.batch));
