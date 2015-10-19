@@ -27,7 +27,7 @@ public class EntityFactory {
     private Entity createDumbPlayer(PooledEngine engine, CustomUUID playerUUID) {
         Entity e = engine.createEntity();
 
-        e.add(LastUpdateTimeComponent.create(System.currentTimeMillis()));
+        e.add(LastUpdateTimeComponent.create(Time.getMillis()));
         e.add(PositionComponent.create((float) Math.random()*worldWidth,
                 (float) Math.random()*worldHeight));
         e.add(SpeedComponent.create(3));

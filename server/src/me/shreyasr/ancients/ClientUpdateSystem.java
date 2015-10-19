@@ -20,6 +20,6 @@ public class ClientUpdateSystem extends IntervalIteratingSystem {
     @Override
     protected void processEntity(Entity entity) {
         Component[] componentsArr = entity.getComponents().toArray(Component.class);
-        server.sendToAllTCP(ClientPlayerUpdatePacket.create(componentsArr));
+        server.sendToAllUDP(ClientPlayerUpdatePacket.create(componentsArr));
     }
 }

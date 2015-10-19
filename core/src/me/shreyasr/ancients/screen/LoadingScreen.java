@@ -1,10 +1,13 @@
-package me.shreyasr.ancients;
+package me.shreyasr.ancients.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.esotericsoftware.kryonet.Client;
 
 import java.io.IOException;
+
+import me.shreyasr.ancients.AncientsGame;
+import me.shreyasr.ancients.KryoRegistrar;
 
 public class LoadingScreen extends ScreenAdapter {
 
@@ -25,6 +28,7 @@ public class LoadingScreen extends ScreenAdapter {
             public void run() {
                 try {
                     client.connect(5000, "104.131.149.236", 54555, 54777);
+//                    client.connect(5000, "127.0.0.1", 54555, 54777);
                     game.setScreen(new GameScreen(game, client));
                 } catch (IOException e) {
                     System.out.println(e.getMessage());

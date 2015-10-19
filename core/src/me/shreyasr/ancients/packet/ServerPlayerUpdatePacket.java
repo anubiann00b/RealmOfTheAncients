@@ -12,6 +12,7 @@ import com.esotericsoftware.kryonet.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.shreyasr.ancients.Time;
 import me.shreyasr.ancients.components.LastUpdateTimeComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.SpeedComponent;
@@ -45,7 +46,7 @@ public class ServerPlayerUpdatePacket implements ServerPacket {
                 finalComponents.add(c);
             }
         }
-        finalComponents.add(LastUpdateTimeComponent.create(System.currentTimeMillis()));
+        finalComponents.add(LastUpdateTimeComponent.create(Time.getMillis()));
         packet.components = finalComponents.toArray(new Component[finalComponents.size()]);
         return packet;
     }
@@ -85,7 +86,6 @@ public class ServerPlayerUpdatePacket implements ServerPacket {
         for (Component c : components) {
             player.add(c);
         }
-        player.add(LastUpdateTimeComponent.create(System.currentTimeMillis()));
     }
 
     private ImmutableArray<Entity> getOtherPlayers(Engine engine) {
