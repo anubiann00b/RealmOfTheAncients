@@ -2,13 +2,24 @@ package me.shreyasr.ancients;
 
 import com.badlogic.ashley.core.Component;
 import com.esotericsoftware.kryo.Kryo;
-import me.shreyasr.ancients.components.*;
+
+import me.shreyasr.ancients.components.LastUpdateTimeComponent;
+import me.shreyasr.ancients.components.PositionComponent;
+import me.shreyasr.ancients.components.SpeedComponent;
+import me.shreyasr.ancients.components.SquareAnimationComponent;
+import me.shreyasr.ancients.components.SquareDirectionComponent;
+import me.shreyasr.ancients.components.TextureComponent;
+import me.shreyasr.ancients.components.TextureTransformComponent;
+import me.shreyasr.ancients.components.UUIDComponent;
+import me.shreyasr.ancients.components.VelocityComponent;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.components.weapon.OwnerUUIDComponent;
 import me.shreyasr.ancients.components.weapon.WeaponAnimationComponent;
+import me.shreyasr.ancients.packet.client.ClientAttackPacket;
 import me.shreyasr.ancients.packet.client.ClientPlayerRemovePacket;
 import me.shreyasr.ancients.packet.client.ClientPlayerUpdatePacket;
+import me.shreyasr.ancients.packet.server.ServerAttackPacket;
 import me.shreyasr.ancients.packet.server.ServerPlayerUpdatePacket;
 
 public class KryoRegistrar {
@@ -38,5 +49,8 @@ public class KryoRegistrar {
 
         kryo.register(TypeComponent.Player.class);
         kryo.register(TypeComponent.Weapon.class);
+
+        kryo.register(ServerAttackPacket.class);
+        kryo.register(ClientAttackPacket.class);
     }
 }

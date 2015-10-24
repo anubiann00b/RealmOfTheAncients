@@ -11,5 +11,5 @@ import me.shreyasr.ancients.components.UUIDComponent;
 public interface ClientPacket {
 
     void handle(PooledEngine engine, Connection conn,
-                UUIDComponent uuid, EntityListener entityListener);
+                UUIDComponent playerUUID, EntityListener entityListener);
 }

@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Pool;
 
 import me.shreyasr.ancients.CustomUUID;
 import me.shreyasr.ancients.components.UUIDComponent;
+import me.shreyasr.ancients.components.type.TypeComponent;
 
 public class OwnerUUIDComponent implements Component, Pool.Poolable {
 
@@ -18,33 +19,31 @@ public class OwnerUUIDComponent implements Component, Pool.Poolable {
 
     public static OwnerUUIDComponent create(PooledEngine engine, long engineId) {
         OwnerUUIDComponent uuid = engine.createComponent(OwnerUUIDComponent.class);
-        uuid.customUUID = UUIDComponent.MAPPER.get(engine.getEntity(engineId)).val;
-        uuid.engineId = engineId;
+        uuid.ownerUUID = UUIDComponent.MAPPER.get(engine.getEntity(engineId)).val;
+        uuid.ownerEngineID = engineId;
         return uuid;
     }
 
-    public CustomUUID customUUID;
-    public long engineId;
+    public CustomUUID ownerUUID;
+    public long ownerEngineID;
 
     public void updateEngineId(Engine engine) {
-        if (engineId < 0) {
-            for (Entity e : engine.getEntitiesFor(Family.all(UUIDComponent.class).get())) {
-                if (UUIDComponent.MAPPER.get(e).equals(customUUID)) {
-                    engineId = e.getId();
-                    break;
-                }
+        for (Entity e : engine.getEntitiesFor(Family.all(TypeComponent.Player.class).get())) {
+            if (ownerUUID.equals(UUIDComponent.MAPPER.get(e).val)) {
+                ownerEngineID = e.getId();
+                break;
             }
         }
     }
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof OwnerUUIDComponent && ((OwnerUUIDComponent) o).customUUID.equals(customUUID);
+        return o instanceof OwnerUUIDComponent && ((OwnerUUIDComponent) o).ownerUUID.equals(ownerUUID);
     }
 
     @Override
     public String toString() {
-        return customUUID.toString();
+        return ownerUUID.toString();
     }
 
     public OwnerUUIDComponent() {
@@ -53,7 +52,7 @@ public class OwnerUUIDComponent implements Component, Pool.Poolable {
 
     @Override
     public void reset() {
-        customUUID = null;
-        engineId = -1;
+        ownerUUID = null;
+        ownerEngineID = -1;
     }
 }

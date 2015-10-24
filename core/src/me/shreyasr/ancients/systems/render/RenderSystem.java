@@ -31,6 +31,8 @@ public class RenderSystem extends IteratingSystem {
         PositionComponent pos = PositionComponent.MAPPER.get(entity);
         TextureTransformComponent ttc = TextureTransformComponent.MAPPER.get(entity);
 
+        if (ttc.hide) return;
+
         Texture texture = assetManager.get(TextureComponent.MAPPER.get(entity).textureFile,
                 Texture.class);
 

@@ -41,6 +41,7 @@ public class GameScreen extends ScreenAdapter {
     public void show() {
         EntityFactory entityFactory = new EntityFactory(640, 480);
 
+        // LinkedListQueuedListener queuedListener = new LagLinkedListQueuedListener(100, 0);
         LinkedListQueuedListener queuedListener = new LinkedListQueuedListener();
 
         engine = new PooledEngine();
@@ -55,7 +56,7 @@ public class GameScreen extends ScreenAdapter {
         engine.addSystem(new     PacketHandleSystem(++priority, queuedListener));
         engine.addSystem(new MyPlayerMovementSystem(++priority));
         engine.addSystem(new   PositionUpdateSystem(++priority));
-        engine.addSystem(new      InputActionSystem(++priority, engine, entityFactory));
+        engine.addSystem(new      InputActionSystem(++priority, engine, entityFactory, client));
         engine.addSystem(new  SquareAnimationSystem(++priority));
         engine.addSystem(new     WeaponUpdateSystem(++priority, engine));
         engine.addSystem(new        PreRenderSystem(++priority, game.batch));

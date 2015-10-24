@@ -27,6 +27,8 @@ public class TextureTransformComponent implements Component, Pool.Poolable {
 
     public float rotation;
 
+    public boolean hide;
+
     public TextureTransformComponent() {
         reset();
     }
@@ -42,6 +44,7 @@ public class TextureTransformComponent implements Component, Pool.Poolable {
         srcWidth = 0;
         srcHeight = 0;
         rotation = 0;
+        hide = false;
     }
 }
 

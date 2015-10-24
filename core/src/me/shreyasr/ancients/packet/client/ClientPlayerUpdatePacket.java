@@ -21,6 +21,7 @@ import me.shreyasr.ancients.components.TextureComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
+import me.shreyasr.ancients.components.type.TypeComponent;
 
 public class ClientPlayerUpdatePacket implements ClientPacket {
 
@@ -35,6 +36,7 @@ public class ClientPlayerUpdatePacket implements ClientPacket {
                     || c instanceof SquareDirectionComponent
                     || c instanceof TextureComponent
                     || c instanceof TextureTransformComponent
+                    || c instanceof TypeComponent
                     || c instanceof UUIDComponent
                     || c instanceof VelocityComponent) {
                 finalComponents.add(c);
@@ -48,10 +50,10 @@ public class ClientPlayerUpdatePacket implements ClientPacket {
 
     @Override
     public void handle(PooledEngine engine, Connection conn,
-                       UUIDComponent myUUID, EntityListener entityListener) {
+                       UUIDComponent playerUUID, EntityListener entityListener) {
         UUIDComponent recvUUID = getUUIDFromComponents();
 
-        if (myUUID.equals(recvUUID)) {
+        if (playerUUID.equals(recvUUID)) {
             return;
         }
 

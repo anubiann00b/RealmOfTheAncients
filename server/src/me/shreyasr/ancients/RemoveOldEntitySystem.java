@@ -7,6 +7,7 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.esotericsoftware.kryonet.Server;
 import me.shreyasr.ancients.components.LastUpdateTimeComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
+import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.packet.client.ClientPlayerRemovePacket;
 
 public class RemoveOldEntitySystem extends IteratingSystem {
@@ -15,7 +16,7 @@ public class RemoveOldEntitySystem extends IteratingSystem {
     private final Server server;
 
     public RemoveOldEntitySystem(int priority, PooledEngine engine, Server server) {
-        super(Family.all(LastUpdateTimeComponent.class).get(), priority);
+        super(Family.all(TypeComponent.Player.class).get(), priority);
         this.engine = engine;
         this.server = server;
     }

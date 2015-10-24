@@ -5,8 +5,11 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.systems.IteratingSystem;
 
+import me.shreyasr.ancients.Time;
+import me.shreyasr.ancients.components.LastUpdateTimeComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
+import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.components.weapon.OwnerUUIDComponent;
 import me.shreyasr.ancients.components.weapon.WeaponAnimationComponent;
 
@@ -15,12 +18,7 @@ public class WeaponUpdateSystem extends IteratingSystem {
     private final PooledEngine engine;
 
     public WeaponUpdateSystem(int priority, PooledEngine engine) {
-        super(
-                Family.all(WeaponAnimationComponent.class,
-                           WeaponAnimationComponent.class,
-                           TextureTransformComponent.class)
-                        .get(),
-                priority);
+        super(Family.all(TypeComponent.Weapon.class).get(), priority);
         this.engine = engine;
     }
 
@@ -30,14 +28,18 @@ public class WeaponUpdateSystem extends IteratingSystem {
         WeaponAnimationComponent anim = WeaponAnimationComponent.MAPPER.get(entity);
         PositionComponent pos = PositionComponent.MAPPER.get(entity);
         OwnerUUIDComponent ownerId = OwnerUUIDComponent.MAPPER.get(entity);
+        LastUpdateTimeComponent creationTime = LastUpdateTimeComponent.MAPPER.get(entity);
 
-        Entity owner = engine.getEntity(ownerId.engineId);
+        ownerId.updateEngineId(engine);
+
+        Entity owner = engine.getEntity(ownerId.ownerEngineID);
         PositionComponent ownerPos = PositionComponent.MAPPER.get(owner);
 
         pos.x = ownerPos.x;
         pos.y = ownerPos.y;
 
-        anim.timeSinceAnimStart += deltaTime;
+        anim.timeSinceAnimStart = (int) (Time.getMillis() - creationTime.lastUpdateTime);
+        transform.hide = anim.timeSinceAnimStart < 0;
 
         if (anim.isDone()) {
             engine.removeEntity(entity);

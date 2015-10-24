@@ -8,16 +8,18 @@ public class LagLinkedListQueuedListener extends LinkedListQueuedListener {
 
     private final ScheduledExecutorService threadPool;
     private int lag;
+    private int loss;
 
-    public LagLinkedListQueuedListener(int lag) {
+    public LagLinkedListQueuedListener(int lag, int loss) {
         super();
         this.lag = lag;
+        this.loss = loss;
         threadPool = Executors.newScheduledThreadPool(1);
     }
 
     @Override
     protected void queue(final Runnable r) {
-        if (Math.random() < 0.5) {
+        if (Math.random() >= loss) {
             threadPool.schedule(new Runnable() {
                 public void run() {
                     queue.add(r);

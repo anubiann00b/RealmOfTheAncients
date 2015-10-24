@@ -27,6 +27,7 @@ public class ServerMain {
 
         final PooledEngine engine = new PooledEngine();
 
+//        LinkedListQueuedListener queuedListener = new LagLinkedListQueuedListener(100, 0);
         LinkedListQueuedListener queuedListener = new LinkedListQueuedListener();
 
         server.addListener(queuedListener);
@@ -36,7 +37,7 @@ public class ServerMain {
         engine.addSystem( new RemoveOldEntitySystem(3, engine, server));
 
         queuedListener.setListener(
-                new ServerListener(engine, engine.getSystem(PacketHandleSystem.class)));
+                new ServerListener(engine, engine.getSystem(PacketHandleSystem.class), server));
 
         long lastTime = System.currentTimeMillis();
         //noinspection InfiniteLoopStatement
