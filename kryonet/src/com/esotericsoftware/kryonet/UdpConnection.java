@@ -57,7 +57,7 @@ class UdpConnection {
 			datagramChannel.configureBlocking(false);
 			selectionKey = datagramChannel.register(selector, SelectionKey.OP_READ);
 
-			lastCommunicationTime = System.currentTimeMillis();
+			lastCommunicationTime = Time.getMillis();
 		} catch (IOException ex) {
 			close();
 			throw ex;
@@ -76,7 +76,7 @@ class UdpConnection {
 
 			selectionKey = datagramChannel.register(selector, SelectionKey.OP_READ);
 
-			lastCommunicationTime = System.currentTimeMillis();
+			lastCommunicationTime = Time.getMillis();
 
 			connectedAddress = remoteAddress;
 		} catch (IOException ex) {
@@ -90,7 +90,7 @@ class UdpConnection {
 	public InetSocketAddress readFromAddress () throws IOException {
 		DatagramChannel datagramChannel = this.datagramChannel;
 		if (datagramChannel == null) throw new SocketException("Connection is closed.");
-		lastCommunicationTime = System.currentTimeMillis();
+		lastCommunicationTime = Time.getMillis();
 		return (InetSocketAddress)datagramChannel.receive(readBuffer);
 	}
 
@@ -126,7 +126,7 @@ class UdpConnection {
 				int length = writeBuffer.limit();
 				datagramChannel.send(writeBuffer, address);
 
-				lastCommunicationTime = System.currentTimeMillis();
+				lastCommunicationTime = Time.getMillis();
 
 				boolean wasFullWrite = !writeBuffer.hasRemaining();
 				return wasFullWrite ? length : -1;

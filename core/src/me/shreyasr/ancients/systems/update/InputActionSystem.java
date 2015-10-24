@@ -9,9 +9,9 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Time;
 
 import me.shreyasr.ancients.EntityFactory;
-import me.shreyasr.ancients.Time;
 import me.shreyasr.ancients.components.LastUpdateTimeComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
@@ -48,7 +48,7 @@ public class InputActionSystem extends EntitySystem {
             int dir = getAttackDir(pos, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
             Entity newAttack = factory.createSwordSlash(engine, player, pos.x, pos.y, dir);
             newAttack.add(LastUpdateTimeComponent.create(
-                    Time.getMillis() + client.getReturnTripTime() + ServerAttackPacket.ATTACK_DELAY_MS));
+                    Time.getServerMillis(client) + client.getReturnTripTime()/2 + ServerAttackPacket.ATTACK_DELAY_MS));
             engine.addEntity(newAttack);
 
             Component[] newAttackComponents = newAttack.getComponents().toArray(Component.class);

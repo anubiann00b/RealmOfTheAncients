@@ -2,6 +2,7 @@ package me.shreyasr.ancients;
 
 import com.badlogic.ashley.core.PooledEngine;
 import com.esotericsoftware.kryonet.Server;
+import com.esotericsoftware.kryonet.Time;
 import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
@@ -39,10 +40,10 @@ public class ServerMain {
         queuedListener.setListener(
                 new ServerListener(engine, engine.getSystem(PacketHandleSystem.class), server));
 
-        long lastTime = System.currentTimeMillis();
+        long lastTime = Time.getMillis();
         //noinspection InfiniteLoopStatement
         while (true) {
-            long currentTime = System.currentTimeMillis();
+            long currentTime = Time.getMillis();
             engine.update(currentTime - lastTime);
             lastTime = currentTime;
             if (server.getConnections().length == 0) {

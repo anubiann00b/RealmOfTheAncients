@@ -6,11 +6,11 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.PooledEngine;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
+import com.esotericsoftware.kryonet.Time;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import me.shreyasr.ancients.Time;
 import me.shreyasr.ancients.components.LastUpdateTimeComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.TextureComponent;
@@ -51,7 +51,7 @@ public class ServerAttackPacket implements ServerPacket {
         for (Component c : components) {
             newWeapon.add(c);
         }
-        newWeapon.add(LastUpdateTimeComponent.create(Time.getMillis() + ATTACK_DELAY_MS));
+        newWeapon.add(LastUpdateTimeComponent.create(Time.getServerMillis(conn) + ATTACK_DELAY_MS));
         engine.addEntity(newWeapon);
 
         send(newWeapon, server);

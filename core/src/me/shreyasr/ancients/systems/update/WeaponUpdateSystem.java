@@ -5,7 +5,8 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.systems.IteratingSystem;
 
-import me.shreyasr.ancients.Time;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Time;
 import me.shreyasr.ancients.components.LastUpdateTimeComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
@@ -16,10 +17,12 @@ import me.shreyasr.ancients.components.weapon.WeaponAnimationComponent;
 public class WeaponUpdateSystem extends IteratingSystem {
 
     private final PooledEngine engine;
+    private final Connection conn;
 
-    public WeaponUpdateSystem(int priority, PooledEngine engine) {
+    public WeaponUpdateSystem(int priority, PooledEngine engine, Connection conn) {
         super(Family.all(TypeComponent.Weapon.class).get(), priority);
         this.engine = engine;
+        this.conn = conn;
     }
 
     @Override
@@ -38,7 +41,7 @@ public class WeaponUpdateSystem extends IteratingSystem {
         pos.x = ownerPos.x;
         pos.y = ownerPos.y;
 
-        anim.timeSinceAnimStart = (int) (Time.getMillis() - creationTime.lastUpdateTime);
+        anim.timeSinceAnimStart = (int) (Time.getServerMillis(conn) - creationTime.lastUpdateTime);
         transform.hide = anim.timeSinceAnimStart < 0;
 
         if (anim.isDone()) {

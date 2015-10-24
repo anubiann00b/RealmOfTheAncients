@@ -72,7 +72,7 @@ class TcpConnection {
 					+ socketChannel.socket().getRemoteSocketAddress());
 			}
 
-			lastReadTime = lastWriteTime = System.currentTimeMillis();
+			lastReadTime = lastWriteTime = Time.getMillis();
 
 			return selectionKey;
 		} catch (IOException ex) {
@@ -104,7 +104,7 @@ class TcpConnection {
 					+ socketChannel.socket().getRemoteSocketAddress());
 			}
 
-			lastReadTime = lastWriteTime = System.currentTimeMillis();
+			lastReadTime = lastWriteTime = Time.getMillis();
 		} catch (IOException ex) {
 			close();
 			IOException ioEx = new IOException("Unable to connect to: " + remoteAddress);
@@ -125,7 +125,7 @@ class TcpConnection {
 				int bytesRead = socketChannel.read(readBuffer);
 				readBuffer.flip();
 				if (bytesRead == -1) throw new SocketException("Connection is closed.");
-				lastReadTime = System.currentTimeMillis();
+				lastReadTime = Time.getMillis();
 
 				if (readBuffer.remaining() < lengthLength) return null;
 			}
@@ -143,7 +143,7 @@ class TcpConnection {
 			int bytesRead = socketChannel.read(readBuffer);
 			readBuffer.flip();
 			if (bytesRead == -1) throw new SocketException("Connection is closed.");
-			lastReadTime = System.currentTimeMillis();
+			lastReadTime = Time.getMillis();
 
 			if (readBuffer.remaining() < length) return null;
 		}
@@ -173,7 +173,7 @@ class TcpConnection {
 				// Write successful, clear OP_WRITE.
 				selectionKey.interestOps(SelectionKey.OP_READ);
 			}
-			lastWriteTime = System.currentTimeMillis();
+			lastWriteTime = Time.getMillis();
 		}
 	}
 
@@ -235,7 +235,7 @@ class TcpConnection {
 					trace("kryonet", connection + " TCP write buffer utilization: " + percentage + "%");
 			}
 
-			lastWriteTime = System.currentTimeMillis();
+			lastWriteTime = Time.getMillis();
 			return end - start;
 		}
 	}

@@ -58,7 +58,7 @@ public class GameScreen extends ScreenAdapter {
         engine.addSystem(new   PositionUpdateSystem(++priority));
         engine.addSystem(new      InputActionSystem(++priority, engine, entityFactory, client));
         engine.addSystem(new  SquareAnimationSystem(++priority));
-        engine.addSystem(new     WeaponUpdateSystem(++priority, engine));
+        engine.addSystem(new     WeaponUpdateSystem(++priority, engine, client));
         engine.addSystem(new        PreRenderSystem(++priority, game.batch));
         engine.addSystem(new           RenderSystem(++priority, game.batch, game.assetManager));
         engine.addSystem(new       MiscRenderSystem(++priority, game, client));

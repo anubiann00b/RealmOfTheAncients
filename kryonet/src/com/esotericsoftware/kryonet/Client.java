@@ -170,13 +170,13 @@ public class Client extends Connection implements EndPoint {
 			synchronized (updateLock) {
 				tcpRegistered = false;
 				selector.wakeup();
-				endTime = System.currentTimeMillis() + timeout;
+				endTime = Time.getMillis() + timeout;
 				tcp.connect(selector, new InetSocketAddress(host, tcpPort), 5000);
 			}
 
 			// Wait for RegisterTCP.
 			synchronized (tcpRegistrationLock) {
-				while (!tcpRegistered && System.currentTimeMillis() < endTime) {
+				while (!tcpRegistered && Time.getMillis() < endTime) {
 					try {
 						tcpRegistrationLock.wait(100);
 					} catch (InterruptedException ignored) {
@@ -198,7 +198,7 @@ public class Client extends Connection implements EndPoint {
 
 				// Wait for RegisterUDP reply.
 				synchronized (udpRegistrationLock) {
-					while (!udpRegistered && System.currentTimeMillis() < endTime) {
+					while (!udpRegistered && Time.getMillis() < endTime) {
 						RegisterUDP registerUDP = new RegisterUDP();
 						registerUDP.connectionID = id;
 						udp.send(this, registerUDP, udpAddress);
@@ -238,7 +238,7 @@ public class Client extends Connection implements EndPoint {
 		updateThread = Thread.currentThread();
 		synchronized (updateLock) { // Blocks to avoid a select while the selector is used to bind the server connection.
 		}
-		long startTime = System.currentTimeMillis();
+		long startTime = Time.getMillis();
 		int select = 0;
 		if (timeout > 0) {
 			select = selector.select(timeout);
@@ -250,7 +250,7 @@ public class Client extends Connection implements EndPoint {
 			if (emptySelects == 100) {
 				emptySelects = 0;
 				// NIO freaks and returns immediately with 0 sometimes, so try to keep from hogging the CPU.
-				long elapsedTime = System.currentTimeMillis() - startTime;
+				long elapsedTime = Time.getMillis() - startTime;
 				try {
 					if (elapsedTime < 25) Thread.sleep(25 - elapsedTime);
 				} catch (InterruptedException ex) {
@@ -331,7 +331,7 @@ public class Client extends Connection implements EndPoint {
 			}
 		}
 		if (isConnected) {
-			long time = System.currentTimeMillis();
+			long time = Time.getMillis();
 			if (tcp.isTimedOut(time)) {
 				if (DEBUG) debug("kryonet", this + " timed out.");
 				close();
@@ -343,7 +343,7 @@ public class Client extends Connection implements EndPoint {
 
 	void keepAlive () {
 		if (!isConnected) return;
-		long time = System.currentTimeMillis();
+		long time = Time.getMillis();
 		if (tcp.needsKeepAlive(time)) sendTCP(FrameworkMessage.keepAlive);
 		if (udp != null && udpRegistered && udp.needsKeepAlive(time)) sendUDP(FrameworkMessage.keepAlive);
 	}

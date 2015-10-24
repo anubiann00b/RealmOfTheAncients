@@ -1,0 +1,1 @@
+scp classes/artifacts/server_jar/server.jar root@104.131.149.236:/home/builds/server-0.3.1.jar

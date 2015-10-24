@@ -19,6 +19,9 @@
 
 package com.esotericsoftware.kryonet;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryonet.FrameworkMessage.Ping;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -26,10 +29,14 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.channels.SocketChannel;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryonet.FrameworkMessage.Ping;
-
-import static com.esotericsoftware.minlog.Log.*;
+import static com.esotericsoftware.minlog.Log.DEBUG;
+import static com.esotericsoftware.minlog.Log.ERROR;
+import static com.esotericsoftware.minlog.Log.INFO;
+import static com.esotericsoftware.minlog.Log.TRACE;
+import static com.esotericsoftware.minlog.Log.debug;
+import static com.esotericsoftware.minlog.Log.error;
+import static com.esotericsoftware.minlog.Log.info;
+import static com.esotericsoftware.minlog.Log.trace;
 
 // BOZO - Layer to handle handshake state.
 
@@ -164,7 +171,7 @@ public class Connection {
 	public void updateReturnTripTime () {
 		Ping ping = new Ping();
 		ping.id = lastPingID++;
-		lastPingSendTime = System.currentTimeMillis();
+		lastPingSendTime = Time.getMillis();
 		sendTCP(ping);
 	}
 
@@ -256,15 +263,24 @@ public class Connection {
 		}
 	}
 
+	long timeOffset = 0;
+
+	public long getTimeOffset() {
+		return timeOffset;
+	}
+
 	void notifyReceived (Object object) {
 		if (object instanceof Ping) {
 			Ping ping = (Ping)object;
 			if (ping.isReply) {
 				if (ping.id == lastPingID - 1) {
-					returnTripTime = (int)(System.currentTimeMillis() - lastPingSendTime);
+					returnTripTime = (int)(Time.getMillis() - lastPingSendTime);
 					if (TRACE) trace("kryonet", this + " return trip time: " + returnTripTime);
+
+					timeOffset = ping.recvTime + returnTripTime/2 - Time.getMillis();
 				}
 			} else {
+				ping.recvTime = Time.getMillis();
 				ping.isReply = true;
 				sendTCP(ping);
 			}
