@@ -10,6 +10,7 @@ import com.esotericsoftware.kryonet.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.shreyasr.ancients.components.HitboxComponent;
 import me.shreyasr.ancients.components.LastUpdateTimeComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.TextureComponent;
@@ -25,7 +26,8 @@ public class ClientAttackPacket implements ClientPacket {
         ClientAttackPacket packet = new ClientAttackPacket();
         List<Component> finalComponents = new ArrayList<Component>();
         for (Component c : components) {
-            if (c instanceof  LastUpdateTimeComponent
+            if (c instanceof HitboxComponent
+                    || c instanceof  LastUpdateTimeComponent
                     || c instanceof PositionComponent
                     || c instanceof OwnerUUIDComponent
                     || c instanceof WeaponAnimationComponent

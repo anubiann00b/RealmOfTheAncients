@@ -5,12 +5,14 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import me.shreyasr.ancients.screen.LoadingScreen;
 
 public class AncientsGame extends Game {
 
     public SpriteBatch batch;
+    public ShapeRenderer shape;
     public AssetManager assetManager;
     public BitmapFont font;
 
@@ -19,6 +21,8 @@ public class AncientsGame extends Game {
         assetManager = new AssetManager();
         Assets.loadAll(assetManager);
         batch = new SpriteBatch();
+        shape = new ShapeRenderer();
+        shape.setAutoShapeType(true);
 
         assetManager.finishLoading();
 

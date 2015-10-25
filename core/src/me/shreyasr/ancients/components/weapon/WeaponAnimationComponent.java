@@ -42,6 +42,14 @@ public class WeaponAnimationComponent implements Component, Pool.Poolable {
         return timeSinceAnimStart > swingFrameTime*(numFrames-1) + holdFrameTime;
     }
 
+    public boolean isStarted() {
+        return timeSinceAnimStart >= 0;
+    }
+
+    public boolean isAnimating() {
+        return !isDone() && isStarted();
+    }
+
     public WeaponAnimationComponent() {
         reset();
     }

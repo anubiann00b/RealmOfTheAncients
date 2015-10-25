@@ -33,8 +33,7 @@ public class RenderSystem extends IteratingSystem {
 
         if (ttc.hide) return;
 
-        Texture texture = assetManager.get(TextureComponent.MAPPER.get(entity).textureFile,
-                Texture.class);
+        Texture texture = assetManager.get(TextureComponent.MAPPER.get(entity).textureFile, Texture.class);
 
         texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 

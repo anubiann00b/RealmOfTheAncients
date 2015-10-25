@@ -3,6 +3,7 @@ package me.shreyasr.ancients;
 import com.badlogic.ashley.core.Component;
 import com.esotericsoftware.kryo.Kryo;
 
+import me.shreyasr.ancients.components.HitboxComponent;
 import me.shreyasr.ancients.components.LastUpdateTimeComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.SpeedComponent;
@@ -32,6 +33,7 @@ public class KryoRegistrar {
         kryo.register(Component[].class);
         kryo.register(CustomUUID.class);
 
+        kryo.register(HitboxComponent.class);
         kryo.register(LastUpdateTimeComponent.class);
         kryo.register(MyPlayerComponent.class);
         kryo.register(PositionComponent.class);

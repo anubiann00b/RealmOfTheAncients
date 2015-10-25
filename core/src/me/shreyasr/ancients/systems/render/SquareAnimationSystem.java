@@ -3,6 +3,9 @@ package me.shreyasr.ancients.systems.render;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+
+import me.shreyasr.ancients.components.HitboxComponent;
+import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.SquareAnimationComponent;
 import me.shreyasr.ancients.components.SquareDirectionComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
@@ -50,5 +53,12 @@ public class SquareAnimationSystem extends IteratingSystem {
         transform.srcWidth = anim.frameWidth;
         transform.srcHeight = anim.frameHeight;
         transform.rotation = 0;
+
+        PositionComponent pos = PositionComponent.MAPPER.get(entity);
+        HitboxComponent hitbox = HitboxComponent.MAPPER.get(entity);
+        hitbox.x = pos.x - transform.originX;
+        hitbox.y = pos.y - transform.originY;
+        hitbox.w = anim.frameWidth*4;
+        hitbox.h = anim.frameHeight*4;
     }
 }

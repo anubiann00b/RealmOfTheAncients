@@ -3,6 +3,7 @@ package me.shreyasr.ancients;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 
+import me.shreyasr.ancients.components.HitboxComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.SpeedComponent;
 import me.shreyasr.ancients.components.SquareAnimationComponent;
@@ -37,6 +38,7 @@ public class EntityFactory {
 
         e.add(TypeComponent.create(engine, TypeComponent.Weapon.class));
 
+        e.add(HitboxComponent.create(engine));
         e.add(PositionComponent.create(engine, x, y));
         e.add(WeaponAnimationComponent.create(engine, 8, 48, startFrame, 3, 50, 150));
         e.add(TextureComponent.create(engine, Assets.SWORD_SLASH.get()));
@@ -53,6 +55,7 @@ public class EntityFactory {
 
         e.add(TypeComponent.create(engine, TypeComponent.Player.class));
 
+        e.add(HitboxComponent.create(engine));
         e.add(PositionComponent.create(engine, (float) Math.random()*worldWidth,
                 (float) Math.random()*worldHeight));
         e.add(SpeedComponent.create(engine, 3));

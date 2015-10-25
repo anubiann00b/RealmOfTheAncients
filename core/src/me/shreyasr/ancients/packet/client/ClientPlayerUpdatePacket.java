@@ -11,6 +11,7 @@ import com.esotericsoftware.kryonet.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.shreyasr.ancients.components.HitboxComponent;
 import me.shreyasr.ancients.components.LastUpdateTimeComponent;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
 import me.shreyasr.ancients.components.PositionComponent;
@@ -29,7 +30,8 @@ public class ClientPlayerUpdatePacket implements ClientPacket {
         ClientPlayerUpdatePacket packet = new ClientPlayerUpdatePacket();
         List<Component> finalComponents = new ArrayList<Component>();
         for (Component c : components) {
-            if (c instanceof LastUpdateTimeComponent
+            if (c instanceof HitboxComponent
+                    || c instanceof LastUpdateTimeComponent
                     || c instanceof PositionComponent
                     || c instanceof SpeedComponent
                     || c instanceof SquareAnimationComponent

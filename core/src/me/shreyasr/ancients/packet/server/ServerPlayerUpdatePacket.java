@@ -14,6 +14,7 @@ import com.esotericsoftware.kryonet.Time;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.shreyasr.ancients.components.HitboxComponent;
 import me.shreyasr.ancients.components.LastUpdateTimeComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.SpeedComponent;
@@ -33,11 +34,12 @@ public class ServerPlayerUpdatePacket implements ServerPacket {
     /**
      * Called in the client to create a packet to be sent to the server.
      */
-    public static ServerPlayerUpdatePacket create(Component[] components) {
+    public static ServerPlayerUpdatePacket create(Component[] components, Connection conn) {
         ServerPlayerUpdatePacket packet = new ServerPlayerUpdatePacket();
         List<Component> finalComponents = new ArrayList<Component>();
         for (Component c : components) {
-            if (c instanceof PositionComponent
+            if (c instanceof HitboxComponent
+                    || c instanceof PositionComponent
                     || c instanceof SpeedComponent
                     || c instanceof SquareAnimationComponent
                     || c instanceof SquareDirectionComponent
@@ -49,7 +51,7 @@ public class ServerPlayerUpdatePacket implements ServerPacket {
                 finalComponents.add(c);
             }
         }
-        finalComponents.add(LastUpdateTimeComponent.create(Time.getMillis()));
+        finalComponents.add(LastUpdateTimeComponent.create(Time.getServerMillis(conn)));
         packet.components = finalComponents.toArray(new Component[finalComponents.size()]);
         return packet;
     }

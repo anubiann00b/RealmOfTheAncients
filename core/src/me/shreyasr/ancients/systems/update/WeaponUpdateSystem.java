@@ -4,9 +4,10 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.systems.IteratingSystem;
-
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Time;
+
+import me.shreyasr.ancients.components.HitboxComponent;
 import me.shreyasr.ancients.components.LastUpdateTimeComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
@@ -46,16 +47,34 @@ public class WeaponUpdateSystem extends IteratingSystem {
 
         if (anim.isDone()) {
             engine.removeEntity(entity);
-        } else {
-            transform.screenWidth = anim.frameSize * 4;
-            transform.screenHeight = anim.frameSize * 4;
-            transform.originX = transform.screenWidth / 2;
-            transform.originY = transform.screenHeight / 2;
-            transform.srcX = anim.getCurrentFrame() * anim.frameSize;
-            transform.srcY = 0;
-            transform.srcWidth = anim.frameSize;
-            transform.srcHeight = anim.frameSize;
-            transform.rotation = 0;
+            return;
         }
+
+        transform.screenWidth = anim.frameSize * 4;
+        transform.screenHeight = anim.frameSize * 4;
+        transform.originX = transform.screenWidth / 2;
+        transform.originY = transform.screenHeight / 2;
+        transform.srcX = anim.getCurrentFrame() * anim.frameSize;
+        transform.srcY = 0;
+        transform.srcWidth = anim.frameSize;
+        transform.srcHeight = anim.frameSize;
+        transform.rotation = 0;
+
+        HitboxComponent hitbox = HitboxComponent.MAPPER.get(entity);
+
+        hitbox.active = anim.isAnimating();
+        if (!hitbox.active) {
+            return;
+        }
+
+        int frame = anim.getCurrentFrame();
+
+        int dx = frame>=7||frame<=1 ? 1 : (frame>=3&&frame<=5)?-1:0;
+        int dy = frame>=1&&frame<=3 ? 1 : (frame>=5&&frame<=7)?-1:0;
+
+        hitbox.x = 64 * dx + pos.x - transform.originX + 64;
+        hitbox.y = 64 * dy + pos.y - transform.originY + 64;
+        hitbox.w = 64;
+        hitbox.h = 64;
     }
 }
