@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 
 import me.shreyasr.ancients.components.HitboxComponent;
+import me.shreyasr.ancients.components.KnockbackComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.SquareAnimationComponent;
 import me.shreyasr.ancients.components.SquareDirectionComponent;
@@ -28,7 +29,11 @@ public class SquareAnimationSystem extends IteratingSystem {
         SquareDirectionComponent direction = SquareDirectionComponent.MAPPER.get(entity);
         VelocityComponent vel = VelocityComponent.MAPPER.get(entity);
 
-        if (vel != null && vel.dx == 0 && vel.dy == 0) {
+        if (KnockbackComponent.MAPPER.has(entity)) {
+            vel = null;
+        }
+
+        if (vel == null || (vel.dx == 0 && vel.dy == 0)) {
             anim.timeSinceLastFrame = 0;
             anim.currentFrame = 0;
         } else {

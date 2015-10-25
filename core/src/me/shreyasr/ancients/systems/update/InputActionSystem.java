@@ -12,8 +12,9 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Time;
 
 import me.shreyasr.ancients.EntityFactory;
-import me.shreyasr.ancients.components.LastUpdateTimeComponent;
+import me.shreyasr.ancients.components.KnockbackComponent;
 import me.shreyasr.ancients.components.PositionComponent;
+import me.shreyasr.ancients.components.StartTimeComponent;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
 import me.shreyasr.ancients.packet.server.ServerAttackPacket;
 
@@ -43,12 +44,14 @@ public class InputActionSystem extends EntitySystem {
 
         cooldown += deltaTime;
 
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && cooldown > 300) {
+        if (KnockbackComponent.MAPPER.has(player)) return;
+
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && cooldown > 450) {
             cooldown = 0;
             int dir = getAttackDir(pos, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
             Entity newAttack = factory.createSwordSlash(engine, player, pos.x, pos.y, dir);
-            newAttack.add(LastUpdateTimeComponent.create(
-                    Time.getServerMillis(client) + client.getReturnTripTime()/2 + ServerAttackPacket.ATTACK_DELAY_MS));
+            newAttack.add(StartTimeComponent.create(
+                    Time.getServerMillis(client) + client.getReturnTripTime() / 2 + ServerAttackPacket.ATTACK_DELAY_MS));
             engine.addEntity(newAttack);
 
             Component[] newAttackComponents = newAttack.getComponents().toArray(Component.class);

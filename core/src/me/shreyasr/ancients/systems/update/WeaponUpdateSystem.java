@@ -4,12 +4,11 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Time;
 
 import me.shreyasr.ancients.components.HitboxComponent;
-import me.shreyasr.ancients.components.LastUpdateTimeComponent;
 import me.shreyasr.ancients.components.PositionComponent;
+import me.shreyasr.ancients.components.StartTimeComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.components.weapon.OwnerUUIDComponent;
@@ -18,12 +17,10 @@ import me.shreyasr.ancients.components.weapon.WeaponAnimationComponent;
 public class WeaponUpdateSystem extends IteratingSystem {
 
     private final PooledEngine engine;
-    private final Connection conn;
 
-    public WeaponUpdateSystem(int priority, PooledEngine engine, Connection conn) {
+    public WeaponUpdateSystem(int priority, PooledEngine engine) {
         super(Family.all(TypeComponent.Weapon.class).get(), priority);
         this.engine = engine;
-        this.conn = conn;
     }
 
     @Override
@@ -32,7 +29,7 @@ public class WeaponUpdateSystem extends IteratingSystem {
         WeaponAnimationComponent anim = WeaponAnimationComponent.MAPPER.get(entity);
         PositionComponent pos = PositionComponent.MAPPER.get(entity);
         OwnerUUIDComponent ownerId = OwnerUUIDComponent.MAPPER.get(entity);
-        LastUpdateTimeComponent creationTime = LastUpdateTimeComponent.MAPPER.get(entity);
+        StartTimeComponent creationTime = StartTimeComponent.MAPPER.get(entity);
 
         ownerId.updateEngineId(engine);
 
@@ -42,7 +39,7 @@ public class WeaponUpdateSystem extends IteratingSystem {
         pos.x = ownerPos.x;
         pos.y = ownerPos.y;
 
-        anim.timeSinceAnimStart = (int) (Time.getServerMillis(conn) - creationTime.lastUpdateTime);
+        anim.timeSinceAnimStart = (int) (Time.getServerMillis() - creationTime.val);
         transform.hide = anim.timeSinceAnimStart < 0;
 
         if (anim.isDone()) {

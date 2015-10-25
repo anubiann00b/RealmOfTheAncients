@@ -3,6 +3,7 @@ package me.shreyasr.ancients.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Time;
 
 import java.io.IOException;
 
@@ -21,6 +22,7 @@ public class LoadingScreen extends ScreenAdapter {
     public void show() {
         final Client client = new Client();
         KryoRegistrar.register(client.getKryo());
+        Time.setConn(client);
         client.start();
 
         new Thread(new Runnable() {

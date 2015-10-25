@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.shreyasr.ancients.components.HitboxComponent;
-import me.shreyasr.ancients.components.LastUpdateTimeComponent;
 import me.shreyasr.ancients.components.PositionComponent;
+import me.shreyasr.ancients.components.StartTimeComponent;
 import me.shreyasr.ancients.components.TextureComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
@@ -53,7 +53,7 @@ public class ServerAttackPacket implements ServerPacket {
         for (Component c : components) {
             newWeapon.add(c);
         }
-        newWeapon.add(LastUpdateTimeComponent.create(Time.getServerMillis(conn) + ATTACK_DELAY_MS));
+        newWeapon.add(StartTimeComponent.create(Time.getServerMillis(conn) + ATTACK_DELAY_MS));
         engine.addEntity(newWeapon);
 
         send(newWeapon, server);

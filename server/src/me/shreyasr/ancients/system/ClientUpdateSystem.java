@@ -1,4 +1,4 @@
-package me.shreyasr.ancients;
+package me.shreyasr.ancients.system;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;

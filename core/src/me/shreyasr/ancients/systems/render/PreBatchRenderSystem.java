@@ -5,11 +5,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class PreRenderSystem extends EntitySystem {
+public class PreBatchRenderSystem extends EntitySystem {
 
     private final SpriteBatch batch;
 
-    public PreRenderSystem(int priority, SpriteBatch batch) {
+    public PreBatchRenderSystem(int priority, SpriteBatch batch) {
         super(priority);
         this.batch = batch;
     }

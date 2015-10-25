@@ -7,7 +7,12 @@ import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
 
+import me.shreyasr.ancients.system.ClientUpdateSystem;
+import me.shreyasr.ancients.system.CollisionDetectionSystem;
+import me.shreyasr.ancients.system.RemoveOldEntitySystem;
 import me.shreyasr.ancients.systems.network.PacketHandleSystem;
+import me.shreyasr.ancients.systems.update.KnockbackSystem;
+import me.shreyasr.ancients.systems.update.WeaponUpdateSystem;
 
 public class ServerMain {
 
@@ -33,9 +38,13 @@ public class ServerMain {
 
         server.addListener(queuedListener);
 
-        engine.addSystem(    new PacketHandleSystem(1, queuedListener));
-        engine.addSystem(    new ClientUpdateSystem(2, 16, server));
-        engine.addSystem( new RemoveOldEntitySystem(3, engine, server));
+        int priority = 0;
+        engine.addSystem(       new PacketHandleSystem(++priority, queuedListener));
+        engine.addSystem( new CollisionDetectionSystem(++priority, server, engine));
+        engine.addSystem(       new WeaponUpdateSystem(++priority, engine));
+        engine.addSystem(          new KnockbackSystem(++priority));
+        engine.addSystem(       new ClientUpdateSystem(++priority, 16, server));
+        engine.addSystem(    new RemoveOldEntitySystem(++priority, engine, server));
 
         queuedListener.setListener(
                 new ServerListener(engine, engine.getSystem(PacketHandleSystem.class), server));

@@ -5,12 +5,9 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Align;
 import com.esotericsoftware.kryonet.Client;
 
 import me.shreyasr.ancients.AncientsGame;
-import me.shreyasr.ancients.components.PositionComponent;
-import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
 
 public class MiscRenderSystem extends EntitySystem {
@@ -32,8 +29,5 @@ public class MiscRenderSystem extends EntitySystem {
     public void update(float deltaTime) {
         game.font.draw(game.batch, String.valueOf((int) (1000 / deltaTime)), 16, Gdx.graphics.getHeight() - 16);
         game.font.draw(game.batch, String.valueOf(client.getReturnTripTime()), 16, Gdx.graphics.getHeight() - 32);
-
-        PositionComponent playerPos = PositionComponent.MAPPER.get(player);
-        game.font.draw(game.batch, UUIDComponent.MAPPER.get(player).toString(), playerPos.x - 32, playerPos.y - 36, 0, 8, 64, Align.center, false);
     }
 }

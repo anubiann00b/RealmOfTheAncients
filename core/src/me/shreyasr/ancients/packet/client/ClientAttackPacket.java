@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.shreyasr.ancients.components.HitboxComponent;
-import me.shreyasr.ancients.components.LastUpdateTimeComponent;
 import me.shreyasr.ancients.components.PositionComponent;
+import me.shreyasr.ancients.components.StartTimeComponent;
 import me.shreyasr.ancients.components.TextureComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
@@ -27,7 +27,7 @@ public class ClientAttackPacket implements ClientPacket {
         List<Component> finalComponents = new ArrayList<Component>();
         for (Component c : components) {
             if (c instanceof HitboxComponent
-                    || c instanceof  LastUpdateTimeComponent
+                    || c instanceof StartTimeComponent
                     || c instanceof PositionComponent
                     || c instanceof OwnerUUIDComponent
                     || c instanceof WeaponAnimationComponent
@@ -48,7 +48,7 @@ public class ClientAttackPacket implements ClientPacket {
     public void handle(PooledEngine engine, Connection conn, UUIDComponent playerUUID, EntityListener entityListener) {
         for (Entity weapon : engine.getEntitiesFor(Family.all(TypeComponent.Weapon.class).get())) {
             if (UUIDComponent.MAPPER.get(weapon).equals(getUUIDFromComponents())) {
-                weapon.add(getLastUpdateFromComponents());
+                weapon.add(getStartTimeFromComponents());
                 return;
             }
         }
@@ -68,12 +68,12 @@ public class ClientAttackPacket implements ClientPacket {
         return null;
     }
 
-    private LastUpdateTimeComponent getLastUpdateFromComponents() {
+    private StartTimeComponent getStartTimeFromComponents() {
         for (Component c : components) {
-            if (c instanceof LastUpdateTimeComponent) {
-                return ((LastUpdateTimeComponent) c);
+            if (c instanceof StartTimeComponent) {
+                return ((StartTimeComponent) c);
             }
         }
-        return LastUpdateTimeComponent.create(-1);
+        return StartTimeComponent.create(-1);
     }
 }

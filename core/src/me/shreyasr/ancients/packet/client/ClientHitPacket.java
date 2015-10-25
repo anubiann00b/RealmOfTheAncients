@@ -7,30 +7,31 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Time;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import me.shreyasr.ancients.components.HitboxComponent;
-import me.shreyasr.ancients.components.LastUpdateTimeComponent;
+import me.shreyasr.ancients.components.KnockbackComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.SpeedComponent;
 import me.shreyasr.ancients.components.SquareAnimationComponent;
 import me.shreyasr.ancients.components.SquareDirectionComponent;
+import me.shreyasr.ancients.components.StartTimeComponent;
 import me.shreyasr.ancients.components.TextureComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 
-public class ClientPlayerUpdatePacket implements ClientPacket {
+public class ClientHitPacket implements ClientPacket {
 
-    public static ClientPlayerUpdatePacket create(Component[] components) {
-        ClientPlayerUpdatePacket packet = new ClientPlayerUpdatePacket();
+    public static ClientHitPacket create(Component[] components, KnockbackComponent knockback) {
+        ClientHitPacket packet = new ClientHitPacket();
         List<Component> finalComponents = new ArrayList<Component>();
         for (Component c : components) {
             if (c instanceof HitboxComponent
-                    || c instanceof LastUpdateTimeComponent
                     || c instanceof PositionComponent
                     || c instanceof SpeedComponent
                     || c instanceof SquareAnimationComponent
@@ -43,6 +44,7 @@ public class ClientPlayerUpdatePacket implements ClientPacket {
                 finalComponents.add(c);
             }
         }
+        finalComponents.add(knockback);
         packet.components = finalComponents.toArray(new Component[finalComponents.size()]);
         return packet;
     }
@@ -54,39 +56,15 @@ public class ClientPlayerUpdatePacket implements ClientPacket {
                        UUIDComponent playerUUID, EntityListener entityListener) {
         UUIDComponent recvUUID = getUUIDFromComponents();
 
-        if (playerUUID.equals(recvUUID)) {
-            return;
-        }
-
         ImmutableArray<Entity> otherPlayers = getOtherPlayers(engine);
 
         for (Entity otherPlayer : otherPlayers) {
             if (UUIDComponent.MAPPER.get(otherPlayer).equals(recvUUID)) {
-                LastUpdateTimeComponent thisPacketLastUpdate = getLastUpdateFromComponents();
-                LastUpdateTimeComponent existingPlayerLastUpdate = LastUpdateTimeComponent.MAPPER.get(otherPlayer);
-
-                if (thisPacketLastUpdate.lastUpdateTime > existingPlayerLastUpdate.lastUpdateTime) {
-                    updatePlayer(otherPlayer);
+                for (Component c : components) {
+                    otherPlayer.add(c);
                 }
                 return;
             }
-        }
-
-        Entity e = createAndAddPlayer(engine);
-        System.out.println("Added new player");
-        entityListener.entityAdded(e);
-    }
-
-    private Entity createAndAddPlayer(PooledEngine engine) {
-        Entity e = engine.createEntity();
-        updatePlayer(e);
-        engine.addEntity(e);
-        return e;
-    }
-
-    private void updatePlayer(Entity otherPlayer) {
-        for (Component c : components) {
-            otherPlayer.add(c);
         }
     }
 
@@ -101,14 +79,5 @@ public class ClientPlayerUpdatePacket implements ClientPacket {
             }
         }
         return null;
-    }
-
-    private LastUpdateTimeComponent getLastUpdateFromComponents() {
-        for (Component c : components) {
-            if (c instanceof LastUpdateTimeComponent) {
-                return ((LastUpdateTimeComponent) c);
-            }
-        }
-        return LastUpdateTimeComponent.create(-1);
     }
 }

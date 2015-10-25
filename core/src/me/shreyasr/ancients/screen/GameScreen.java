@@ -15,12 +15,14 @@ import me.shreyasr.ancients.systems.network.PacketHandleSystem;
 import me.shreyasr.ancients.systems.network.PingUpdateSystem;
 import me.shreyasr.ancients.systems.render.DebugRenderSystem;
 import me.shreyasr.ancients.systems.render.MiscRenderSystem;
+import me.shreyasr.ancients.systems.render.NameRenderSystem;
 import me.shreyasr.ancients.systems.render.PostRenderSystem;
-import me.shreyasr.ancients.systems.render.PreRenderSystem;
+import me.shreyasr.ancients.systems.render.PreBatchRenderSystem;
 import me.shreyasr.ancients.systems.render.RenderSystem;
+import me.shreyasr.ancients.systems.render.ShapeRenderSystem;
 import me.shreyasr.ancients.systems.render.SquareAnimationSystem;
-import me.shreyasr.ancients.systems.update.CollisionDetectionSystem;
 import me.shreyasr.ancients.systems.update.InputActionSystem;
+import me.shreyasr.ancients.systems.update.KnockbackSystem;
 import me.shreyasr.ancients.systems.update.MyPlayerMovementSystem;
 import me.shreyasr.ancients.systems.update.PositionUpdateSystem;
 import me.shreyasr.ancients.systems.update.WeaponUpdateSystem;
@@ -57,16 +59,20 @@ public class GameScreen extends ScreenAdapter {
         int priority = 0;
         engine.addSystem(new       PacketHandleSystem(++priority, queuedListener));
         engine.addSystem(new   MyPlayerMovementSystem(++priority));
+        engine.addSystem(new          KnockbackSystem(++priority));
         engine.addSystem(new     PositionUpdateSystem(++priority));
         engine.addSystem(new        InputActionSystem(++priority, engine, entityFactory, client));
         engine.addSystem(new    SquareAnimationSystem(++priority));
-        engine.addSystem(new       WeaponUpdateSystem(++priority, engine, client));
-        engine.addSystem(new CollisionDetectionSystem(++priority));
-        engine.addSystem(new          PreRenderSystem(++priority, game.batch));
-        engine.addSystem(new             RenderSystem(++priority, game.batch, game.assetManager));
-        engine.addSystem(new         MiscRenderSystem(++priority, game, client));
-        engine.addSystem(new        DebugRenderSystem(++priority, game));
-        engine.addSystem(new         PostRenderSystem(++priority, game.batch));
+        engine.addSystem(new       WeaponUpdateSystem(++priority, engine));
+
+        engine.addSystem(new PreBatchRenderSystem (++priority, game.batch));
+            engine.addSystem(new RenderSystem     (++priority, game));
+            engine.addSystem(new MiscRenderSystem (++priority, game, client));
+            engine.addSystem(new NameRenderSystem (++priority, game));
+        engine.addSystem(new ShapeRenderSystem    (++priority, game.batch, game.shape));
+            engine.addSystem(new DebugRenderSystem(++priority, game));
+        engine.addSystem(new PostRenderSystem     (++priority, game.shape));
+
         engine.addSystem(new      NetworkUpdateSystem(++priority, client));
         engine.addSystem(new         PingUpdateSystem(++priority, client));
 
