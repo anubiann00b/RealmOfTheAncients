@@ -1,13 +1,6 @@
 package me.shreyasr.ancients.packet.client;
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntityListener;
-import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.core.PooledEngine;
-import com.badlogic.ashley.utils.ImmutableArray;
-import com.esotericsoftware.kryonet.Connection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +17,11 @@ import me.shreyasr.ancients.components.TextureComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
-import me.shreyasr.ancients.components.player.MyPlayerComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
+import me.shreyasr.ancients.packet.Packet;
+import me.shreyasr.ancients.packet.PacketHandler;
 
-public class ClientPlayerUpdatePacket implements ClientPacket {
+public class ClientPlayerUpdatePacket extends Packet<PacketHandler<ClientPlayerUpdatePacket>> {
 
     public static ClientPlayerUpdatePacket create(Component[] components) {
         ClientPlayerUpdatePacket packet = new ClientPlayerUpdatePacket();
@@ -53,78 +47,16 @@ public class ClientPlayerUpdatePacket implements ClientPacket {
         return packet;
     }
 
-    private Component[] components;
+    public Component[] components;
+
+    private static PacketHandler<ClientPlayerUpdatePacket> handler;
+
+    public static void setHandler(PacketHandler<ClientPlayerUpdatePacket> handler) {
+        ClientPlayerUpdatePacket.handler = handler;
+    }
 
     @Override
-    public void handle(PooledEngine engine, Connection conn,
-                       UUIDComponent playerUUID, EntityListener entityListener) {
-        UUIDComponent recvUUID = getUUIDFromComponents();
-
-        if (playerUUID.equals(recvUUID)) {
-            updateMyPlayer(engine);
-            return;
-        }
-
-        ImmutableArray<Entity> otherPlayers = getOtherPlayers(engine);
-
-        for (Entity otherPlayer : otherPlayers) {
-            if (UUIDComponent.MAPPER.get(otherPlayer).equals(recvUUID)) {
-                LastUpdateTimeComponent thisPacketLastUpdate = getLastUpdateFromComponents();
-                LastUpdateTimeComponent existingPlayerLastUpdate = LastUpdateTimeComponent.MAPPER.get(otherPlayer);
-
-                if (thisPacketLastUpdate.lastUpdateTime > existingPlayerLastUpdate.lastUpdateTime) {
-                    updatePlayer(otherPlayer);
-                }
-                return;
-            }
-        }
-
-        Entity e = createAndAddPlayer(engine);
-        System.out.println("Added new player");
-        entityListener.entityAdded(e);
-    }
-
-    private void updateMyPlayer(Engine engine) {
-        Entity player = engine.getEntitiesFor(Family.all(MyPlayerComponent.class).get()).first();
-        for (Component c : components) {
-            if (c instanceof StatsComponent) {
-                player.add(c);
-            }
-        }
-    }
-
-    private Entity createAndAddPlayer(PooledEngine engine) {
-        Entity e = engine.createEntity();
-        updatePlayer(e);
-        engine.addEntity(e);
-        return e;
-    }
-
-    private void updatePlayer(Entity otherPlayer) {
-        for (Component c : components) {
-            otherPlayer.add(c);
-        }
-    }
-
-    private ImmutableArray<Entity> getOtherPlayers(PooledEngine engine) {
-        return engine.getEntitiesFor(Family.all(TypeComponent.Player.class).get());
-    }
-
-    private UUIDComponent getUUIDFromComponents() {
-        for (Component c : components) {
-            if (c instanceof UUIDComponent) {
-                return ((UUIDComponent) c);
-            }
-        }
-        return null;
-    }
-
-    private LastUpdateTimeComponent getLastUpdateFromComponents() {
-        for (Component c : components) {
-            if (c instanceof LastUpdateTimeComponent) {
-                return ((LastUpdateTimeComponent) c);
-            }
-        }
-        return LastUpdateTimeComponent.create(-1);
+    public PacketHandler<ClientPlayerUpdatePacket> getHandler() {
+        return handler;
     }
 }

@@ -1,11 +1,6 @@
 package me.shreyasr.ancients.packet.client;
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntityListener;
-import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.core.PooledEngine;
-import com.esotericsoftware.kryonet.Connection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +14,10 @@ import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.components.weapon.OwnerUUIDComponent;
 import me.shreyasr.ancients.components.weapon.WeaponAnimationComponent;
+import me.shreyasr.ancients.packet.Packet;
+import me.shreyasr.ancients.packet.PacketHandler;
 
-public class ClientAttackPacket implements ClientPacket {
+public class ClientAttackPacket extends Packet<PacketHandler<ClientAttackPacket>> {
 
     public static ClientAttackPacket create(Component[] components) {
         ClientAttackPacket packet = new ClientAttackPacket();
@@ -42,39 +39,16 @@ public class ClientAttackPacket implements ClientPacket {
         return packet;
     }
 
-    private Component[] components;
+    public Component[] components;
+
+    private static PacketHandler<ClientAttackPacket> handler;
+
+    public static void setHandler(PacketHandler<ClientAttackPacket> handler) {
+        ClientAttackPacket.handler = handler;
+    }
 
     @Override
-    public void handle(PooledEngine engine, Connection conn, UUIDComponent playerUUID, EntityListener entityListener) {
-        for (Entity weapon : engine.getEntitiesFor(Family.all(TypeComponent.Weapon.class).get())) {
-            if (UUIDComponent.MAPPER.get(weapon).equals(getUUIDFromComponents())) {
-                weapon.add(getStartTimeFromComponents());
-                return;
-            }
-        }
-        Entity newWeapon = engine.createEntity();
-        for (Component c : components) {
-            newWeapon.add(c);
-        }
-        OwnerUUIDComponent.MAPPER.get(newWeapon).updateEngineId(engine);
-        engine.addEntity(newWeapon);
-    }
-
-    private UUIDComponent getUUIDFromComponents() {
-        for (Component c : components) {
-            if (c instanceof UUIDComponent) {
-                return ((UUIDComponent) c);
-            }
-        }
-        return null;
-    }
-
-    private StartTimeComponent getStartTimeFromComponents() {
-        for (Component c : components) {
-            if (c instanceof StartTimeComponent) {
-                return ((StartTimeComponent) c);
-            }
-        }
-        return StartTimeComponent.create(-1);
+    public PacketHandler<ClientAttackPacket> getHandler() {
+        return handler;
     }
 }

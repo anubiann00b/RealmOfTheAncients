@@ -9,16 +9,8 @@ public class LinkedListQueuedListener extends Listener.QueuedListener {
 
     protected final Queue<Runnable> queue = new ConcurrentLinkedQueue<Runnable>();
 
-    public LinkedListQueuedListener() {
-        this(null);
-    }
-
     public LinkedListQueuedListener(Listener listener) {
         super(listener);
-    }
-
-    public void setListener(Listener listener) {
-        this.listener = listener;
     }
 
     public void runAll() {

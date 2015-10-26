@@ -1,12 +1,6 @@
 package me.shreyasr.ancients.packet.client;
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntityListener;
-import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.core.PooledEngine;
-import com.badlogic.ashley.utils.ImmutableArray;
-import com.esotericsoftware.kryonet.Connection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +17,10 @@ import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
+import me.shreyasr.ancients.packet.Packet;
+import me.shreyasr.ancients.packet.PacketHandler;
 
-public class ClientHitPacket implements ClientPacket {
+public class ClientHitPacket extends Packet<PacketHandler<ClientHitPacket>> {
 
     public static ClientHitPacket create(Component[] components, KnockbackComponent knockback) {
         ClientHitPacket packet = new ClientHitPacket();
@@ -49,35 +45,16 @@ public class ClientHitPacket implements ClientPacket {
         return packet;
     }
 
-    private Component[] components;
+    public Component[] components;
+
+    private static PacketHandler<ClientHitPacket> handler;
+
+    public static void setHandler(PacketHandler<ClientHitPacket> handler) {
+        ClientHitPacket.handler = handler;
+    }
 
     @Override
-    public void handle(PooledEngine engine, Connection conn,
-                       UUIDComponent playerUUID, EntityListener entityListener) {
-        UUIDComponent recvUUID = getUUIDFromComponents();
-
-        ImmutableArray<Entity> otherPlayers = getOtherPlayers(engine);
-
-        for (Entity otherPlayer : otherPlayers) {
-            if (UUIDComponent.MAPPER.get(otherPlayer).equals(recvUUID)) {
-                for (Component c : components) {
-                    otherPlayer.add(c);
-                }
-                return;
-            }
-        }
-    }
-
-    private ImmutableArray<Entity> getOtherPlayers(PooledEngine engine) {
-        return engine.getEntitiesFor(Family.all(TypeComponent.Player.class).get());
-    }
-
-    private UUIDComponent getUUIDFromComponents() {
-        for (Component c : components) {
-            if (c instanceof UUIDComponent) {
-                return ((UUIDComponent) c);
-            }
-        }
-        return null;
+    public PacketHandler<ClientHitPacket> getHandler() {
+        return handler;
     }
 }
