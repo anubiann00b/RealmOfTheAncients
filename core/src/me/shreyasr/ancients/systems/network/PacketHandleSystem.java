@@ -3,7 +3,7 @@ package me.shreyasr.ancients.systems.network;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
-import me.shreyasr.ancients.LinkedListQueuedListener;
+import me.shreyasr.ancients.util.LinkedListQueuedListener;
 
 public class PacketHandleSystem extends EntitySystem implements EntityListener {
 

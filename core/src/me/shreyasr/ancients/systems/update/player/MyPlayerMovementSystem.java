@@ -1,4 +1,4 @@
-package me.shreyasr.ancients.systems.update;
+package me.shreyasr.ancients.systems.update.player;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;

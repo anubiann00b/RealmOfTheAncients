@@ -10,7 +10,7 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.kryonet.Time;
 
-import me.shreyasr.ancients.CustomUUID;
+import me.shreyasr.ancients.util.CustomUUID;
 import me.shreyasr.ancients.components.HitboxComponent;
 import me.shreyasr.ancients.components.KnockbackComponent;
 import me.shreyasr.ancients.components.PositionComponent;

@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.utils.Pool;
-import me.shreyasr.ancients.CustomUUID;
+import me.shreyasr.ancients.util.CustomUUID;
 
 public class UUIDComponent implements Component, Pool.Poolable {
 

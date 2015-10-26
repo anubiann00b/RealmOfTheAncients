@@ -8,7 +8,7 @@ import com.esotericsoftware.kryonet.Time;
 import java.io.IOException;
 
 import me.shreyasr.ancients.AncientsGame;
-import me.shreyasr.ancients.KryoRegistrar;
+import me.shreyasr.ancients.util.KryoRegistrar;
 
 public class LoadingScreen extends ScreenAdapter {
 

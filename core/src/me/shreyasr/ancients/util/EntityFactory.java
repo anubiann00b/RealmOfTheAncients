@@ -1,4 +1,4 @@
-package me.shreyasr.ancients;
+package me.shreyasr.ancients.util;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
@@ -18,6 +18,8 @@ import me.shreyasr.ancients.components.player.MyPlayerComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.components.weapon.OwnerUUIDComponent;
 import me.shreyasr.ancients.components.weapon.WeaponAnimationComponent;
+import me.shreyasr.ancients.util.Assets;
+import me.shreyasr.ancients.util.CustomUUID;
 
 public class EntityFactory {
 

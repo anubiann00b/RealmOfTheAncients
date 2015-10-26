@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import me.shreyasr.ancients.screen.LoadingScreen;
+import me.shreyasr.ancients.util.Assets;
 
 public class AncientsGame extends Game {
 

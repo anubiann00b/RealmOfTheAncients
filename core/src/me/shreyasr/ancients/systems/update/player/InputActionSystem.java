@@ -1,4 +1,4 @@
-package me.shreyasr.ancients.systems.update;
+package me.shreyasr.ancients.systems.update.player;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
@@ -11,7 +11,7 @@ import com.badlogic.gdx.Input;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Time;
 
-import me.shreyasr.ancients.EntityFactory;
+import me.shreyasr.ancients.util.EntityFactory;
 import me.shreyasr.ancients.components.KnockbackComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.StartTimeComponent;

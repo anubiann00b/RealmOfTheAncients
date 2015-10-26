@@ -1,4 +1,4 @@
-package me.shreyasr.ancients;
+package me.shreyasr.ancients.util;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

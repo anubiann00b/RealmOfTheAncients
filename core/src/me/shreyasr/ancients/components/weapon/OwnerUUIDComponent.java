@@ -8,7 +8,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.utils.Pool;
 
-import me.shreyasr.ancients.CustomUUID;
+import me.shreyasr.ancients.util.CustomUUID;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 

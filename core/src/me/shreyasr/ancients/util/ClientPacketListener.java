@@ -1,4 +1,4 @@
-package me.shreyasr.ancients;
+package me.shreyasr.ancients.util;
 
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.PooledEngine;
@@ -6,6 +6,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.packet.client.ClientPacket;
+import me.shreyasr.ancients.util.CustomUUID;
 
 public class ClientPacketListener extends Listener {
 

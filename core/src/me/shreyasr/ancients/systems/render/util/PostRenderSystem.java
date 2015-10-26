@@ -1,4 +1,4 @@
-package me.shreyasr.ancients.systems.render;
+package me.shreyasr.ancients.systems.render.util;
 
 import com.badlogic.ashley.core.EntitySystem;
 

@@ -1,4 +1,4 @@
-package me.shreyasr.ancients;
+package me.shreyasr.ancients.util;
 
 public class Assert {
 

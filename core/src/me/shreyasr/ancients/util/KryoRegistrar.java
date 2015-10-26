@@ -1,4 +1,4 @@
-package me.shreyasr.ancients;
+package me.shreyasr.ancients.util;
 
 import com.badlogic.ashley.core.Component;
 import com.esotericsoftware.kryo.Kryo;
