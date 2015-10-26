@@ -14,6 +14,7 @@ import me.shreyasr.ancients.CustomUUID;
 import me.shreyasr.ancients.components.HitboxComponent;
 import me.shreyasr.ancients.components.KnockbackComponent;
 import me.shreyasr.ancients.components.PositionComponent;
+import me.shreyasr.ancients.components.StatsComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.components.weapon.OwnerUUIDComponent;
@@ -44,7 +45,9 @@ public class CollisionDetectionSystem extends EntitySystem {
     public void update(float deltaTime) {
         for (Entity w : weapons) {
             WeaponAnimationComponent weaponAnim = WeaponAnimationComponent.MAPPER.get(w);
-            CustomUUID ownerUUID = OwnerUUIDComponent.MAPPER.get(w).ownerUUID;
+            OwnerUUIDComponent ownerComponent = OwnerUUIDComponent.MAPPER.get(w);
+            CustomUUID ownerUUID = ownerComponent.ownerUUID;
+            Entity owner = ownerComponent.getOwner(engine);
 
             if (weaponAnim.isDone() || weaponAnim.timeSinceAnimStart < 0) continue;
             HitboxComponent weaponHitbox = HitboxComponent.MAPPER.get(w);
@@ -64,9 +67,12 @@ public class CollisionDetectionSystem extends EntitySystem {
                     Component[] components = e.getComponents().toArray(Component.class);
                     KnockbackComponent knockbackComponent
                             = KnockbackComponent.create(engine, pos.x - weaponPos.x, pos.y - weaponPos.y, Time.getMillis());
-                    server.sendToAllTCP(ClientHitPacket.create(components, knockbackComponent));
                     e.add(knockbackComponent);
-                    System.out.println("collision: " + ownerUUID + " hit " + entityUUID);
+
+                    StatsComponent.MAPPER.get(owner).hits++;
+                    System.out.println(StatsComponent.MAPPER.get(owner).hits)                       ;
+
+                    server.sendToAllTCP(ClientHitPacket.create(components, knockbackComponent));
                 }
             }
         }

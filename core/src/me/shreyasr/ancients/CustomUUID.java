@@ -53,6 +53,10 @@ public class CustomUUID {
                 digits(leastSigBits, 12));
     }
 
+    public String toNameString() {
+        return digits(mostSigBits >> 32, 8);
+    }
+
     private static String digits(long val, int digits) {
         long hi = 1L << (digits * 4);
         return Long.toHexString(hi | (val & (hi - 1))).substring(1);

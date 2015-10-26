@@ -1,6 +1,7 @@
 package me.shreyasr.ancients.packet.client;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
@@ -13,14 +14,17 @@ import java.util.List;
 
 import me.shreyasr.ancients.components.HitboxComponent;
 import me.shreyasr.ancients.components.LastUpdateTimeComponent;
+import me.shreyasr.ancients.components.NameComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.SpeedComponent;
 import me.shreyasr.ancients.components.SquareAnimationComponent;
 import me.shreyasr.ancients.components.SquareDirectionComponent;
+import me.shreyasr.ancients.components.StatsComponent;
 import me.shreyasr.ancients.components.TextureComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
+import me.shreyasr.ancients.components.player.MyPlayerComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 
 public class ClientPlayerUpdatePacket implements ClientPacket {
@@ -31,8 +35,10 @@ public class ClientPlayerUpdatePacket implements ClientPacket {
         for (Component c : components) {
             if (c instanceof HitboxComponent
                     || c instanceof LastUpdateTimeComponent
+                    || c instanceof NameComponent
                     || c instanceof PositionComponent
                     || c instanceof SpeedComponent
+                    || c instanceof StatsComponent
                     || c instanceof SquareAnimationComponent
                     || c instanceof SquareDirectionComponent
                     || c instanceof TextureComponent
@@ -55,6 +61,7 @@ public class ClientPlayerUpdatePacket implements ClientPacket {
         UUIDComponent recvUUID = getUUIDFromComponents();
 
         if (playerUUID.equals(recvUUID)) {
+            updateMyPlayer(engine);
             return;
         }
 
@@ -75,6 +82,15 @@ public class ClientPlayerUpdatePacket implements ClientPacket {
         Entity e = createAndAddPlayer(engine);
         System.out.println("Added new player");
         entityListener.entityAdded(e);
+    }
+
+    private void updateMyPlayer(Engine engine) {
+        Entity player = engine.getEntitiesFor(Family.all(MyPlayerComponent.class).get()).first();
+        for (Component c : components) {
+            if (c instanceof StatsComponent) {
+                player.add(c);
+            }
+        }
     }
 
     private Entity createAndAddPlayer(PooledEngine engine) {

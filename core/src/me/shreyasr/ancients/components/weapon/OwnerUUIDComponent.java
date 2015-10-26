@@ -36,6 +36,10 @@ public class OwnerUUIDComponent implements Component, Pool.Poolable {
         }
     }
 
+    public Entity getOwner(Engine engine) {
+        return engine.getEntity(ownerEngineID);
+    }
+
     @Override
     public boolean equals(Object o) {
         return o instanceof OwnerUUIDComponent && ((OwnerUUIDComponent) o).ownerUUID.equals(ownerUUID);

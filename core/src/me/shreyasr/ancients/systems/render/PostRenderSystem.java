@@ -1,18 +1,20 @@
 package me.shreyasr.ancients.systems.render;
 
 import com.badlogic.ashley.core.EntitySystem;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
+import me.shreyasr.ancients.AncientsGame;
 
 public class PostRenderSystem extends EntitySystem {
 
-    private final ShapeRenderer shape;
+    private final AncientsGame game;
 
-    public PostRenderSystem(int priority, ShapeRenderer shape) {
+    public PostRenderSystem(int priority, AncientsGame game) {
         super(priority);
-        this.shape = shape;
+        this.game = game;
     }
 
     public void update(float deltaTime) {
-        shape.end();
+        if (game.shape.isDrawing()) game.shape.end();
+        if (game.batch.isDrawing()) game.batch.end();
     }
 }

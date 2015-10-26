@@ -56,6 +56,7 @@ public class ClientAttackPacket implements ClientPacket {
         for (Component c : components) {
             newWeapon.add(c);
         }
+        OwnerUUIDComponent.MAPPER.get(newWeapon).updateEngineId(engine);
         engine.addEntity(newWeapon);
     }
 

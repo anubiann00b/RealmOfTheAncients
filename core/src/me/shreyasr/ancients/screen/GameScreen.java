@@ -18,7 +18,8 @@ import me.shreyasr.ancients.systems.render.MiscRenderSystem;
 import me.shreyasr.ancients.systems.render.NameRenderSystem;
 import me.shreyasr.ancients.systems.render.PostRenderSystem;
 import me.shreyasr.ancients.systems.render.PreBatchRenderSystem;
-import me.shreyasr.ancients.systems.render.RenderSystem;
+import me.shreyasr.ancients.systems.render.MainRenderSystem;
+import me.shreyasr.ancients.systems.render.ScoreboardRenderSystem;
 import me.shreyasr.ancients.systems.render.ShapeRenderSystem;
 import me.shreyasr.ancients.systems.render.SquareAnimationSystem;
 import me.shreyasr.ancients.systems.update.InputActionSystem;
@@ -65,13 +66,14 @@ public class GameScreen extends ScreenAdapter {
         engine.addSystem(new    SquareAnimationSystem(++priority));
         engine.addSystem(new       WeaponUpdateSystem(++priority, engine));
 
-        engine.addSystem(new PreBatchRenderSystem (++priority, game.batch));
-            engine.addSystem(new RenderSystem     (++priority, game));
-            engine.addSystem(new MiscRenderSystem (++priority, game, client));
-            engine.addSystem(new NameRenderSystem (++priority, game));
-        engine.addSystem(new ShapeRenderSystem    (++priority, game.batch, game.shape));
-            engine.addSystem(new DebugRenderSystem(++priority, game));
-        engine.addSystem(new PostRenderSystem     (++priority, game.shape));
+        engine.addSystem(new PreBatchRenderSystem       (++priority, game.batch));
+            engine.addSystem(new MainRenderSystem(++priority, game));
+            engine.addSystem(new MiscRenderSystem       (++priority, game, client));
+            engine.addSystem(new NameRenderSystem       (++priority, game));
+        engine.addSystem(new ShapeRenderSystem          (++priority, game.batch, game.shape));
+            engine.addSystem(new DebugRenderSystem      (++priority, game));
+            engine.addSystem(new ScoreboardRenderSystem (++priority, game));
+        engine.addSystem(new PostRenderSystem           (++priority, game));
 
         engine.addSystem(new      NetworkUpdateSystem(++priority, client));
         engine.addSystem(new         PingUpdateSystem(++priority, client));

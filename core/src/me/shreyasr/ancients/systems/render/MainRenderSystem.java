@@ -10,11 +10,11 @@ import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.TextureComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
 
-public class RenderSystem extends IteratingSystem {
+public class MainRenderSystem extends IteratingSystem {
 
     private final AncientsGame game;
 
-    public RenderSystem(int priority, AncientsGame game) {
+    public MainRenderSystem(int priority, AncientsGame game) {
         super(
                 Family.all(PositionComponent.class,
                            TextureComponent.class,

@@ -4,10 +4,12 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 
 import me.shreyasr.ancients.components.HitboxComponent;
+import me.shreyasr.ancients.components.NameComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.SpeedComponent;
 import me.shreyasr.ancients.components.SquareAnimationComponent;
 import me.shreyasr.ancients.components.SquareDirectionComponent;
+import me.shreyasr.ancients.components.StatsComponent;
 import me.shreyasr.ancients.components.TextureComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
@@ -29,7 +31,9 @@ public class EntityFactory {
 
     public Entity createPlayer(PooledEngine engine, CustomUUID playerUUID) {
         Entity e = createDumbPlayer(engine, playerUUID);
-        e.add(engine.createComponent(MyPlayerComponent.class));
+        e.add(MyPlayerComponent.create(engine));
+        e.add(StatsComponent.create(engine));
+        e.add(NameComponent.create(engine, playerUUID.toNameString()));
         return e;
     }
 

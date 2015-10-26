@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.esotericsoftware.kryonet.Client;
 
 import me.shreyasr.ancients.AncientsGame;
@@ -27,6 +28,7 @@ public class MiscRenderSystem extends EntitySystem {
     }
 
     public void update(float deltaTime) {
+        game.font.setColor(Color.BLACK);
         game.font.draw(game.batch, String.valueOf((int) (1000 / deltaTime)), 16, Gdx.graphics.getHeight() - 16);
         game.font.draw(game.batch, String.valueOf(client.getReturnTripTime()), 16, Gdx.graphics.getHeight() - 32);
     }

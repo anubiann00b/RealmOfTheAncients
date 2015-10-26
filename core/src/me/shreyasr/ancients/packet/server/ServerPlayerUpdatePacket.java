@@ -16,10 +16,12 @@ import java.util.List;
 
 import me.shreyasr.ancients.components.HitboxComponent;
 import me.shreyasr.ancients.components.LastUpdateTimeComponent;
+import me.shreyasr.ancients.components.NameComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.SpeedComponent;
 import me.shreyasr.ancients.components.SquareAnimationComponent;
 import me.shreyasr.ancients.components.SquareDirectionComponent;
+import me.shreyasr.ancients.components.StatsComponent;
 import me.shreyasr.ancients.components.TextureComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
@@ -39,6 +41,7 @@ public class ServerPlayerUpdatePacket implements ServerPacket {
         List<Component> finalComponents = new ArrayList<Component>();
         for (Component c : components) {
             if (c instanceof HitboxComponent
+                    || c instanceof NameComponent
                     || c instanceof PositionComponent
                     || c instanceof SpeedComponent
                     || c instanceof SquareAnimationComponent
@@ -83,6 +86,8 @@ public class ServerPlayerUpdatePacket implements ServerPacket {
     private Entity createAndAddPlayer(PooledEngine engine) {
         Entity e = engine.createEntity();
         updatePlayer(e);
+        e.add(StatsComponent.create(engine));
+
         engine.addEntity(e);
         return e;
     }

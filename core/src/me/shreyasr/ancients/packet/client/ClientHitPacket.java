@@ -7,7 +7,6 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Time;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +17,7 @@ import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.SpeedComponent;
 import me.shreyasr.ancients.components.SquareAnimationComponent;
 import me.shreyasr.ancients.components.SquareDirectionComponent;
-import me.shreyasr.ancients.components.StartTimeComponent;
+import me.shreyasr.ancients.components.StatsComponent;
 import me.shreyasr.ancients.components.TextureComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
@@ -34,6 +33,7 @@ public class ClientHitPacket implements ClientPacket {
             if (c instanceof HitboxComponent
                     || c instanceof PositionComponent
                     || c instanceof SpeedComponent
+                    || c instanceof StatsComponent
                     || c instanceof SquareAnimationComponent
                     || c instanceof SquareDirectionComponent
                     || c instanceof TextureComponent
