@@ -22,11 +22,14 @@ import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.components.weapon.OwnerUUIDComponent;
 import me.shreyasr.ancients.components.weapon.WeaponAnimationComponent;
 import me.shreyasr.ancients.packet.client.ClientAttackPacket;
+import me.shreyasr.ancients.packet.client.ClientChatMessagePacket;
 import me.shreyasr.ancients.packet.client.ClientHitPacket;
 import me.shreyasr.ancients.packet.client.ClientPlayerRemovePacket;
 import me.shreyasr.ancients.packet.client.ClientPlayerUpdatePacket;
 import me.shreyasr.ancients.packet.server.ServerAttackPacket;
+import me.shreyasr.ancients.packet.server.ServerChatMessagePacket;
 import me.shreyasr.ancients.packet.server.ServerPlayerUpdatePacket;
+import me.shreyasr.ancients.util.chat.ChatMessage;
 
 public class KryoRegistrar {
 
@@ -35,9 +38,11 @@ public class KryoRegistrar {
         kryo.register(ClientHitPacket.class);
         kryo.register(ClientPlayerRemovePacket.class);
         kryo.register(ClientPlayerUpdatePacket.class);
+        kryo.register(ClientChatMessagePacket.class);
 
         kryo.register(ServerAttackPacket.class);
         kryo.register(ServerPlayerUpdatePacket.class);
+        kryo.register(ServerChatMessagePacket.class);
 
         kryo.register(Component[].class);
         kryo.register(CustomUUID.class);
@@ -64,5 +69,8 @@ public class KryoRegistrar {
 
         kryo.register(TypeComponent.Player.class);
         kryo.register(TypeComponent.Weapon.class);
+
+        kryo.register(ChatMessage.class);
+        kryo.register(ChatMessage[].class);
     }
 }

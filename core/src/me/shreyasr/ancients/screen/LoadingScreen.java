@@ -33,7 +33,7 @@ public class LoadingScreen extends ScreenAdapter {
                     client.connect(5000, "127.0.0.1", 54555, 54777);
                     game.setScreen(new GameScreen(game, client));
                 } catch (IOException e) {
-                    System.out.println(e.getMessage());
+                    e.printStackTrace();
                     Gdx.app.exit();
                 }
             }

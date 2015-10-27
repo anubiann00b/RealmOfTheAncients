@@ -1,13 +1,20 @@
 package me.shreyasr.ancients.util.chat;
 
+import me.shreyasr.ancients.components.weapon.OwnerUUIDComponent;
+import me.shreyasr.ancients.util.CustomUUID;
+
 public class ChatMessage implements Comparable<ChatMessage> {
 
-    public final String message;
-    public final long time;
+    public String body;
+    public long time;
+    private OwnerUUIDComponent owner;
 
-    public ChatMessage(String message, long time) {
-        this.message = message.substring(0, Math.min(message.length(), 100)).trim();
+    private ChatMessage() { }
+
+    public ChatMessage(String body, long time, CustomUUID owner) {
+        this.body = body.substring(0, Math.min(body.length(), 100)).trim();
         this.time = time;
+        this.owner = owner != null ? OwnerUUIDComponent.create(owner) : null;
     }
 
     @Override

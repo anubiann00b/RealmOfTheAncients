@@ -24,7 +24,14 @@ public class OwnerUUIDComponent implements Component, Pool.Poolable {
         return uuid;
     }
 
+    public static OwnerUUIDComponent create(CustomUUID ownerUUID) {
+        OwnerUUIDComponent uuid = new OwnerUUIDComponent();
+        uuid.ownerUUID = ownerUUID;
+        return uuid;
+    }
+
     public CustomUUID ownerUUID;
+
     public long ownerEngineID;
 
     public void updateEngineId(Engine engine) {

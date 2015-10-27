@@ -70,7 +70,6 @@ public class CollisionDetectionSystem extends EntitySystem {
                     e.add(knockbackComponent);
 
                     StatsComponent.MAPPER.get(owner).hits++;
-                    System.out.println(StatsComponent.MAPPER.get(owner).hits)                       ;
 
                     server.sendToAllTCP(ClientHitPacket.create(components, knockbackComponent));
                 }

@@ -22,7 +22,6 @@ public class PacketHandleSystem extends EntitySystem implements EntityListener {
         while (queuedListener.getQueueSize() > 0) {
             queuedListener.runOne();
             if (breakingModification) {
-                System.out.println("Breaking mod");
                 break;
             }
         }

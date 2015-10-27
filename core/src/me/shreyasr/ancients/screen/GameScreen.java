@@ -8,16 +8,20 @@ import com.esotericsoftware.kryonet.Client;
 
 import me.shreyasr.ancients.AncientsGame;
 import me.shreyasr.ancients.packet.client.ClientAttackPacket;
+import me.shreyasr.ancients.packet.client.ClientChatMessagePacket;
 import me.shreyasr.ancients.packet.client.ClientHitPacket;
 import me.shreyasr.ancients.packet.client.ClientPlayerRemovePacket;
 import me.shreyasr.ancients.packet.client.ClientPlayerUpdatePacket;
 import me.shreyasr.ancients.packet.client.handler.ClientAttackPacketHandler;
+import me.shreyasr.ancients.packet.client.handler.ClientChatMessageHandler;
 import me.shreyasr.ancients.packet.client.handler.ClientHitPacketHandler;
 import me.shreyasr.ancients.packet.client.handler.ClientPlayerRemovePacketHandler;
 import me.shreyasr.ancients.packet.client.handler.ClientPlayerUpdatePacketHandler;
+import me.shreyasr.ancients.packet.server.ServerChatMessagePacket;
 import me.shreyasr.ancients.systems.network.NetworkUpdateSystem;
 import me.shreyasr.ancients.systems.network.PacketHandleSystem;
 import me.shreyasr.ancients.systems.network.PingUpdateSystem;
+import me.shreyasr.ancients.systems.render.ChatRenderSystem;
 import me.shreyasr.ancients.systems.render.DebugRenderSystem;
 import me.shreyasr.ancients.systems.render.MainRenderSystem;
 import me.shreyasr.ancients.systems.render.MiscRenderSystem;
@@ -36,6 +40,7 @@ import me.shreyasr.ancients.util.CustomUUID;
 import me.shreyasr.ancients.util.EntityFactory;
 import me.shreyasr.ancients.util.LinkedListQueuedListener;
 import me.shreyasr.ancients.util.PacketListener;
+import me.shreyasr.ancients.util.chat.ChatManager;
 
 public class GameScreen extends ScreenAdapter {
 
@@ -45,12 +50,12 @@ public class GameScreen extends ScreenAdapter {
     public PooledEngine engine;
     public CustomUUID playerUUID;
     public EntityListener entityListener;
+    public ChatManager chatManager;
 
     public GameScreen(AncientsGame game, Client client) {
         this.game = game;
         this.client = client;
     }
-
 
     private boolean initialized = false;
 
@@ -63,6 +68,7 @@ public class GameScreen extends ScreenAdapter {
         client.addListener(queuedListener);
 
         engine = new PooledEngine();
+        chatManager = new ChatManager();
 
         playerUUID = CustomUUID.randomUUID();
         System.out.println("My UUID: " + playerUUID);
@@ -79,14 +85,15 @@ public class GameScreen extends ScreenAdapter {
         engine.addSystem(new    SquareAnimationSystem(++priority));
         engine.addSystem(new       WeaponUpdateSystem(++priority, engine));
 
-        engine.addSystem(new PreBatchRenderSystem       (++priority, game.batch));
-        engine.addSystem(new MainRenderSystem(++priority, game));
-        engine.addSystem(new MiscRenderSystem       (++priority, game, client));
-        engine.addSystem(new NameRenderSystem       (++priority, game));
-        engine.addSystem(new ShapeRenderSystem          (++priority, game.batch, game.shape));
-        engine.addSystem(new DebugRenderSystem      (++priority, game));
-        engine.addSystem(new ScoreboardRenderSystem (++priority, game));
-        engine.addSystem(new PostRenderSystem           (++priority, game));
+        engine.addSystem(new PreBatchRenderSystem      (++priority, game.batch));
+        engine.addSystem(new    MainRenderSystem       (++priority, game));
+        engine.addSystem(new    MiscRenderSystem       (++priority, game, client));
+        engine.addSystem(new    NameRenderSystem       (++priority, game));
+        engine.addSystem(new ShapeRenderSystem         (++priority, game.batch, game.shape));
+        engine.addSystem(new    DebugRenderSystem      (++priority, game));
+        engine.addSystem(new    ScoreboardRenderSystem (++priority, game));
+        engine.addSystem(new    ChatRenderSystem       (++priority, game,  chatManager));
+        engine.addSystem(new PostRenderSystem          (++priority, game));
 
         engine.addSystem(new      NetworkUpdateSystem(++priority, client));
         engine.addSystem(new         PingUpdateSystem(++priority, client));
@@ -99,14 +106,23 @@ public class GameScreen extends ScreenAdapter {
                  ClientHitPacket.setHandler(new ClientHitPacketHandler(this));
         ClientPlayerRemovePacket.setHandler(new ClientPlayerRemovePacketHandler(this));
         ClientPlayerUpdatePacket.setHandler(new ClientPlayerUpdatePacketHandler(this));
+         ClientChatMessagePacket.setHandler(new ClientChatMessageHandler(this));
         // @formatter:on
+
+        client.sendTCP(ServerChatMessagePacket.create(playerUUID + " joined!", null));
 
         initialized = true;
     }
+
+    int cnt = 0;
 
     @Override
     public void render(float delta) {
         if (!initialized) return;
         engine.update(Gdx.graphics.getRawDeltaTime() * 1000);
+        if (cnt++ > 300) {
+            cnt = 0;
+            client.sendTCP(ServerChatMessagePacket.create(playerUUID + " " + Math.random(), null));
+        }
     }
 }

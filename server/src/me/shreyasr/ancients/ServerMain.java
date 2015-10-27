@@ -10,20 +10,21 @@ import java.io.IOException;
 
 import me.shreyasr.ancients.handler.ServerAttackPacketHandler;
 import me.shreyasr.ancients.handler.ServerPlayerUpdatePacketHandler;
-import me.shreyasr.ancients.handler.ServerSendMessagePacketHandler;
+import me.shreyasr.ancients.handler.ServerChatMessagePacketHandler;
 import me.shreyasr.ancients.packet.server.ServerAttackPacket;
 import me.shreyasr.ancients.packet.server.ServerPlayerUpdatePacket;
-import me.shreyasr.ancients.packet.server.ServerSendMessagePacket;
+import me.shreyasr.ancients.packet.server.ServerChatMessagePacket;
+import me.shreyasr.ancients.system.ChatUpdateSystem;
 import me.shreyasr.ancients.system.ClientUpdateSystem;
 import me.shreyasr.ancients.system.CollisionDetectionSystem;
 import me.shreyasr.ancients.system.RemoveOldEntitySystem;
-import me.shreyasr.ancients.system.ServerMessageHandler;
 import me.shreyasr.ancients.systems.network.PacketHandleSystem;
 import me.shreyasr.ancients.systems.update.KnockbackSystem;
 import me.shreyasr.ancients.systems.update.WeaponUpdateSystem;
 import me.shreyasr.ancients.util.KryoRegistrar;
 import me.shreyasr.ancients.util.LinkedListQueuedListener;
 import me.shreyasr.ancients.util.PacketListener;
+import me.shreyasr.ancients.util.chat.ChatManager;
 
 public class ServerMain {
 
@@ -39,8 +40,9 @@ public class ServerMain {
 
     public final Server server;
     public final PooledEngine engine;
-    public final ServerMessageHandler messageHandler;
     public EntityListener entityListener;
+
+    public final ChatManager chatManager;
 
     private final LinkedListQueuedListener queuedListener;
     private int priority = 0;
@@ -48,10 +50,10 @@ public class ServerMain {
     public ServerMain() {
         server = new Server();
         engine = new PooledEngine();
-        messageHandler = new ServerMessageHandler();
 
 //        queuedListener = new LagLinkedListQueuedListener(100, 0);
         queuedListener = new LinkedListQueuedListener(new PacketListener());
+        chatManager = new ChatManager();
     }
 
     public void run() throws IOException {
@@ -67,7 +69,8 @@ public class ServerMain {
         engine.addSystem(       new WeaponUpdateSystem(++priority, engine));
         engine.addSystem(          new KnockbackSystem(++priority));
         engine.addSystem(       new ClientUpdateSystem(++priority, 16, server));
-        engine.addSystem(new RemoveOldEntitySystem(++priority, engine, server));
+        engine.addSystem(    new RemoveOldEntitySystem(++priority, engine, server));
+        engine.addSystem(         new ChatUpdateSystem(++priority, chatManager, server));
         // @formatter:on
 
         entityListener = engine.getSystem(PacketHandleSystem.class);
@@ -75,7 +78,7 @@ public class ServerMain {
         // @formatter:off
               ServerAttackPacket.setHandler(new ServerAttackPacketHandler(this));
         ServerPlayerUpdatePacket.setHandler(new ServerPlayerUpdatePacketHandler(this));
-         ServerSendMessagePacket.setHandler(new ServerSendMessagePacketHandler(this));
+         ServerChatMessagePacket.setHandler(new ServerChatMessagePacketHandler(this));
         // @formatter:on
 
         long lastTime = Time.getMillis();

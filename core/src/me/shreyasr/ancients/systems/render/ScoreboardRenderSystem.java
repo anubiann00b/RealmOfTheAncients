@@ -43,7 +43,7 @@ public class ScoreboardRenderSystem extends EntitySystem implements EntityListen
     private final AncientsGame game;
     private Array<Entity> sortedPlayers;
 
-    private Comparator<Entity> comparator = new StatsComponent.StatsComparator();
+    private Comparator<Entity> comparator = new StatsComponent.StatsComparator().reversed();
 
     public ScoreboardRenderSystem(int priority, AncientsGame game) {
         super(priority);
@@ -75,7 +75,7 @@ public class ScoreboardRenderSystem extends EntitySystem implements EntityListen
     public void update(float deltaTime) {
         if (!Gdx.input.isKeyPressed(Input.Keys.TAB)) return;
 
-        sortedPlayers.sort(comparator.reversed());
+        sortedPlayers.sort(comparator);
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -121,5 +121,8 @@ public class ScoreboardRenderSystem extends EntitySystem implements EntityListen
                     Gdx.graphics.getHeight() - (margin + rowHeight*rowIndex));
             rowIndex++;
         }
+
+        game.batch.end();
+        game.shape.begin();
     }
 }
