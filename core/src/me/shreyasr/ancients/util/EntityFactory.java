@@ -18,8 +18,6 @@ import me.shreyasr.ancients.components.player.MyPlayerComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.components.weapon.OwnerUUIDComponent;
 import me.shreyasr.ancients.components.weapon.WeaponAnimationComponent;
-import me.shreyasr.ancients.util.Assets;
-import me.shreyasr.ancients.util.CustomUUID;
 
 public class EntityFactory {
 
@@ -31,11 +29,11 @@ public class EntityFactory {
         this.worldHeight = worldHeight;
     }
 
-    public Entity createPlayer(PooledEngine engine, CustomUUID playerUUID) {
+    public Entity createPlayer(PooledEngine engine, CustomUUID playerUUID, String name) {
         Entity e = createDumbPlayer(engine, playerUUID);
         e.add(MyPlayerComponent.create(engine));
         e.add(StatsComponent.create(engine));
-        e.add(NameComponent.create(engine, playerUUID.toNameString()));
+        e.add(NameComponent.create(engine, name));
         return e;
     }
 

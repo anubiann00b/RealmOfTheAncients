@@ -52,9 +52,12 @@ public class GameScreen extends ScreenAdapter {
     public EntityListener entityListener;
     public ChatManager chatManager;
 
-    public GameScreen(AncientsGame game, Client client) {
+    private String name;
+
+    public GameScreen(AncientsGame game, Client client, String name) {
         this.game = game;
         this.client = client;
+        this.name = name;
     }
 
     private boolean initialized = false;
@@ -73,7 +76,7 @@ public class GameScreen extends ScreenAdapter {
         playerUUID = CustomUUID.randomUUID();
         System.out.println("My UUID: " + playerUUID);
 
-        engine.addEntity(entityFactory.createPlayer(engine, playerUUID));
+        engine.addEntity(entityFactory.createPlayer(engine, playerUUID, name));
 
         int priority = 0;
         // @formatter:off

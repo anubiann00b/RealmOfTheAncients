@@ -6,8 +6,8 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.utils.Align;
 
 import me.shreyasr.ancients.AncientsGame;
+import me.shreyasr.ancients.components.NameComponent;
 import me.shreyasr.ancients.components.PositionComponent;
-import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 
 public class NameRenderSystem extends IteratingSystem {
@@ -17,7 +17,7 @@ public class NameRenderSystem extends IteratingSystem {
     public NameRenderSystem(int priority, AncientsGame game) {
         super(
                 Family.all(PositionComponent.class,
-                           UUIDComponent.class,
+                           NameComponent.class,
                            TypeComponent.Player.class)
                         .get(),
                 priority);
@@ -27,6 +27,7 @@ public class NameRenderSystem extends IteratingSystem {
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         PositionComponent playerPos = PositionComponent.MAPPER.get(entity);
-        game.font.draw(game.batch, UUIDComponent.MAPPER.get(entity).toString(), playerPos.x - 32, playerPos.y - 36, 0, 8, 64, Align.center, false);
+        String name = NameComponent.MAPPER.get(entity).str;
+        game.font.draw(game.batch, name, playerPos.x - 32, playerPos.y - 36, 0, name.length(), 64, Align.center, false);
     }
 }
