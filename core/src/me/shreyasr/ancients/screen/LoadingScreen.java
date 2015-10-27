@@ -21,8 +21,8 @@ public class LoadingScreen extends ScreenAdapter implements Input.TextInputListe
     }
 
     private boolean connected = false;
-    private boolean hasName = false;
-    private String name;
+    private boolean hasName = true;
+    private String name = "test";
 
     @Override
     public void show() {
@@ -38,28 +38,24 @@ public class LoadingScreen extends ScreenAdapter implements Input.TextInputListe
 //                    client.connect(5000, "104.131.149.236", 54555, 54777);
                     client.connect(5000, "127.0.0.1", 54555, 54777);
                     connected = true;
-                    moveToGameScreen();
                 } catch (IOException e) {
                     e.printStackTrace();
                     Gdx.app.exit();
                 }
             }
         }).start();
-        Gdx.input.getTextInput(this, "What's your name?", "", "name");
+//        Gdx.input.getTextInput(this, "What's your name?", "", "name");
     }
 
     @Override
-    public void render(float deltaTime) { }
-
-    private void moveToGameScreen() {
+    public void render(float deltaTime) {
         if (hasName && connected) game.setScreen(new GameScreen(game, client, name));
     }
 
     @Override
     public void input(String text) {
-        hasName = true;
         name = text;
-        moveToGameScreen();
+        hasName = true;
     }
 
     @Override

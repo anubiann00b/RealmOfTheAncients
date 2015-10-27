@@ -12,7 +12,7 @@ public class ChatMessage implements Comparable<ChatMessage> {
     private ChatMessage() { }
 
     public ChatMessage(String body, long time, CustomUUID owner) {
-        this.body = body.substring(0, Math.min(body.length(), 100)).trim();
+        this.body = body.substring(0, Math.min(body.length(), 200)).trim();
         this.time = time;
         this.owner = owner != null ? OwnerUUIDComponent.create(owner) : null;
     }

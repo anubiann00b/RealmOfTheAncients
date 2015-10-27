@@ -21,13 +21,13 @@ import me.shreyasr.ancients.packet.server.ServerChatMessagePacket;
 import me.shreyasr.ancients.systems.network.NetworkUpdateSystem;
 import me.shreyasr.ancients.systems.network.PacketHandleSystem;
 import me.shreyasr.ancients.systems.network.PingUpdateSystem;
-import me.shreyasr.ancients.systems.render.ChatRenderSystem;
 import me.shreyasr.ancients.systems.render.DebugRenderSystem;
 import me.shreyasr.ancients.systems.render.MainRenderSystem;
 import me.shreyasr.ancients.systems.render.MiscRenderSystem;
 import me.shreyasr.ancients.systems.render.NameRenderSystem;
 import me.shreyasr.ancients.systems.render.ScoreboardRenderSystem;
 import me.shreyasr.ancients.systems.render.SquareAnimationSystem;
+import me.shreyasr.ancients.systems.render.UIRenderSystem;
 import me.shreyasr.ancients.systems.render.util.PostRenderSystem;
 import me.shreyasr.ancients.systems.render.util.PreBatchRenderSystem;
 import me.shreyasr.ancients.systems.render.util.ShapeRenderSystem;
@@ -95,8 +95,8 @@ public class GameScreen extends ScreenAdapter {
         engine.addSystem(new ShapeRenderSystem         (++priority, game.batch, game.shape));
         engine.addSystem(new    DebugRenderSystem      (++priority, game));
         engine.addSystem(new    ScoreboardRenderSystem (++priority, game));
-        engine.addSystem(new    ChatRenderSystem       (++priority, game,  chatManager));
         engine.addSystem(new PostRenderSystem          (++priority, game));
+        engine.addSystem(new UIRenderSystem            (++priority, game, chatManager, client));
 
         engine.addSystem(new      NetworkUpdateSystem(++priority, client));
         engine.addSystem(new         PingUpdateSystem(++priority, client));
@@ -123,9 +123,10 @@ public class GameScreen extends ScreenAdapter {
     public void render(float delta) {
         if (!initialized) return;
         engine.update(Gdx.graphics.getRawDeltaTime() * 1000);
-        if (cnt++ > 300) {
-            cnt = 0;
-            client.sendTCP(ServerChatMessagePacket.create(playerUUID + " " + Math.random(), null));
-        }
+    }
+
+    @Override
+    public void resize (int width, int height) {
+        engine.getSystem(UIRenderSystem.class).resize(width, height);
     }
 }
