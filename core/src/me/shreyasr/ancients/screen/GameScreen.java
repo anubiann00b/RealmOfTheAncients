@@ -18,7 +18,6 @@ import me.shreyasr.ancients.packet.client.handler.ClientChatMessageHandler;
 import me.shreyasr.ancients.packet.client.handler.ClientHitPacketHandler;
 import me.shreyasr.ancients.packet.client.handler.ClientPlayerRemovePacketHandler;
 import me.shreyasr.ancients.packet.client.handler.ClientPlayerUpdatePacketHandler;
-import me.shreyasr.ancients.packet.server.ServerChatMessagePacket;
 import me.shreyasr.ancients.systems.network.NetworkUpdateSystem;
 import me.shreyasr.ancients.systems.network.PacketHandleSystem;
 import me.shreyasr.ancients.systems.network.PingUpdateSystem;
@@ -98,7 +97,7 @@ public class GameScreen extends ScreenAdapter {
         engine.addSystem(new    DebugRenderSystem      (++priority, game));
 //        engine.addSystem(new    ScoreboardRenderSystem (++priority, game));
         engine.addSystem(new PostRenderSystem          (++priority, game));
-        engine.addSystem(new UIRenderSystem            (++priority, game, engine, chatManager, client, playerUUID));
+        engine.addSystem(new UIRenderSystem            (++priority, game, engine, chatManager, client, playerUUID, name));
 
         engine.addSystem(new      NetworkUpdateSystem(++priority, client));
         engine.addSystem(new         PingUpdateSystem(++priority, client));
@@ -120,12 +119,8 @@ public class GameScreen extends ScreenAdapter {
         inputMultiplexer.addProcessor(engine.getSystem(InputActionSystem.class));
         Gdx.input.setInputProcessor(inputMultiplexer);
 
-        client.sendTCP(ServerChatMessagePacket.create(playerUUID + " joined!", null));
-
         initialized = true;
     }
-
-    int cnt = 0;
 
     @Override
     public void render(float delta) {

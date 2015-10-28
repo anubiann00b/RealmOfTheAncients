@@ -18,7 +18,7 @@ public class ChatUpdateSystem extends EntitySystem {
         this.chatManager = chatManager;
         this.server = server;
         newChatMessageListener = new NewChatMessageListener();
-        chatManager.setListener(newChatMessageListener);
+        chatManager.addListener(newChatMessageListener);
     }
 
     @Override

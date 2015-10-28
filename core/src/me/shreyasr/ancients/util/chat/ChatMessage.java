@@ -16,9 +16,14 @@ public class ChatMessage implements Comparable<ChatMessage> {
     private ChatMessage() { }
 
     public ChatMessage(String body, long time, CustomUUID owner) {
+        this(body, time, owner, null);
+    }
+
+    public ChatMessage(String body, long time, CustomUUID owner, String playerName) {
         this.body = body.substring(0, Math.min(body.length(), 200)).trim();
         this.time = time;
         this.owner = owner != null ? OwnerUUIDComponent.create(owner) : null;
+        this.name = playerName;
     }
 
     public void updateName(Engine engine) {
@@ -39,7 +44,15 @@ public class ChatMessage implements Comparable<ChatMessage> {
         if (name != null) {
             return "[" + name + "]: " + body;
         } else {
-            return body;
+            return "[system]: " + body;
+        }
+    }
+
+    public String getLogString() {
+        if (name != null) {
+            return "Message (" + time + "): [" + name + "]: " + body;
+        } else {
+            return "Message (" + time + "): [system]: " + body;
         }
     }
 }

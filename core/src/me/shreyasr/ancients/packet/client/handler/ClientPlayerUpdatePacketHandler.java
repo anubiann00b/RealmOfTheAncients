@@ -49,7 +49,7 @@ public class ClientPlayerUpdatePacketHandler extends PacketHandler<ClientPlayerU
         }
 
         Entity e = createAndAddPlayer(game.engine, packet.components);
-        System.out.println("Added new player");
+        System.out.println("Added new player: " + recvUUID.toString());
         game.entityListener.entityAdded(e);
     }
 

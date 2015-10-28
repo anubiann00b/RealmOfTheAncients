@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.kryonet.Time;
+import com.esotericsoftware.minlog.Log;
 
 import me.shreyasr.ancients.components.LastUpdateTimeComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
@@ -28,7 +29,7 @@ public class RemoveOldEntitySystem extends IteratingSystem {
         if (Time.getMillis()
                 - LastUpdateTimeComponent.MAPPER.get(entity).lastUpdateTime > 5000) {
             UUIDComponent uuid = UUIDComponent.MAPPER.get(entity);
-            System.out.println("Removing old player: " + uuid);
+            Log.info("Removing old player: " + uuid);
             server.sendToAllTCP(ClientPlayerRemovePacket.create(uuid));
             engine.removeEntity(entity);
         }

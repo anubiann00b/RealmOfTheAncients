@@ -9,9 +9,9 @@ import me.shreyasr.ancients.util.chat.ChatMessage;
 
 public class ServerChatMessagePacket extends Packet<PacketHandler<ServerChatMessagePacket>> {
 
-    public static ServerChatMessagePacket create(String message, CustomUUID owner) {
+    public static ServerChatMessagePacket create(String message, CustomUUID owner, String playerName) {
         ServerChatMessagePacket packet = new ServerChatMessagePacket();
-        packet.message = new ChatMessage(message, Time.getServerMillis(), owner);
+        packet.message = new ChatMessage(message, Time.getServerMillis(), owner, playerName);
         return packet;
     }
 

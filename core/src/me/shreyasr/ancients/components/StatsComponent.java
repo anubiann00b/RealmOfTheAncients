@@ -8,6 +8,8 @@ import com.badlogic.gdx.utils.Pool;
 
 import java.util.Comparator;
 
+import me.shreyasr.ancients.components.player.MyPlayerComponent;
+
 public class StatsComponent implements Component, Pool.Poolable {
 
     public static ComponentMapper<StatsComponent> MAPPER
@@ -34,7 +36,21 @@ public class StatsComponent implements Component, Pool.Poolable {
         public int compare(Entity o1, Entity o2) {
             StatsComponent s1 = StatsComponent.MAPPER.get(o1);
             StatsComponent s2 = StatsComponent.MAPPER.get(o2);
-            return Integer.compare(s1.hits, s2.hits);
+
+            if (s1.hits != s2.hits) {
+                return Integer.compare(s1.hits, s2.hits);
+            }
+
+            if (MyPlayerComponent.MAPPER.has(o1)) return 1;
+            if (MyPlayerComponent.MAPPER.has(o2)) return -1;
+
+            NameComponent n1 = NameComponent.MAPPER.get(o1);
+            NameComponent n2 = NameComponent.MAPPER.get(o2);
+
+            if (n1 != null) return n1.compareTo(n2);
+            if (n2 != null) return n2.compareTo(n1);
+
+            return 0;
         }
     }
 }

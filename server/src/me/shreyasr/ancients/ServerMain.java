@@ -25,6 +25,7 @@ import me.shreyasr.ancients.util.KryoRegistrar;
 import me.shreyasr.ancients.util.LinkedListQueuedListener;
 import me.shreyasr.ancients.util.PacketListener;
 import me.shreyasr.ancients.util.chat.ChatManager;
+import me.shreyasr.ancients.util.chat.ChatMessage;
 
 public class ServerMain {
 
@@ -54,6 +55,13 @@ public class ServerMain {
 //        queuedListener = new LagLinkedListQueuedListener(100, 0);
         queuedListener = new LinkedListQueuedListener(new PacketListener());
         chatManager = new ChatManager();
+
+        chatManager.addListener(new ChatManager.ChatListener() {
+            @Override
+            public void newMessage(ChatMessage message) {
+                Log.info(message.getLogString());
+            }
+        });
     }
 
     public void run() throws IOException {

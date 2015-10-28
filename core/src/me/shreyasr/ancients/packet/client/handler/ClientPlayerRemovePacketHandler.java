@@ -5,7 +5,9 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.minlog.Log;
 
+import me.shreyasr.ancients.components.NameComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
 import me.shreyasr.ancients.packet.PacketHandler;
@@ -24,7 +26,7 @@ public class ClientPlayerRemovePacketHandler extends PacketHandler<ClientPlayerR
     public void handle(ClientPlayerRemovePacket packet, Connection conn) {
         for (Entity e : getOtherPlayers(game.engine)) {
             if (UUIDComponent.MAPPER.get(e).equals(packet.uuid)) {
-                System.out.println("Removing player");
+                Log.info("Removing player: " + NameComponent.MAPPER.get(e).str);
                 game.engine.removeEntity(e);
                 game.entityListener.entityRemoved(e);
                 break;

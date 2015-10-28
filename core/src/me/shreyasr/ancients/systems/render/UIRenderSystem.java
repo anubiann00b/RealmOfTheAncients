@@ -9,6 +9,7 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -27,10 +28,12 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.esotericsoftware.kryonet.Client;
 
 import java.util.Comparator;
+import java.util.Iterator;
 
 import me.shreyasr.ancients.AncientsGame;
 import me.shreyasr.ancients.components.NameComponent;
 import me.shreyasr.ancients.components.StatsComponent;
+import me.shreyasr.ancients.components.player.MyPlayerComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.packet.server.ServerChatMessagePacket;
 import me.shreyasr.ancients.util.CustomUUID;
@@ -43,6 +46,7 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
     private final ChatManager chatManager;
     private final Client client;
     private final CustomUUID playerUUID;
+    private final String playerName;
 
     private Array<Entity> sortedPlayers;
 
@@ -53,13 +57,14 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
     private Table chatTable;
     private Table scoreboardTable;
 
-    public UIRenderSystem(int priority, AncientsGame game, Engine engine,
-                          ChatManager chatManager, Client client, CustomUUID playerUUID) {
+    public UIRenderSystem(int priority, AncientsGame game, Engine engine, ChatManager chatManager,
+                          Client client, CustomUUID playerUUID, String playerName) {
         super(priority);
         this.game = game;
         this.chatManager = chatManager;
         this.client = client;
         this.playerUUID = playerUUID;
+        this.playerName = playerName;
 
         sortedPlayers = new Array<Entity>(false, 16);
         Family family = Family.all(TypeComponent.Player.class).get();
@@ -85,7 +90,7 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
         chatTable = new Table();
         chatTable.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() - 265);
         chatTable.setPosition(0, 0);
-        chatTable.setDebug(true);
+        chatTable.setDebug(false);
 
         Label chatbox = new Label("l", skin);
         chatbox.setAlignment(Align.bottomLeft);
@@ -93,7 +98,7 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
         chatbox.setHeight(Gdx.graphics.getHeight() - 265);
         final TextField chatInput = new TextField("", skin);
 
-        chatManager.setListener(new ChatManager.ChatListener() {
+        chatManager.addListener(new ChatManager.ChatListener() {
             @Override
             public void newMessage(ChatMessage message) {
                 chatTable.setVisible(true);
@@ -118,7 +123,7 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
             @Override
             public void keyTyped(TextField textField, char c) {
                 if ((c == '\r' || c == '\n') && !textField.getText().trim().isEmpty()) {
-                    client.sendTCP(ServerChatMessagePacket.create(textField.getText(), playerUUID));
+                    client.sendTCP(ServerChatMessagePacket.create(textField.getText(), playerUUID, playerName));
                     textField.setText("");
                 }
             }
@@ -136,11 +141,30 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
                 return false;
             }
 
+            boolean firstFrameEscape = false;
+            boolean escapeDown = false;
+
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (event.getKeyCode() == Input.Keys.ESCAPE) {
+                    firstFrameEscape = !escapeDown;
+                    escapeDown = true;
                     stage.unfocusAll();
-                    chatTable.setVisible(false);
+
+                    if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && firstFrameEscape) {
+                        chatTable.setVisible(false);
+                    }
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                if (event.getKeyCode() == Input.Keys.ESCAPE) {
+                    escapeDown = false;
+                    firstFrameEscape = false;
+                    return true;
                 }
                 return false;
             }
@@ -163,34 +187,62 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
         pix.fill();
         chatTable.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(pix))));
 
-        int margin = 100;
+        int margin = 50;
 
         scoreboardTable = new Table();
         scoreboardTable.setSize(
                 Gdx.graphics.getWidth() - margin * 2,
                 Gdx.graphics.getHeight() - margin * 2);
         scoreboardTable.setPosition(margin, margin);
-        scoreboardTable.    setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(pix))));
-        scoreboardTable.setDebug(true);
+        scoreboardTable.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(pix))));
+        scoreboardTable.setDebug(false);
 
-        final Label scores = new Label("", skin);
-        scores.setAlignment(Align.topLeft);
-        scoreboardTable.add(scores).fill().expand().align(Align.topLeft);
+        Label nameHeadingLabel = new Label(null, skin);
+        nameHeadingLabel.setText("Player");
+        scoreboardTable.add(nameHeadingLabel).align(Align.left).expand();
+
+        Label hitsHeadingLabel = new Label(null, skin);
+        hitsHeadingLabel.setText("Hits");
+        scoreboardTable.add(hitsHeadingLabel).align(Align.left).expand();
+
+        scoreboardTable.row();
+
+        final int numScoreboardRows = 9;
+        final Label[] scoreNameLabels = new Label[numScoreboardRows];
+        final Label[] scoreHitLabels = new Label[numScoreboardRows];
+        for (int i = 0; i < numScoreboardRows; i++) {
+            scoreNameLabels[i] = new Label(null, skin);
+            scoreNameLabels[i].setAlignment(Align.left);
+            scoreboardTable.add(scoreNameLabels[i]).align(Align.left).expand();
+            scoreHitLabels[i] = new Label(null, skin);
+            scoreHitLabels[i].setAlignment(Align.left);
+            scoreboardTable.add(scoreHitLabels[i]).align(Align.left).expand();
+            scoreboardTable.row();
+        }
 
         scoreboardTable.addAction(new Action() {
             @Override
             public boolean act(float delta) {
                 scoreboardTable.setVisible(Gdx.input.isKeyPressed(Input.Keys.TAB));
-                StringBuilder sb = new StringBuilder();
-                for (Entity player : sortedPlayers) {
-                    StatsComponent stats = StatsComponent.MAPPER.get(player);
-                    NameComponent name = NameComponent.MAPPER.get(player);
+                Iterator<Entity> playerIterator = sortedPlayers.iterator();
+                for (int i = 0; i < numScoreboardRows; i++) {
+                    if (!playerIterator.hasNext()) {
+                        scoreNameLabels[i].setText(null);
+                        scoreHitLabels[i].setText(null);
+                    } else {
+                        Entity player = playerIterator.next();
 
-                    sb
-                            .append(name.str).append("   ")
-                            .append(String.valueOf(stats.hits)).append("\n");
+                        StatsComponent stats = StatsComponent.MAPPER.get(player);
+                        NameComponent name = NameComponent.MAPPER.get(player);
+
+                        Color c = MyPlayerComponent.MAPPER.has(player) ? Color.SKY : Color.WHITE;
+                        scoreNameLabels[i].setColor(c);
+                        scoreHitLabels[i].setColor(c);
+
+                        scoreNameLabels[i].setText(name.str);
+                        scoreHitLabels[i].setText(String.valueOf(stats.hits));
+                    }
                 }
-                scores.setText(sb.toString());
                 return false;
             }
         });

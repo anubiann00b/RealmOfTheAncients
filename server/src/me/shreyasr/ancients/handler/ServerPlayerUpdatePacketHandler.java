@@ -7,13 +7,17 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Time;
+import com.esotericsoftware.minlog.Log;
 
 import me.shreyasr.ancients.ServerMain;
 import me.shreyasr.ancients.components.LastUpdateTimeComponent;
+import me.shreyasr.ancients.components.NameComponent;
 import me.shreyasr.ancients.components.StatsComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.packet.PacketHandler;
 import me.shreyasr.ancients.packet.server.ServerPlayerUpdatePacket;
+import me.shreyasr.ancients.util.chat.ChatMessage;
 
 public class ServerPlayerUpdatePacketHandler extends PacketHandler<ServerPlayerUpdatePacket> {
 
@@ -41,7 +45,10 @@ public class ServerPlayerUpdatePacketHandler extends PacketHandler<ServerPlayerU
         }
 
         Entity newPlayer = createAndAddPlayer(server.engine, packet.components);
-        System.out.println("Added new player: " + uuid);
+        Log.info("Added new player: " + uuid);
+        server.chatManager.addMessage(new ChatMessage(
+                NameComponent.MAPPER.get(newPlayer).str + " joined!",
+                Time.getServerMillis(), null, null));
         server.entityListener.entityAdded(newPlayer);
     }
 

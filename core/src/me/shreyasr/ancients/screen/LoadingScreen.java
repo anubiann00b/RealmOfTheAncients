@@ -21,7 +21,7 @@ public class LoadingScreen extends ScreenAdapter implements Input.TextInputListe
     }
 
     private boolean connected = false;
-    private boolean hasName = true;
+    private boolean hasName = false;
     private String name = "test";
 
     @Override
@@ -44,7 +44,7 @@ public class LoadingScreen extends ScreenAdapter implements Input.TextInputListe
                 }
             }
         }).start();
-//        Gdx.input.getTextInput(this, "What's your name?", "", "name");
+        Gdx.input.getTextInput(this, "What's your name?", "", "name");
     }
 
     @Override

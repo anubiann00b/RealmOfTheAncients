@@ -6,7 +6,7 @@ import me.shreyasr.ancients.util.chat.ChatMessage;
 
 public class ClientChatMessagePacket extends Packet<PacketHandler<ClientChatMessagePacket>> {
 
-    public static ClientChatMessagePacket create(ChatMessage[] message) {
+    public static ClientChatMessagePacket create(ChatMessage... message) {
         ClientChatMessagePacket packet = new ClientChatMessagePacket();
         packet.messages = message;
         return packet;
