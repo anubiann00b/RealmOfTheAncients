@@ -5,8 +5,9 @@ import java.util.TreeSet;
 
 public class ChatManager {
 
-    TreeSet<ChatMessage> messages = new TreeSet<ChatMessage>();
-    ChatListener listener;
+    private TreeSet<ChatMessage> messages = new TreeSet<ChatMessage>();
+    private ChatListener listener;
+
 
     public ChatManager() {
 

@@ -18,6 +18,7 @@ public class ClientChatMessageHandler extends PacketHandler<ClientChatMessagePac
     @Override
     public void handle(ClientChatMessagePacket packet, Connection conn) {
         for (ChatMessage message : packet.messages) {
+            message.updateName(game.engine);
             game.chatManager.addMessage(message);
         }
     }

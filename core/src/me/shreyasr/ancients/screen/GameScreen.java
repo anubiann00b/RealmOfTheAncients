@@ -3,6 +3,7 @@ package me.shreyasr.ancients.screen;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.esotericsoftware.kryonet.Client;
 
@@ -52,6 +53,8 @@ public class GameScreen extends ScreenAdapter {
     public EntityListener entityListener;
     public ChatManager chatManager;
 
+    private InputMultiplexer inputMultiplexer;
+
     private String name;
 
     public GameScreen(AncientsGame game, Client client, String name) {
@@ -96,7 +99,7 @@ public class GameScreen extends ScreenAdapter {
         engine.addSystem(new    DebugRenderSystem      (++priority, game));
         engine.addSystem(new    ScoreboardRenderSystem (++priority, game));
         engine.addSystem(new PostRenderSystem          (++priority, game));
-        engine.addSystem(new UIRenderSystem            (++priority, game, chatManager, client));
+        engine.addSystem(new UIRenderSystem            (++priority, game, chatManager, client, playerUUID));
 
         engine.addSystem(new      NetworkUpdateSystem(++priority, client));
         engine.addSystem(new         PingUpdateSystem(++priority, client));
@@ -111,6 +114,12 @@ public class GameScreen extends ScreenAdapter {
         ClientPlayerUpdatePacket.setHandler(new ClientPlayerUpdatePacketHandler(this));
          ClientChatMessagePacket.setHandler(new ClientChatMessageHandler(this));
         // @formatter:on
+
+        inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(engine.getSystem(UIRenderSystem.class).getStageInputProcesser());
+        inputMultiplexer.addProcessor(engine.getSystem(MyPlayerMovementSystem.class));
+        inputMultiplexer.addProcessor(engine.getSystem(InputActionSystem.class));
+        Gdx.input.setInputProcessor(inputMultiplexer);
 
         client.sendTCP(ServerChatMessagePacket.create(playerUUID + " joined!", null));
 
