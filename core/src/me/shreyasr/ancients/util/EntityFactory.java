@@ -16,6 +16,7 @@ import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
+import me.shreyasr.ancients.components.weapon.HitboxGenerator;
 import me.shreyasr.ancients.components.weapon.OwnerUUIDComponent;
 import me.shreyasr.ancients.components.weapon.WeaponAnimationComponent;
 
@@ -37,18 +38,35 @@ public class EntityFactory {
         return e;
     }
 
+    public Entity createAxeCleave(PooledEngine engine, Entity owner, float x, float y, int startFrame) {
+        Entity e = createBaseWeapon(engine, owner, x, y, startFrame);
+
+        e.add(TextureComponent.create(engine, Assets.AXE_CLEAVE.get()));
+        e.add(WeaponAnimationComponent.create(engine, 8, 64, startFrame, 3, 70, 150,
+                96, 96, HitboxGenerator.AttackType.SLASH));
+
+        return e;
+    }
+
     public Entity createSwordSlash(PooledEngine engine, Entity owner, float x, float y, int startFrame) {
+        Entity e = createBaseWeapon(engine, owner, x, y, startFrame);
+
+        e.add(TextureComponent.create(engine, Assets.SWORD_SLASH.get()));
+        e.add(WeaponAnimationComponent.create(engine, 8, 48, startFrame, 3, 50, 150,
+                64, 64, HitboxGenerator.AttackType.SLASH));
+
+        return e;
+    }
+
+    public Entity createBaseWeapon(PooledEngine engine, Entity owner, float x, float y, int startFrame) {
         Entity e = engine.createEntity();
 
         e.add(TypeComponent.create(engine, TypeComponent.Weapon.class));
 
         e.add(HitboxComponent.create(engine));
         e.add(PositionComponent.create(engine, x, y));
-        e.add(WeaponAnimationComponent.create(engine, 8, 48, startFrame, 3, 50, 150));
-        e.add(TextureComponent.create(engine, Assets.SWORD_SLASH.get()));
         e.add(TextureTransformComponent.create(engine));
         e.add(UUIDComponent.create(engine, CustomUUID.randomUUID()));
-
         e.add(OwnerUUIDComponent.create(engine, owner.getId()));
 
         return e;

@@ -19,6 +19,7 @@ import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
+import me.shreyasr.ancients.components.weapon.HitboxGenerator;
 import me.shreyasr.ancients.components.weapon.OwnerUUIDComponent;
 import me.shreyasr.ancients.components.weapon.WeaponAnimationComponent;
 import me.shreyasr.ancients.packet.client.ClientAttackPacket;
@@ -66,6 +67,8 @@ public class KryoRegistrar {
 
         kryo.register(OwnerUUIDComponent.class);
         kryo.register(WeaponAnimationComponent.class);
+        kryo.register(HitboxGenerator.class);
+        kryo.register(HitboxGenerator.AttackType.class);
 
         kryo.register(TypeComponent.Player.class);
         kryo.register(TypeComponent.Weapon.class);

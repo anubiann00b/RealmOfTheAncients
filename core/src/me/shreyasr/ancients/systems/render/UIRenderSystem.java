@@ -78,7 +78,7 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
         init();
     }
 
-    public InputProcessor getStageInputProcesser() {
+    public InputProcessor getStageInputProcessor() {
         return stage;
     }
 

@@ -64,14 +64,14 @@ public class WeaponUpdateSystem extends IteratingSystem {
             return;
         }
 
-        int frame = anim.getCurrentFrame();
+        anim.hitboxGenerator.updateHitbox(hitbox, anim.getCurrentFrame(), pos);
 
-        int dx = frame>=7||frame<=1 ? 1 : (frame>=3&&frame<=5)?-1:0;
-        int dy = frame>=1&&frame<=3 ? 1 : (frame>=5&&frame<=7)?-1:0;
-
-        hitbox.x = 64 * dx + pos.x - transform.originX + 64;
-        hitbox.y = 64 * dy + pos.y - transform.originY + 64;
-        hitbox.w = 64;
-        hitbox.h = 64;
+//        int dx = frame>=7||frame<=1 ? 1 : (frame>=3&&frame<=5)?-1:0;
+//        int dy = frame>=1&&frame<=3 ? 1 : (frame>=5&&frame<=7)?-1:0;
+//
+//        hitbox.x = 64 * dx + pos.x - transform.originX + 64;
+//        hitbox.y = 64 * dy + pos.y - transform.originY + 64;
+//        hitbox.w = 64;
+//        hitbox.h = 64;
     }
 }

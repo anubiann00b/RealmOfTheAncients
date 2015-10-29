@@ -12,7 +12,9 @@ public class WeaponAnimationComponent implements Component, Pool.Poolable {
 
     public static WeaponAnimationComponent create(PooledEngine engine, int length,
                                                   int frameSize, int startFrame, int numFrames,
-                                                  int swingTime, int lastFrameHoldTime) {
+                                                  int swingTime, int lastFrameHoldTime,
+                                                  int weapSize, int stabSize,
+                                                  HitboxGenerator.AttackType attackType) {
         WeaponAnimationComponent anim = engine.createComponent(WeaponAnimationComponent.class);
         anim.length = length;
         anim.frameSize = frameSize;
@@ -20,6 +22,7 @@ public class WeaponAnimationComponent implements Component, Pool.Poolable {
         anim.numFrames = numFrames;
         anim.swingFrameTime = swingTime;
         anim.holdFrameTime = lastFrameHoldTime;
+        anim.hitboxGenerator = HitboxGenerator.create(weapSize, stabSize, frameSize, attackType);
         return anim;
     }
 
@@ -32,6 +35,8 @@ public class WeaponAnimationComponent implements Component, Pool.Poolable {
     public int swingFrameTime; // milliseconds per frame of the swing
     public int holdFrameTime; // milliseconds to hold the last frame
     public int timeSinceAnimStart; // milliseconds since the start of the animation
+
+    public HitboxGenerator hitboxGenerator;
 
     public int getCurrentFrame() {
         int swungFrames = Math.min(numFrames-1, timeSinceAnimStart / swingFrameTime);
@@ -63,5 +68,6 @@ public class WeaponAnimationComponent implements Component, Pool.Poolable {
         swingFrameTime = 0;
         holdFrameTime = 0;
         timeSinceAnimStart = 0;
+        hitboxGenerator = null;
     }
 }

@@ -114,7 +114,7 @@ public class GameScreen extends ScreenAdapter {
         // @formatter:on
 
         inputMultiplexer = new InputMultiplexer();
-        inputMultiplexer.addProcessor(engine.getSystem(UIRenderSystem.class).getStageInputProcesser());
+        inputMultiplexer.addProcessor(engine.getSystem(UIRenderSystem.class).getStageInputProcessor());
         inputMultiplexer.addProcessor(engine.getSystem(MyPlayerMovementSystem.class));
         inputMultiplexer.addProcessor(engine.getSystem(InputActionSystem.class));
         Gdx.input.setInputProcessor(inputMultiplexer);
