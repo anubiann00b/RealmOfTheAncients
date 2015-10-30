@@ -24,7 +24,7 @@ public class LoadingScreen extends ScreenAdapter implements Input.TextInputListe
     }
 
     private boolean connected = false;
-    private boolean hasName = false;
+    private boolean hasName = AncientsGame.DEBUG_MODE;
     private String name = "test";
 
     @Override
@@ -38,8 +38,7 @@ public class LoadingScreen extends ScreenAdapter implements Input.TextInputListe
             @Override
             public void run() {
                 try {
-//                    client.connect(5000, "104.131.149.236", 54555, 54777);
-                    client.connect(5000, "127.0.0.1", 54555, 54777);
+                    client.connect(5000, AncientsGame.DEBUG_MODE ? "127.0.0.1" : "104.131.149.236", 54555, 54777);
                     connected = true;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -58,7 +57,9 @@ public class LoadingScreen extends ScreenAdapter implements Input.TextInputListe
         } catch (UnsupportedLookAndFeelException e) {
             System.out.println("Error loading look and feel: " + e);
         }
-        Gdx.input.getTextInput(this, "What's your name?", "", "name");
+        if (!AncientsGame.DEBUG_MODE) {
+            Gdx.input.getTextInput(this, "What's your name?", "", "name");
+        }
     }
 
     @Override

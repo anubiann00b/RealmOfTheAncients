@@ -249,6 +249,8 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
 
         stage.addActor(chatTable);
         stage.addActor(scoreboardTable);
+
+        chatTable.setVisible(false);
     }
 
     @Override

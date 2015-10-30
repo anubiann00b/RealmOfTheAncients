@@ -11,18 +11,20 @@ public class WeaponAnimationComponent implements Component, Pool.Poolable {
             = ComponentMapper.getFor(WeaponAnimationComponent.class);
 
     public static WeaponAnimationComponent create(PooledEngine engine, int length,
-                                                  int frameSize, int startFrame, int numFrames,
+                                                  int frameSize, int startDir, int numFrames,
                                                   int swingTime, int lastFrameHoldTime,
-                                                  int weapSize, int stabSize,
+                                                  int weapWidth, int weapLength, int stabSize,
+                                                  int frameDirOffset,
                                                   HitboxGenerator.AttackType attackType) {
         WeaponAnimationComponent anim = engine.createComponent(WeaponAnimationComponent.class);
         anim.length = length;
         anim.frameSize = frameSize;
-        anim.startFrame = startFrame;
+        anim.startFrame = startDir * (length / 8) + frameDirOffset;
         anim.numFrames = numFrames;
         anim.swingFrameTime = swingTime;
         anim.holdFrameTime = lastFrameHoldTime;
-        anim.hitboxGenerator = HitboxGenerator.create(weapSize, stabSize, frameSize, attackType);
+        anim.frameDirOffset = frameDirOffset;
+        anim.hitboxGenerator = HitboxGenerator.create(weapWidth, weapLength, stabSize, frameSize, attackType);
         return anim;
     }
 
@@ -36,7 +38,13 @@ public class WeaponAnimationComponent implements Component, Pool.Poolable {
     public int holdFrameTime; // milliseconds to hold the last frame
     public int timeSinceAnimStart; // milliseconds since the start of the animation
 
+    public int frameDirOffset;
+
     public HitboxGenerator hitboxGenerator;
+
+    public int getCurrentDir() {
+        return (getCurrentFrame()-frameDirOffset) / (length / 8);
+    }
 
     public int getCurrentFrame() {
         int swungFrames = Math.min(numFrames-1, timeSinceAnimStart / swingFrameTime);
@@ -68,6 +76,7 @@ public class WeaponAnimationComponent implements Component, Pool.Poolable {
         swingFrameTime = 0;
         holdFrameTime = 0;
         timeSinceAnimStart = 0;
+        frameDirOffset = 0;
         hitboxGenerator = null;
     }
 }

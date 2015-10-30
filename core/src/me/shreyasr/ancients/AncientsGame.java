@@ -12,6 +12,8 @@ import me.shreyasr.ancients.util.Assets;
 
 public class AncientsGame extends Game {
 
+    public static boolean DEBUG_MODE = true;
+
     public SpriteBatch batch;
     public ShapeRenderer shape;
     public AssetManager assetManager;

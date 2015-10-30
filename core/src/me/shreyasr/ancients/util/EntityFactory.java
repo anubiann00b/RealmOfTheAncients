@@ -38,12 +38,12 @@ public class EntityFactory {
         return e;
     }
 
-    public Entity createAxeCleave(PooledEngine engine, Entity owner, float x, float y, int startFrame) {
-        Entity e = createBaseWeapon(engine, owner, x, y, startFrame);
+    public Entity createDaggerSlash(PooledEngine engine, Entity owner, float x, float y, int startDir) {
+        Entity e = createBaseWeapon(engine, owner, x, y, startDir);
 
-        e.add(TextureComponent.create(engine, Assets.AXE_CLEAVE.get()));
-        e.add(WeaponAnimationComponent.create(engine, 8, 64, startFrame, 3, 70, 150,
-                96, 96, HitboxGenerator.AttackType.SLASH));
+        e.add(TextureComponent.create(engine, Assets.DAGGER_SLASH.get()));
+        e.add(WeaponAnimationComponent.create(engine, 16, 48, startDir, 3, 30, 100,
+                64, 64, 64, -1, HitboxGenerator.AttackType.STAB));
 
         return e;
     }
@@ -53,7 +53,17 @@ public class EntityFactory {
 
         e.add(TextureComponent.create(engine, Assets.SWORD_SLASH.get()));
         e.add(WeaponAnimationComponent.create(engine, 8, 48, startFrame, 3, 50, 150,
-                64, 64, HitboxGenerator.AttackType.SLASH));
+                64, 64, 64, 0, HitboxGenerator.AttackType.SLASH));
+
+        return e;
+    }
+
+    public Entity createAxeCleave(PooledEngine engine, Entity owner, float x, float y, int startFrame) {
+        Entity e = createBaseWeapon(engine, owner, x, y, startFrame);
+
+        e.add(TextureComponent.create(engine, Assets.AXE_CLEAVE.get()));
+        e.add(WeaponAnimationComponent.create(engine, 24, 64, startFrame, 3, 70, 150,
+                64, 96, 96, 0, HitboxGenerator.AttackType.SLASH));
 
         return e;
     }

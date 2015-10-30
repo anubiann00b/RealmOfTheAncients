@@ -39,6 +39,7 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
 
     int cooldown = 0;
     boolean attackButtonPressed = false;
+    boolean dagger = true;
 
     @Override
     public void update(float deltaTime) {
@@ -48,10 +49,12 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
 
         if (KnockbackComponent.MAPPER.has(player)) return;
 
-        if (attackButtonPressed && cooldown > 450) {
+        if (attackButtonPressed && cooldown > (dagger ? 350 : 450)) {
             cooldown = 0;
-            int dir = getAttackDir(pos, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
-            Entity newAttack = factory.createSwordSlash(engine, player, pos.x, pos.y, dir);
+            int dir = getAttackDir(pos, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), !dagger);
+            Entity newAttack = dagger
+                    ? factory.createDaggerSlash(engine, player, pos.x, pos.y, dir)
+                    : factory.createSwordSlash(engine, player, pos.x, pos.y, dir);
             newAttack.add(StartTimeComponent.create(
                     Time.getServerMillis(client) + client.getReturnTripTime() / 2 + ServerAttackPacket.ATTACK_DELAY_MS));
             engine.addEntity(newAttack);
@@ -61,15 +64,25 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
         }
     }
 
-    private int getAttackDir(PositionComponent pos, int x, int y) {
+    private int getAttackDir(PositionComponent pos, int x, int y, boolean square) {
         float dx = x - pos.x;
         float dy = y - pos.y;
 
-        if (dx >= 0 && dy >= 0) return 0;
-        if (dx < 0 && dy >= 0) return 2;
-        if (dx < 0 && dy < 0) return 4;
-        if (dx >= 0 && dy < 0) return 6;
-        else return -1; // impossible, compiler pls
+        if (square) {
+            if (dx >= 0 && dy >= 0) return 0;
+            if (dx < 0 && dy >= 0) return 2;
+            if (dx < 0 && dy < 0) return 4;
+            if (dx >= 0 && dy < 0) return 6;
+        } else {
+            if (Math.abs(dx) >= Math.abs(dy)) {
+                if (dx >= 0) return 0;
+                if (dx < 0) return 4;
+            } else {
+                if (dy >= 0) return 2;
+                if (dy < 0) return 6;
+            }
+        }
+        return -1; // impossible
     }
 
     @Override
