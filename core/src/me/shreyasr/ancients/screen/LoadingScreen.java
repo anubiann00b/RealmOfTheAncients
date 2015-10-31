@@ -12,6 +12,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import me.shreyasr.ancients.AncientsGame;
+import me.shreyasr.ancients.packet.server.ServerNameRegistrationPacket;
 import me.shreyasr.ancients.util.KryoRegistrar;
 
 public class LoadingScreen extends ScreenAdapter implements Input.TextInputListener {
@@ -25,7 +26,7 @@ public class LoadingScreen extends ScreenAdapter implements Input.TextInputListe
 
     private boolean connected = false;
     private boolean hasName = AncientsGame.DEBUG_MODE;
-    private String name = "test";
+    private String name;
 
     @Override
     public void show() {
@@ -57,7 +58,14 @@ public class LoadingScreen extends ScreenAdapter implements Input.TextInputListe
         } catch (UnsupportedLookAndFeelException e) {
             System.out.println("Error loading look and feel: " + e);
         }
-        if (!AncientsGame.DEBUG_MODE) {
+
+        promptName();
+    }
+
+    private void promptName() {
+        if (AncientsGame.DEBUG_MODE) {
+            input("test" + (int)(Math.random()*100));
+        } else {
             Gdx.input.getTextInput(this, "What's your name?", "", "name");
         }
     }
@@ -71,6 +79,7 @@ public class LoadingScreen extends ScreenAdapter implements Input.TextInputListe
     public void input(String text) {
         name = text;
         hasName = true;
+        client.sendTCP(ServerNameRegistrationPacket.create(name));
     }
 
     @Override

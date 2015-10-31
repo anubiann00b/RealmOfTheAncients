@@ -97,7 +97,7 @@ public class GameScreen extends ScreenAdapter {
         engine.addSystem(new    DebugRenderSystem      (++priority, game));
 //        engine.addSystem(new    ScoreboardRenderSystem (++priority, game));
         engine.addSystem(new PostRenderSystem          (++priority, game));
-        engine.addSystem(new UIRenderSystem            (++priority, game, engine, chatManager, client, playerUUID, name));
+        engine.addSystem(new UIRenderSystem            (++priority,  engine, chatManager, client, playerUUID, name));
 
         engine.addSystem(new      NetworkUpdateSystem(++priority, client));
         engine.addSystem(new         PingUpdateSystem(++priority, client));

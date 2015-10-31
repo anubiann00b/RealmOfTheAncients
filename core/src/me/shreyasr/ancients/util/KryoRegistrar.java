@@ -18,10 +18,8 @@ import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
 import me.shreyasr.ancients.components.player.AttackComponent;
-import me.shreyasr.ancients.components.player.DaggerAttack;
+import me.shreyasr.ancients.components.player.BasicWeaponAttack;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
-import me.shreyasr.ancients.components.player.SpearAttack;
-import me.shreyasr.ancients.components.player.SwordAttack;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.components.weapon.HitboxGenerator;
 import me.shreyasr.ancients.components.weapon.OwnerUUIDComponent;
@@ -33,6 +31,7 @@ import me.shreyasr.ancients.packet.client.ClientPlayerRemovePacket;
 import me.shreyasr.ancients.packet.client.ClientPlayerUpdatePacket;
 import me.shreyasr.ancients.packet.server.ServerAttackPacket;
 import me.shreyasr.ancients.packet.server.ServerChatMessagePacket;
+import me.shreyasr.ancients.packet.server.ServerNameRegistrationPacket;
 import me.shreyasr.ancients.packet.server.ServerPlayerUpdatePacket;
 import me.shreyasr.ancients.util.chat.ChatMessage;
 
@@ -40,17 +39,19 @@ public class KryoRegistrar {
 
     public static void register(Kryo kryo) {
         kryo.register(ClientAttackPacket.class);
+        kryo.register(ClientChatMessagePacket.class);
         kryo.register(ClientHitPacket.class);
         kryo.register(ClientPlayerRemovePacket.class);
         kryo.register(ClientPlayerUpdatePacket.class);
-        kryo.register(ClientChatMessagePacket.class);
 
         kryo.register(ServerAttackPacket.class);
-        kryo.register(ServerPlayerUpdatePacket.class);
         kryo.register(ServerChatMessagePacket.class);
+        kryo.register(ServerNameRegistrationPacket.class);
+        kryo.register(ServerPlayerUpdatePacket.class);
 
         kryo.register(Component[].class);
         kryo.register(CustomUUID.class);
+        kryo.register(Assets.class);
 
         kryo.register(HitboxComponent.class);
         kryo.register(KnockbackComponent.class);
@@ -77,9 +78,7 @@ public class KryoRegistrar {
         kryo.register(AttackComponent.class);
 //        kryo.register(Attack.class);
 //        kryo.register(TimedAttack.class);
-        kryo.register(SwordAttack.class);
-        kryo.register(DaggerAttack.class);
-        kryo.register(SpearAttack.class);
+        kryo.register(BasicWeaponAttack.class);
 
         kryo.register(TypeComponent.Player.class);
         kryo.register(TypeComponent.Weapon.class);

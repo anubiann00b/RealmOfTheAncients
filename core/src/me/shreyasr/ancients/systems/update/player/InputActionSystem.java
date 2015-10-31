@@ -17,11 +17,11 @@ import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.StartTimeComponent;
 import me.shreyasr.ancients.components.player.Attack;
 import me.shreyasr.ancients.components.player.AttackComponent;
-import me.shreyasr.ancients.components.player.DaggerAttack;
+import me.shreyasr.ancients.components.player.BasicWeaponAttack;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
-import me.shreyasr.ancients.components.player.SpearAttack;
-import me.shreyasr.ancients.components.player.SwordAttack;
+import me.shreyasr.ancients.components.weapon.HitboxGenerator;
 import me.shreyasr.ancients.packet.server.ServerAttackPacket;
+import me.shreyasr.ancients.util.Assets;
 import me.shreyasr.ancients.util.EntityFactory;
 
 public class InputActionSystem extends EntitySystem implements InputProcessor {
@@ -37,9 +37,12 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
         this.engine = engine;
         this.factory = factory;
         this.client = client;
-        possibleAttacks[0] = new SpearAttack(this.factory, 550);
-        possibleAttacks[1] = new SwordAttack(this.factory, 450);
-        possibleAttacks[2] = new DaggerAttack(this.factory, 350);
+        possibleAttacks[0] = new BasicWeaponAttack(250, 30, 40, false, Assets.DAGGER_SLASH, 16, 48, 3,
+                64, 64, 64, -1, HitboxGenerator.AttackType.STAB);
+        possibleAttacks[1] = new BasicWeaponAttack(450, 50, 150, true, Assets.SWORD_SLASH, 8, 48, 3,
+                64, 64, 64, 0, HitboxGenerator.AttackType.SLASH);
+        possibleAttacks[2] = new BasicWeaponAttack(1000, 30, 200, false, Assets.SPEAR_STAB, 8, 80, 2,
+                64, 64, 128, 0, HitboxGenerator.AttackType.STAB);
     }
 
     public void addedToEngine(Engine engine) {
@@ -70,13 +73,32 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
                 client.sendUDP(ServerAttackPacket.create(newAttackComponents));
             }
         }
+
+        BasicWeaponAttack attack = (BasicWeaponAttack) AttackComponent.MAPPER.get(player).attack;
+
+        if(Gdx.input.isKeyPressed(Input.Keys.P)) attack.cooldownTime++;
+        if(Gdx.input.isKeyPressed(Input.Keys.L)) attack.cooldownTime--;
+        if(Gdx.input.isKeyPressed(Input.Keys.O)) attack.swingTime++;
+        if(Gdx.input.isKeyPressed(Input.Keys.K)) attack.swingTime--;
+        if(Gdx.input.isKeyPressed(Input.Keys.I)) attack.lastFrameHoldTime++;
+        if(Gdx.input.isKeyPressed(Input.Keys.J)) attack.lastFrameHoldTime--;
     }
 
     private void setRandomWeapon(Entity player) {
         setWeapon(player, (int) (Math.random()*possibleAttacks.length));
     }
 
+    private void setNextWeapon(Entity player) {
+        Attack currentAttack = AttackComponent.MAPPER.get(player).attack;
+        for (int i = 0; i < possibleAttacks.length; i++) {
+            if (currentAttack == possibleAttacks[i]) {
+                setWeapon(player, i+1);
+            }
+        }
+    }
+
     private void setWeapon(Entity player, int idx) {
+        idx = idx%possibleAttacks.length;
         AttackComponent.MAPPER.get(player).attack = possibleAttacks[idx];
     }
 
@@ -121,9 +143,10 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.F) {
-            setRandomWeapon(player);
-            return true;
+        switch (keycode) {
+            case Input.Keys.F:
+                setNextWeapon(player);
+                return true;
         }
         return false;
     }

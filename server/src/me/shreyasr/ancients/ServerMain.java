@@ -9,9 +9,11 @@ import com.esotericsoftware.minlog.Log;
 import java.io.IOException;
 
 import me.shreyasr.ancients.handler.ServerAttackPacketHandler;
+import me.shreyasr.ancients.handler.ServerNameRegistrationPacketHandler;
 import me.shreyasr.ancients.handler.ServerPlayerUpdatePacketHandler;
 import me.shreyasr.ancients.handler.ServerChatMessagePacketHandler;
 import me.shreyasr.ancients.packet.server.ServerAttackPacket;
+import me.shreyasr.ancients.packet.server.ServerNameRegistrationPacket;
 import me.shreyasr.ancients.packet.server.ServerPlayerUpdatePacket;
 import me.shreyasr.ancients.packet.server.ServerChatMessagePacket;
 import me.shreyasr.ancients.system.ChatUpdateSystem;
@@ -46,7 +48,6 @@ public class ServerMain {
     public final ChatManager chatManager;
 
     private final LinkedListQueuedListener queuedListener;
-    private int priority = 0;
 
     public ServerMain() {
         server = new Server();
@@ -71,6 +72,7 @@ public class ServerMain {
 
         server.addListener(queuedListener);
 
+        int priority = 0;
         // @formatter:off
         engine.addSystem(       new PacketHandleSystem(++priority, queuedListener));
         engine.addSystem( new CollisionDetectionSystem(++priority, server, engine));
@@ -84,10 +86,17 @@ public class ServerMain {
         entityListener = engine.getSystem(PacketHandleSystem.class);
 
         // @formatter:off
-              ServerAttackPacket.setHandler(new ServerAttackPacketHandler(this));
-        ServerPlayerUpdatePacket.setHandler(new ServerPlayerUpdatePacketHandler(this));
-         ServerChatMessagePacket.setHandler(new ServerChatMessagePacketHandler(this));
+                  ServerAttackPacket.setHandler(new ServerAttackPacketHandler(this));
+            ServerPlayerUpdatePacket.setHandler(new ServerPlayerUpdatePacketHandler(this));
+             ServerChatMessagePacket.setHandler(new ServerChatMessagePacketHandler(this));
+        ServerNameRegistrationPacket.setHandler(new ServerNameRegistrationPacketHandler(this));
         // @formatter:on
+
+        priority = 0;
+        LinkedListQueuedListener.QueueElementWrapper.putClassPriority(ServerNameRegistrationPacket.class, ++priority);
+        LinkedListQueuedListener.QueueElementWrapper.putClassPriority(ServerAttackPacket.class, ++priority);
+        LinkedListQueuedListener.QueueElementWrapper.putClassPriority(ServerPlayerUpdatePacket.class, ++priority);
+        LinkedListQueuedListener.QueueElementWrapper.putClassPriority(ServerChatMessagePacket.class, ++priority);
 
         long lastTime = Time.getMillis();
         //noinspection InfiniteLoopStatement

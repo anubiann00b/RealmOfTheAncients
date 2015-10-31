@@ -30,7 +30,6 @@ import com.esotericsoftware.kryonet.Client;
 import java.util.Comparator;
 import java.util.Iterator;
 
-import me.shreyasr.ancients.AncientsGame;
 import me.shreyasr.ancients.components.NameComponent;
 import me.shreyasr.ancients.components.StatsComponent;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
@@ -42,7 +41,6 @@ import me.shreyasr.ancients.util.chat.ChatMessage;
 
 public class UIRenderSystem extends EntitySystem implements EntityListener {
 
-    private final AncientsGame game;
     private final ChatManager chatManager;
     private final Client client;
     private final CustomUUID playerUUID;
@@ -52,15 +50,13 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
 
     private Comparator<Entity> comparator = new StatsComponent.StatsComparator().reversed();
 
-    private Skin skin;
     private Stage stage;
     private Table chatTable;
     private Table scoreboardTable;
 
-    public UIRenderSystem(int priority, AncientsGame game, Engine engine, ChatManager chatManager,
+    public UIRenderSystem(int priority, Engine engine, ChatManager chatManager,
                           Client client, CustomUUID playerUUID, String playerName) {
         super(priority);
-        this.game = game;
         this.chatManager = chatManager;
         this.client = client;
         this.playerUUID = playerUUID;
@@ -83,7 +79,7 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
     }
 
     private void init() {
-        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+        Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 

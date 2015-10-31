@@ -20,11 +20,13 @@ public class LagLinkedListQueuedListener extends LinkedListQueuedListener {
     }
 
     @Override
-    protected void queue(final Runnable r) {
+    protected void queue(final QueueElementWrapper r) {
         if (Math.random() >= loss) {
             threadPool.schedule(new Runnable() {
                 public void run() {
-                    queue.add(r);
+                    synchronized (temp) {
+                        temp.add(r);
+                    }
                 }
             }, (long) (lag + lag * Math.random()), TimeUnit.MILLISECONDS);
         }

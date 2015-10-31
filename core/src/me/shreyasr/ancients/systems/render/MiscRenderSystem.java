@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.esotericsoftware.kryonet.Client;
 
 import me.shreyasr.ancients.AncientsGame;
+import me.shreyasr.ancients.components.player.AttackComponent;
+import me.shreyasr.ancients.components.player.BasicWeaponAttack;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
 
 public class MiscRenderSystem extends EntitySystem {
@@ -31,5 +33,15 @@ public class MiscRenderSystem extends EntitySystem {
         game.font.setColor(Color.BLACK);
         game.font.draw(game.batch, String.valueOf((int) (1000 / deltaTime)), 16, Gdx.graphics.getHeight() - 16);
         game.font.draw(game.batch, String.valueOf(client.getReturnTripTime()), 16, Gdx.graphics.getHeight() - 32);
+
+        AttackComponent attackComponent = AttackComponent.MAPPER.get(player);
+        if (attackComponent != null && attackComponent.attack instanceof BasicWeaponAttack) {
+            game.font.draw(game.batch, "Cooldown", 16, Gdx.graphics.getHeight() - 64);
+            game.font.draw(game.batch, String.valueOf(((BasicWeaponAttack) attackComponent.attack).cooldownTime), 96, Gdx.graphics.getHeight() - 64);
+            game.font.draw(game.batch, "Swing", 16, Gdx.graphics.getHeight() - 80);
+            game.font.draw(game.batch, String.valueOf(((BasicWeaponAttack) attackComponent.attack).swingTime), 96, Gdx.graphics.getHeight() - 80);
+            game.font.draw(game.batch, "Hold", 16, Gdx.graphics.getHeight() - 96);
+            game.font.draw(game.batch, String.valueOf(((BasicWeaponAttack) attackComponent.attack).lastFrameHoldTime), 96, Gdx.graphics.getHeight() - 96);
+        }
     }
 }
