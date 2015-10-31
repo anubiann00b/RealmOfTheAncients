@@ -14,37 +14,46 @@ public class BasicWeaponAttack extends Attack {
 
     public transient int timeSinceLastAttack = 0;
 
-    private boolean square;
-    public int cooldownTime;
 
-    public Assets asset;
-    protected int totalAnimationFrames;
-    protected int frameSize;
-    protected int numFrames;
+    public int cooldownTime;
     public int swingTime;
     public int lastFrameHoldTime;
-    protected int weapWidth;
-    protected int weapLength;
-    protected int stabSize;
-    protected int frameDirOffset;
-    protected HitboxGenerator.AttackType attackType;
+    public float knockbackMultiplier;
+
+    private Assets asset;
+    private boolean square;
+    private int totalAnimationFrames;
+    private int frameSize;
+    private int numFrames;
+    private int weaponWidth;
+    private int weaponLength;
+    private int stabSize;
+    private int frameDirOffset;
+    private HitboxGenerator.AttackType attackType;
+
+    @Override
+    public float getKnockbackMultiplier() {
+        return knockbackMultiplier;
+    }
 
     public BasicWeaponAttack() { }
 
-    public BasicWeaponAttack(int cooldownTime, int swingTime, int lastFrameHoldTime, boolean square,
-                             Assets asset, int totalAnimationFrames, int frameSize, int numFrames,
-                             int weapWidth, int weapLength, int stabSize, int frameDirOffset,
+    public BasicWeaponAttack(int cooldownTime, int swingTime, int lastFrameHoldTime, float knockbackMultiplier,
+                             boolean square, Assets asset, int totalAnimationFrames, int frameSize,
+                             int numFrames, int weaponWidth, int weaponLength, int stabSize, int frameDirOffset,
                              HitboxGenerator.AttackType attackType) {
         this.cooldownTime = cooldownTime;
         this.swingTime = swingTime;
         this.lastFrameHoldTime = lastFrameHoldTime;
+        this.knockbackMultiplier = knockbackMultiplier;
+
         this.square = square;
         this.asset = asset;
         this.totalAnimationFrames = totalAnimationFrames;
         this.frameSize = frameSize;
         this.numFrames = numFrames;
-        this.weapWidth = weapWidth;
-        this.weapLength = weapLength;
+        this.weaponWidth = weaponWidth;
+        this.weaponLength = weaponLength;
         this.stabSize = stabSize;
         this.frameDirOffset = frameDirOffset;
         this.attackType = attackType;
@@ -67,6 +76,6 @@ public class BasicWeaponAttack extends Attack {
         return entityFactory.createBaseWeapon(engine, player, pos.x, pos.y)
                 .add(TextureComponent.create(engine, asset.get()))
                 .add(WeaponAnimationComponent.create(engine, totalAnimationFrames, frameSize, dir, numFrames,
-                        swingTime, lastFrameHoldTime, weapWidth, weapLength, stabSize, frameDirOffset, attackType));
+                        swingTime, lastFrameHoldTime, weaponWidth, weaponLength, stabSize, frameDirOffset, attackType));
     }
 }

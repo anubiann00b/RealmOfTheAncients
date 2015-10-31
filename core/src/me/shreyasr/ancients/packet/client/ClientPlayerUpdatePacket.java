@@ -28,8 +28,7 @@ public class ClientPlayerUpdatePacket extends Packet<PacketHandler<ClientPlayerU
         ClientPlayerUpdatePacket packet = new ClientPlayerUpdatePacket();
         List<Component> finalComponents = new ArrayList<Component>();
         for (Component c : components) {
-            if (c instanceof AttackComponent
-                    || c instanceof HitboxComponent
+            if (c instanceof HitboxComponent
                     || c instanceof LastUpdateTimeComponent
                     || c instanceof NameComponent
                     || c instanceof PositionComponent

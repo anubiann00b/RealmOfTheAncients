@@ -18,6 +18,7 @@ import me.shreyasr.ancients.components.TextureComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
+import me.shreyasr.ancients.components.player.AttackComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.packet.Packet;
 import me.shreyasr.ancients.packet.PacketHandler;
@@ -34,7 +35,8 @@ public class ServerPlayerUpdatePacket extends Packet<PacketHandler<ServerPlayerU
         ServerPlayerUpdatePacket packet = new ServerPlayerUpdatePacket();
         List<Component> finalComponents = new ArrayList<Component>();
         for (Component c : components) {
-            if (c instanceof HitboxComponent
+            if (c instanceof AttackComponent
+                    || c instanceof HitboxComponent
                     || c instanceof NameComponent
                     || c instanceof PositionComponent
                     || c instanceof SpeedComponent

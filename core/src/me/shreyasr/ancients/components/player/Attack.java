@@ -8,6 +8,8 @@ import me.shreyasr.ancients.util.EntityFactory;
 
 public abstract class Attack {
 
+    public float getKnockbackMultiplier() { return 1; }
+
     /**
      * Updates this attack, returning a new Entity of type Weapon if necessary.
      *

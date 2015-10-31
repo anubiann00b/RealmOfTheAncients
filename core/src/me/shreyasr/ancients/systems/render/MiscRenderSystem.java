@@ -8,6 +8,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.esotericsoftware.kryonet.Client;
 
+import java.text.DecimalFormat;
+
 import me.shreyasr.ancients.AncientsGame;
 import me.shreyasr.ancients.components.player.AttackComponent;
 import me.shreyasr.ancients.components.player.BasicWeaponAttack;
@@ -42,6 +44,10 @@ public class MiscRenderSystem extends EntitySystem {
             game.font.draw(game.batch, String.valueOf(((BasicWeaponAttack) attackComponent.attack).swingTime), 96, Gdx.graphics.getHeight() - 80);
             game.font.draw(game.batch, "Hold", 16, Gdx.graphics.getHeight() - 96);
             game.font.draw(game.batch, String.valueOf(((BasicWeaponAttack) attackComponent.attack).lastFrameHoldTime), 96, Gdx.graphics.getHeight() - 96);
+            game.font.draw(game.batch, "Knockback", 16, Gdx.graphics.getHeight() - 112);
+            game.font.draw(game.batch, knockbackFormat.format(((BasicWeaponAttack) attackComponent.attack).knockbackMultiplier), 96, Gdx.graphics.getHeight() - 112);
         }
     }
+
+    private DecimalFormat knockbackFormat = new DecimalFormat("#0.00");
 }
