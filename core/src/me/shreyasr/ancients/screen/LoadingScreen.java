@@ -25,7 +25,7 @@ public class LoadingScreen extends ScreenAdapter implements Input.TextInputListe
     }
 
     private boolean connected = false;
-    private boolean hasName = AncientsGame.DEBUG_MODE;
+    private boolean hasName = false;
     private String name;
 
     @Override

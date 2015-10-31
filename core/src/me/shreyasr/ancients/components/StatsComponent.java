@@ -30,6 +30,19 @@ public class StatsComponent implements Component, Pool.Poolable {
         hits = 0;
     }
 
+    public static class ReversedStatsComparator implements Comparator<Entity> {
+
+        private StatsComparator comparator = new StatsComparator();
+
+        @Override
+        public int compare(Entity o1, Entity o2) {
+            return comparator.compare(o2, o1);
+        }
+    }
+
+    /**
+     * Lowest to highest.
+     */
     public static class StatsComparator implements Comparator<Entity> {
 
         @Override

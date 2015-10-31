@@ -48,7 +48,7 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
 
     private Array<Entity> sortedPlayers;
 
-    private Comparator<Entity> comparator = new StatsComponent.StatsComparator().reversed();
+    private Comparator<Entity> comparator = new StatsComponent.ReversedStatsComparator();
 
     private Stage stage;
     private Table chatTable;
