@@ -14,6 +14,7 @@ import me.shreyasr.ancients.components.TextureComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
+import me.shreyasr.ancients.components.player.AttackComponent;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.components.weapon.HitboxGenerator;
@@ -35,6 +36,7 @@ public class EntityFactory {
         e.add(MyPlayerComponent.create(engine));
         e.add(StatsComponent.create(engine));
         e.add(NameComponent.create(engine, name));
+        e.add(AttackComponent.create(null));
         return e;
     }
 

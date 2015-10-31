@@ -15,7 +15,12 @@ import com.esotericsoftware.kryonet.Time;
 import me.shreyasr.ancients.components.KnockbackComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.StartTimeComponent;
+import me.shreyasr.ancients.components.player.Attack;
+import me.shreyasr.ancients.components.player.AttackComponent;
+import me.shreyasr.ancients.components.player.DaggerAttack;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
+import me.shreyasr.ancients.components.player.SpearAttack;
+import me.shreyasr.ancients.components.player.SwordAttack;
 import me.shreyasr.ancients.packet.server.ServerAttackPacket;
 import me.shreyasr.ancients.util.EntityFactory;
 
@@ -25,41 +30,54 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
     private final EntityFactory factory;
     private final Client client;
     private Entity player;
+    private Attack[] possibleAttacks = new Attack[3];
 
     public InputActionSystem(int priority, PooledEngine engine, EntityFactory factory, Client client) {
         super(priority);
         this.engine = engine;
         this.factory = factory;
         this.client = client;
+        possibleAttacks[0] = new SpearAttack(this.factory, 550);
+        possibleAttacks[1] = new SwordAttack(this.factory, 450);
+        possibleAttacks[2] = new DaggerAttack(this.factory, 350);
     }
 
     public void addedToEngine(Engine engine) {
         player = engine.getEntitiesFor(Family.all(MyPlayerComponent.class).get()).get(0);
+        setRandomWeapon(player);
     }
 
-    int cooldown = 0;
     boolean attackButtonPressed = false;
-    boolean dagger = true;
 
     @Override
     public void update(float deltaTime) {
         PositionComponent pos = PositionComponent.MAPPER.get(player);
 
-        cooldown += deltaTime;
+        boolean attemptAttack = attackButtonPressed && !KnockbackComponent.MAPPER.has(player);
 
-        if (KnockbackComponent.MAPPER.has(player)) return;
+        AttackComponent currentAttack = AttackComponent.MAPPER.get(player);
 
-        if (attackButtonPressed && cooldown > (dagger ? 350 : 450)) {
-            cooldown = 0;
-            int dir = getAttackDir(pos, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), !dagger);
-            Entity newAttack = factory.createSpearStab(engine, player, pos.x, pos.y, dir);
-            newAttack.add(StartTimeComponent.create(
-                    Time.getServerMillis(client) + client.getReturnTripTime() / 2 + ServerAttackPacket.ATTACK_DELAY_MS));
-            engine.addEntity(newAttack);
+        if (currentAttack != null && currentAttack.attack != null) {
+            Entity newWeapon = currentAttack.attack.update(engine, factory, player, pos, deltaTime, attemptAttack,
+                    Gdx.input.getX() - pos.x, Gdx.graphics.getHeight() - Gdx.input.getY() - pos.y);
 
-            Component[] newAttackComponents = newAttack.getComponents().toArray(Component.class);
-            client.sendUDP(ServerAttackPacket.create(newAttackComponents));
+            if (newWeapon != null) {
+                newWeapon.add(StartTimeComponent.create(
+                        Time.getServerMillis(client) + client.getReturnTripTime() / 2 + ServerAttackPacket.ATTACK_DELAY_MS));
+                engine.addEntity(newWeapon);
+
+                Component[] newAttackComponents = newWeapon.getComponents().toArray(Component.class);
+                client.sendUDP(ServerAttackPacket.create(newAttackComponents));
+            }
         }
+    }
+
+    private void setRandomWeapon(Entity player) {
+        setWeapon(player, (int) (Math.random()*possibleAttacks.length));
+    }
+
+    private void setWeapon(Entity player, int idx) {
+        AttackComponent.MAPPER.get(player).attack = possibleAttacks[idx];
     }
 
     private int getAttackDir(PositionComponent pos, int x, int y, boolean square) {
@@ -103,6 +121,10 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+        if (keycode == Input.Keys.F) {
+            setRandomWeapon(player);
+            return true;
+        }
         return false;
     }
 

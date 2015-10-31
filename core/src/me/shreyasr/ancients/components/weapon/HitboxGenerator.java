@@ -41,8 +41,8 @@ public class HitboxGenerator {
                 dy = dir==2||dir==3 ? 1 : (dir==6||dir==7)?-1:0;
                 boolean stabbing = frame%2==1;
 
-                hitbox.x = 64 * dx + pos.x - 32 + (stabbing && dx < 0 ? -64 : 0);
-                hitbox.y = 64 * dy + pos.y - 32 + (stabbing && dy < 0 ? -64 : 0);
+                hitbox.x = 64 * dx + pos.x - 32 - (stabbing && dx < 0 ? stabReach - weapWidth : 0);
+                hitbox.y = 64 * dy + pos.y - 32 - (stabbing && dy < 0 ? stabReach - weapWidth : 0);
                 hitbox.w = stabbing && dx != 0 ? stabReach : weapWidth;
                 hitbox.h = stabbing && dy != 0 ? stabReach : weapWidth;
                 break;

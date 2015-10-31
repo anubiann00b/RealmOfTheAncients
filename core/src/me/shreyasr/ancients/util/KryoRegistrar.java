@@ -17,7 +17,11 @@ import me.shreyasr.ancients.components.TextureComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
+import me.shreyasr.ancients.components.player.AttackComponent;
+import me.shreyasr.ancients.components.player.DaggerAttack;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
+import me.shreyasr.ancients.components.player.SpearAttack;
+import me.shreyasr.ancients.components.player.SwordAttack;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.components.weapon.HitboxGenerator;
 import me.shreyasr.ancients.components.weapon.OwnerUUIDComponent;
@@ -69,6 +73,13 @@ public class KryoRegistrar {
         kryo.register(WeaponAnimationComponent.class);
         kryo.register(HitboxGenerator.class);
         kryo.register(HitboxGenerator.AttackType.class);
+
+        kryo.register(AttackComponent.class);
+//        kryo.register(Attack.class);
+//        kryo.register(TimedAttack.class);
+        kryo.register(SwordAttack.class);
+        kryo.register(DaggerAttack.class);
+        kryo.register(SpearAttack.class);
 
         kryo.register(TypeComponent.Player.class);
         kryo.register(TypeComponent.Weapon.class);
