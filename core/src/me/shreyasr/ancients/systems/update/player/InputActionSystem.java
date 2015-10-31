@@ -37,11 +37,11 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
         this.engine = engine;
         this.factory = factory;
         this.client = client;
-        possibleAttacks[0] = new BasicWeaponAttack(250, 30, 40, 0.75f, false, Assets.DAGGER_SLASH, 16, 48, 3,
+        possibleAttacks[0] = new BasicWeaponAttack(250, 30, 40, 0.25f, false, Assets.DAGGER_SLASH, 16, 48, 3,
                 64, 64, 64, -1, HitboxGenerator.AttackType.STAB);
-        possibleAttacks[1] = new BasicWeaponAttack(450, 50, 150, 1.25f, true, Assets.SWORD_SLASH, 8, 48, 3,
+        possibleAttacks[1] = new BasicWeaponAttack(800, 50, 150, 1.25f, true, Assets.SWORD_SLASH, 8, 48, 3,
                 64, 64, 64, 0, HitboxGenerator.AttackType.SLASH);
-        possibleAttacks[2] = new BasicWeaponAttack(1000, 30, 200, 1.4f, false, Assets.SPEAR_STAB, 8, 80, 2,
+        possibleAttacks[2] = new BasicWeaponAttack(1200, 30, 100, 1.1f, false, Assets.SPEAR_STAB, 8, 80, 2,
                 64, 64, 128, 0, HitboxGenerator.AttackType.STAB);
     }
 
