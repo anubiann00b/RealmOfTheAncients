@@ -52,9 +52,7 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
         if (attackButtonPressed && cooldown > (dagger ? 350 : 450)) {
             cooldown = 0;
             int dir = getAttackDir(pos, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), !dagger);
-            Entity newAttack = dagger
-                    ? factory.createDaggerSlash(engine, player, pos.x, pos.y, dir)
-                    : factory.createSwordSlash(engine, player, pos.x, pos.y, dir);
+            Entity newAttack = factory.createSpearStab(engine, player, pos.x, pos.y, dir);
             newAttack.add(StartTimeComponent.create(
                     Time.getServerMillis(client) + client.getReturnTripTime() / 2 + ServerAttackPacket.ATTACK_DELAY_MS));
             engine.addEntity(newAttack);

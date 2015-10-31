@@ -64,7 +64,7 @@ public class WeaponUpdateSystem extends IteratingSystem {
             return;
         }
 
-        anim.hitboxGenerator.updateHitbox(hitbox, anim.getCurrentDir(), pos);
+        anim.hitboxGenerator.updateHitbox(hitbox, anim.getCurrentDir(), anim.getCurrentFrame(), pos);
 
 //        int dx = frame>=7||frame<=1 ? 1 : (frame>=3&&frame<=5)?-1:0;
 //        int dy = frame>=1&&frame<=3 ? 1 : (frame>=5&&frame<=7)?-1:0;

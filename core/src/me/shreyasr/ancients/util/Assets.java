@@ -8,7 +8,8 @@ public enum Assets {
     PLAYER       ("player.png"),
     SWORD_SLASH  ("sword_slash.png"),
     DAGGER_SLASH ("dagger_slash.png"),
-    AXE_CLEAVE   ("axe_cleave.png");
+    AXE_CLEAVE   ("axe_cleave.png"),
+    SPEAR_STAB   ("spear_stab.png");
 
     private final String file;
 

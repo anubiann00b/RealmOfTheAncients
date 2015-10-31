@@ -23,7 +23,7 @@ public class HitboxGenerator {
         return hitboxGenerator;
     }
 
-    public void updateHitbox(HitboxComponent hitbox, int dir, PositionComponent pos) {
+    public void updateHitbox(HitboxComponent hitbox, int dir, int frame, PositionComponent pos) {
         int dx;
         int dy;
         switch (attackType) {
@@ -39,10 +39,10 @@ public class HitboxGenerator {
             case STAB:
                 dx = dir==0||dir==1 ? 1 : (dir==4||dir==5)?-1:0;
                 dy = dir==2||dir==3 ? 1 : (dir==6||dir==7)?-1:0;
-                boolean stabbing = dir%2==1;
+                boolean stabbing = frame%2==1;
 
-                hitbox.x = 64 * dx + pos.x - 32;
-                hitbox.y = 64 * dy + pos.y - 32;
+                hitbox.x = 64 * dx + pos.x - 32 + (stabbing && dx < 0 ? -64 : 0);
+                hitbox.y = 64 * dy + pos.y - 32 + (stabbing && dy < 0 ? -64 : 0);
                 hitbox.w = stabbing && dx != 0 ? stabReach : weapWidth;
                 hitbox.h = stabbing && dy != 0 ? stabReach : weapWidth;
                 break;

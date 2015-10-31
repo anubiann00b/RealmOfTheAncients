@@ -48,22 +48,22 @@ public class EntityFactory {
         return e;
     }
 
-    public Entity createSwordSlash(PooledEngine engine, Entity owner, float x, float y, int startFrame) {
-        Entity e = createBaseWeapon(engine, owner, x, y, startFrame);
+    public Entity createSwordSlash(PooledEngine engine, Entity owner, float x, float y, int startDir) {
+        Entity e = createBaseWeapon(engine, owner, x, y, startDir);
 
         e.add(TextureComponent.create(engine, Assets.SWORD_SLASH.get()));
-        e.add(WeaponAnimationComponent.create(engine, 8, 48, startFrame, 3, 50, 150,
+        e.add(WeaponAnimationComponent.create(engine, 8, 48, startDir, 3, 50, 150,
                 64, 64, 64, 0, HitboxGenerator.AttackType.SLASH));
 
         return e;
     }
 
-    public Entity createAxeCleave(PooledEngine engine, Entity owner, float x, float y, int startFrame) {
+    public Entity createSpearStab(PooledEngine engine, Entity owner, float x, float y, int startFrame) {
         Entity e = createBaseWeapon(engine, owner, x, y, startFrame);
 
-        e.add(TextureComponent.create(engine, Assets.AXE_CLEAVE.get()));
-        e.add(WeaponAnimationComponent.create(engine, 24, 64, startFrame, 3, 70, 150,
-                64, 96, 96, 0, HitboxGenerator.AttackType.SLASH));
+        e.add(TextureComponent.create(engine, Assets.SPEAR_STAB.get()));
+        e.add(WeaponAnimationComponent.create(engine, 8, 80, startFrame, 2, 70, 150,
+                64, 64, 128, 0, HitboxGenerator.AttackType.STAB));
 
         return e;
     }
