@@ -11,25 +11,28 @@ public class DashComponent implements Component, Pool.Poolable {
 
     public static ComponentMapper<DashComponent> MAPPER
             = ComponentMapper.getFor(DashComponent.class);
-
-    public static DashComponent create(DashBehavior behavior, Attack attack, int cooldown, int duration, float distance, boolean square) {
+    public static DashComponent create(DashBehavior behavior, Attack attack, int cooldown, int duration, float distance, int stunTime, boolean square) {
         DashComponent c = new DashComponent();
         c.behavior = behavior;
         c.attack = attack;
         c.cooldown = cooldown;
         c.duration = duration;
         c.distance = distance;
+        c.stunTime = stunTime;
         c.square = square;
         return c;
     }
 
     public DashBehavior behavior;
+
     public Attack attack;
     public long startTime;
 
     public int duration;
     public float distance;
     public int cooldown;
+    public int stunTime;
+
     public boolean square;
     public float dx;
     public float dy;
@@ -68,6 +71,11 @@ public class DashComponent implements Component, Pool.Poolable {
                 && Time.getServerMillis() <= startTime + duration;
     }
 
+    public boolean isStunned() {
+        return startTime <= Time.getServerMillis()
+                && Time.getServerMillis() <= startTime + duration + stunTime;
+    }
+
     public boolean isReady() {
         return startTime + duration + cooldown <= Time.getServerMillis();
     }
@@ -84,6 +92,7 @@ public class DashComponent implements Component, Pool.Poolable {
         cooldown = 0;
         duration = 0;
         distance = 0;
+        stunTime = 0;
         dx = 0;
         dy = 0;
         firstFrame = true;

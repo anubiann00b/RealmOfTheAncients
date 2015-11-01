@@ -56,6 +56,8 @@ public class MiscRenderSystem extends EntitySystem {
             game.font.draw(game.batch, String.valueOf(dash.distance), 96, Gdx.graphics.getHeight() - 160);
             game.font.draw(game.batch, "Cooldown", 16, Gdx.graphics.getHeight() - 176);
             game.font.draw(game.batch, String.valueOf(dash.cooldown), 96, Gdx.graphics.getHeight() - 176);
+            game.font.draw(game.batch, "Stun", 16, Gdx.graphics.getHeight() - 192);
+            game.font.draw(game.batch, String.valueOf(dash.stunTime), 96, Gdx.graphics.getHeight() - 192);
         }
     }
 

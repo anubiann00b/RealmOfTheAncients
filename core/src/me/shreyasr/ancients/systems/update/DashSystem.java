@@ -60,6 +60,9 @@ public class DashSystem extends IteratingSystem {
                         ((double) Time.getServerMillis() - (double) dash.startTime) / (double) dash.duration,
                         dash.dx, dash.dy);
             }
+        } else if (dash.isStunned()) {
+            vel.dx = 0;
+            vel.dy = 0;
         }
 
         if (dash.attack != null) {

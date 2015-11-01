@@ -55,9 +55,9 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
                 64, 64, 64, 0, HitboxGenerator.AttackType.SLASH);
         spearLunge = new BasicWeaponAttack(300, 240, 160, 0.1f, false, Assets.SPEAR_STAB, 8, 80, 2,
                 64, 64, 128, 0, HitboxGenerator.AttackType.STAB);
-        possibleDashes[0] = DashComponent.create(null, null, 500, -1, 800, false);
-        possibleDashes[1] = DashComponent.create(new SpinDashBehavior(), spinToWin, 500, 500, 1200, false);
-        possibleDashes[2] = DashComponent.create(new FaceDashBehavior(), spearLunge, 500, 300, 1000, true);
+        possibleDashes[0] = DashComponent.create(null, null, 500, -1, 800, 500, false);
+        possibleDashes[1] = DashComponent.create(new SpinDashBehavior(), spinToWin, 500, 500, 1200, 500, false);
+        possibleDashes[2] = DashComponent.create(new FaceDashBehavior(), spearLunge, 500, 300, 1000, 500, true);
     }
 
     public void addedToEngine(Engine engine) {
@@ -82,7 +82,7 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
             dash.start(dx, dy, Time.getServerMillis() + client.getReturnTripTime() / 2 + ServerAttackPacket.DASH_DELAY_MS);
         }
 
-        boolean attemptAttack = attackButtonPressed && !dash.isActive() && !inKnockback;
+        boolean attemptAttack = attackButtonPressed && !dash.isStunned() && !inKnockback;
 
         if (currentAttack != null && currentAttack.attack != null) {
             Entity newWeapon = currentAttack.attack.update(engine, factory, player, pos,
@@ -99,26 +99,28 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
 
             BasicWeaponAttack attack = (BasicWeaponAttack) currentAttack.attack;
 
-            if(Gdx.input.isKeyPressed(Input.Keys.LEFT_BRACKET)) attack.cooldownTime++;
-            if(Gdx.input.isKeyPressed(Input.Keys.SEMICOLON)) attack.cooldownTime--;
-            if(Gdx.input.isKeyPressed(Input.Keys.P)) attack.swingTime++;
-            if(Gdx.input.isKeyPressed(Input.Keys.L)) attack.swingTime--;
-            if(Gdx.input.isKeyPressed(Input.Keys.O)) attack.lastFrameHoldTime++;
-            if(Gdx.input.isKeyPressed(Input.Keys.K)) attack.lastFrameHoldTime--;
-            if(Gdx.input.isKeyPressed(Input.Keys.I)) attack.knockbackMultiplier+=0.02;
-            if(Gdx.input.isKeyPressed(Input.Keys.J)) attack.knockbackMultiplier-=0.02;
+            if(Gdx.input.isKeyPressed(Input.Keys.RIGHT_BRACKET)) attack.cooldownTime++;
+            if(Gdx.input.isKeyPressed(Input.Keys.APOSTROPHE)) attack.cooldownTime--;
+            if(Gdx.input.isKeyPressed(Input.Keys.LEFT_BRACKET)) attack.swingTime++;
+            if(Gdx.input.isKeyPressed(Input.Keys.SEMICOLON)) attack.swingTime--;
+            if(Gdx.input.isKeyPressed(Input.Keys.P)) attack.lastFrameHoldTime++;
+            if(Gdx.input.isKeyPressed(Input.Keys.L)) attack.lastFrameHoldTime--;
+            if(Gdx.input.isKeyPressed(Input.Keys.O)) attack.knockbackMultiplier+=0.02;
+            if(Gdx.input.isKeyPressed(Input.Keys.K)) attack.knockbackMultiplier-=0.02;
         }
 
         BasicWeaponAttack dashAttack = null;
         if (dash.attack instanceof BasicWeaponAttack) {
             dashAttack = (BasicWeaponAttack) dash.attack;
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.U)) dash.duration+=5;
-        if(Gdx.input.isKeyPressed(Input.Keys.H)) dash.duration-=5;
-        if(Gdx.input.isKeyPressed(Input.Keys.Y)) dash.distance+=5;
-        if(Gdx.input.isKeyPressed(Input.Keys.G)) dash.distance-=5;
-        if(Gdx.input.isKeyPressed(Input.Keys.T)) dash.cooldown+=5;
-        if(Gdx.input.isKeyPressed(Input.Keys.F)) dash.cooldown-=5;
+        if(Gdx.input.isKeyPressed(Input.Keys.I)) dash.duration+=5;
+        if(Gdx.input.isKeyPressed(Input.Keys.J)) dash.duration-=5;
+        if(Gdx.input.isKeyPressed(Input.Keys.U)) dash.distance+=5;
+        if(Gdx.input.isKeyPressed(Input.Keys.H)) dash.distance-=5;
+        if(Gdx.input.isKeyPressed(Input.Keys.Y)) dash.cooldown+=5;
+        if(Gdx.input.isKeyPressed(Input.Keys.G)) dash.cooldown-=5;
+        if(Gdx.input.isKeyPressed(Input.Keys.T)) dash.stunTime+=2;
+        if(Gdx.input.isKeyPressed(Input.Keys.F)) dash.stunTime-=2;
         if(dashAttack!=null) {
             dashAttack.cooldownTime = dash.duration;
             if (dashAttack == spinToWin) {
