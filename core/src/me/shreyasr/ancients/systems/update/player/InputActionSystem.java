@@ -55,9 +55,10 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
                 64, 64, 64, 0, HitboxGenerator.AttackType.SLASH);
         spearLunge = new BasicWeaponAttack(300, 240, 160, 0.1f, false, Assets.SPEAR_STAB, 8, 80, 2,
                 64, 64, 128, 0, HitboxGenerator.AttackType.STAB);
-        possibleDashes[0] = DashComponent.create(null, null, 500, -1, 800, 500, false);
-        possibleDashes[1] = DashComponent.create(new SpinDashBehavior(), spinToWin, 500, 500, 1200, 500, false);
-        possibleDashes[2] = DashComponent.create(new FaceDashBehavior(), spearLunge, 500, 300, 1000, 500, true);
+        //                                                                           cool  dur  dist stun
+        possibleDashes[0] = DashComponent.create(null, null,                         1500,  -1, 1000, 300, false);
+        possibleDashes[1] = DashComponent.create(new SpinDashBehavior(), spinToWin,  2500, 400, 1200, 500, false);
+        possibleDashes[2] = DashComponent.create(new FaceDashBehavior(), spearLunge, 2000, 200, 1400, 800, true);
     }
 
     public void addedToEngine(Engine engine) {
