@@ -14,7 +14,7 @@ import me.shreyasr.ancients.components.TextureComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
-import me.shreyasr.ancients.components.player.AttackComponent;
+import me.shreyasr.ancients.components.player.attack.AttackComponent;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.components.weapon.OwnerUUIDComponent;

@@ -31,6 +31,16 @@ public class SquareDirectionComponent implements Component, Pool.Poolable {
         public int getY() {
             return -(index-2) % 2;
         }
+
+        public static Direction getFromPos(float dx, float dy) {
+            if (Math.abs(dx) >= Math.abs(dy)) {
+                if (dx >= 0) return RIGHT;
+                else return LEFT;
+            } else {
+                if (dy >= 0) return UP;
+                else return DOWN;
+            }
+        }
     }
 
 

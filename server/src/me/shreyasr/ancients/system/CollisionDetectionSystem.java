@@ -10,7 +10,7 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.kryonet.Time;
 
-import me.shreyasr.ancients.components.player.AttackComponent;
+import me.shreyasr.ancients.components.player.attack.AttackComponent;
 import me.shreyasr.ancients.util.CustomUUID;
 import me.shreyasr.ancients.components.HitboxComponent;
 import me.shreyasr.ancients.components.KnockbackComponent;
@@ -49,6 +49,10 @@ public class CollisionDetectionSystem extends EntitySystem {
             OwnerUUIDComponent ownerComponent = OwnerUUIDComponent.MAPPER.get(w);
             CustomUUID ownerUUID = ownerComponent.ownerUUID;
             Entity owner = ownerComponent.getOwner(engine);
+            if (owner == null) {
+                System.out.println("Null owner :( " + ownerComponent.ownerUUID.toString());
+                continue;
+            }
             AttackComponent ownerAttackComponent = AttackComponent.MAPPER.get(owner);
 
             if (weaponAnim.isDone() || weaponAnim.timeSinceAnimStart < 0) continue;

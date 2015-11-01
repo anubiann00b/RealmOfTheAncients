@@ -34,6 +34,17 @@ public class HitboxComponent implements Component, Pool.Poolable {
         return x < other.x + other.w && x + w > other.x && y < other.y + other.h && y + h > other.y;
     }
 
+    @Override
+    public String toString() {
+        return "HitboxComponent{" +
+                "x=" + x +
+                ", y=" + y +
+                ", w=" + w +
+                ", h=" + h +
+                ", active=" + active +
+                '}';
+    }
+
     public HitboxComponent() {
         reset();
     }

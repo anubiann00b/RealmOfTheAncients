@@ -1,4 +1,4 @@
-package me.shreyasr.ancients.components.player;
+package me.shreyasr.ancients.components.player.attack;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
@@ -37,19 +37,20 @@ public abstract class Attack {
      */
     protected int getAttackDir(float dx, float dy, boolean square) {
         if (square) {
-            if (dx >= 0 && dy >= 0) return 0;
-            if (dx < 0 && dy >= 0) return 2;
-            if (dx < 0 && dy < 0) return 4;
-            if (dx >= 0 && dy < 0) return 6;
+            boolean pdx = dx >= 0;
+            boolean pdy = dy >= 0;
+            if (pdx && pdy) return 0;
+            else if (!pdx && pdy) return 2;
+            else if (!pdx) return 4;
+            else return 6;
         } else {
             if (Math.abs(dx) >= Math.abs(dy)) {
                 if (dx >= 0) return 0;
-                if (dx < 0) return 4;
+                else return 4;
             } else {
                 if (dy >= 0) return 2;
-                if (dy < 0) return 6;
+                else return 6;
             }
         }
-        return -1; // impossible
     }
 }

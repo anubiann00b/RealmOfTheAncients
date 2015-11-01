@@ -11,9 +11,10 @@ import com.esotericsoftware.kryonet.Client;
 import java.text.DecimalFormat;
 
 import me.shreyasr.ancients.AncientsGame;
-import me.shreyasr.ancients.components.player.AttackComponent;
-import me.shreyasr.ancients.components.player.BasicWeaponAttack;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
+import me.shreyasr.ancients.components.player.attack.AttackComponent;
+import me.shreyasr.ancients.components.player.attack.BasicWeaponAttack;
+import me.shreyasr.ancients.components.player.dash.DashComponent;
 
 public class MiscRenderSystem extends EntitySystem {
 
@@ -37,15 +38,24 @@ public class MiscRenderSystem extends EntitySystem {
         game.font.draw(game.batch, String.valueOf(client.getReturnTripTime()), 16, Gdx.graphics.getHeight() - 32);
 
         AttackComponent attackComponent = AttackComponent.MAPPER.get(player);
+        DashComponent dash = DashComponent.MAPPER.get(player);
         if (attackComponent != null && attackComponent.attack instanceof BasicWeaponAttack) {
+            BasicWeaponAttack atk = (BasicWeaponAttack) attackComponent.attack;
             game.font.draw(game.batch, "Cooldown", 16, Gdx.graphics.getHeight() - 64);
-            game.font.draw(game.batch, String.valueOf(((BasicWeaponAttack) attackComponent.attack).cooldownTime), 96, Gdx.graphics.getHeight() - 64);
+            game.font.draw(game.batch, String.valueOf(atk.cooldownTime), 96, Gdx.graphics.getHeight() - 64);
             game.font.draw(game.batch, "Swing", 16, Gdx.graphics.getHeight() - 80);
-            game.font.draw(game.batch, String.valueOf(((BasicWeaponAttack) attackComponent.attack).swingTime), 96, Gdx.graphics.getHeight() - 80);
+            game.font.draw(game.batch, String.valueOf(atk.swingTime), 96, Gdx.graphics.getHeight() - 80);
             game.font.draw(game.batch, "Hold", 16, Gdx.graphics.getHeight() - 96);
-            game.font.draw(game.batch, String.valueOf(((BasicWeaponAttack) attackComponent.attack).lastFrameHoldTime), 96, Gdx.graphics.getHeight() - 96);
+            game.font.draw(game.batch, String.valueOf(atk.lastFrameHoldTime), 96, Gdx.graphics.getHeight() - 96);
             game.font.draw(game.batch, "Knockback", 16, Gdx.graphics.getHeight() - 112);
-            game.font.draw(game.batch, knockbackFormat.format(((BasicWeaponAttack) attackComponent.attack).knockbackMultiplier), 96, Gdx.graphics.getHeight() - 112);
+            game.font.draw(game.batch, knockbackFormat.format(atk.knockbackMultiplier), 96, Gdx.graphics.getHeight() - 112);
+
+            game.font.draw(game.batch, "Duration", 16, Gdx.graphics.getHeight() - 144);
+            game.font.draw(game.batch, String.valueOf(dash.duration), 96, Gdx.graphics.getHeight() - 144);
+            game.font.draw(game.batch, "Distance", 16, Gdx.graphics.getHeight() - 160);
+            game.font.draw(game.batch, String.valueOf(dash.distance), 96, Gdx.graphics.getHeight() - 160);
+            game.font.draw(game.batch, "Cooldown", 16, Gdx.graphics.getHeight() - 176);
+            game.font.draw(game.batch, String.valueOf(dash.cooldown), 96, Gdx.graphics.getHeight() - 176);
         }
     }
 

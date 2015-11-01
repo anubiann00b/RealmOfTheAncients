@@ -17,9 +17,12 @@ import me.shreyasr.ancients.components.TextureComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
-import me.shreyasr.ancients.components.player.AttackComponent;
-import me.shreyasr.ancients.components.player.BasicWeaponAttack;
+import me.shreyasr.ancients.components.player.attack.AttackComponent;
+import me.shreyasr.ancients.components.player.attack.BasicWeaponAttack;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
+import me.shreyasr.ancients.components.player.dash.DashComponent;
+import me.shreyasr.ancients.components.player.dash.FaceDashBehavior;
+import me.shreyasr.ancients.components.player.dash.SpinDashBehavior;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.components.weapon.HitboxGenerator;
 import me.shreyasr.ancients.components.weapon.OwnerUUIDComponent;
@@ -76,9 +79,11 @@ public class KryoRegistrar {
         kryo.register(HitboxGenerator.AttackType.class);
 
         kryo.register(AttackComponent.class);
-//        kryo.register(Attack.class);
-//        kryo.register(TimedAttack.class);
         kryo.register(BasicWeaponAttack.class);
+
+        kryo.register(DashComponent.class);
+        kryo.register(SpinDashBehavior.class);
+        kryo.register(FaceDashBehavior.class);
 
         kryo.register(TypeComponent.Player.class);
         kryo.register(TypeComponent.Weapon.class);

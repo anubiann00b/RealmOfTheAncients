@@ -1,4 +1,4 @@
-package me.shreyasr.ancients.components.player;
+package me.shreyasr.ancients.components.player.attack;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
@@ -13,7 +13,7 @@ import me.shreyasr.ancients.util.EntityFactory;
 public class BasicWeaponAttack extends Attack {
 
     public transient int timeSinceLastAttack = 0;
-
+    public transient WeaponAnimationComponent weaponAnim = null;
 
     public int cooldownTime;
     public int swingTime;
@@ -73,9 +73,12 @@ public class BasicWeaponAttack extends Attack {
 
     private Entity getAttackEntity(PooledEngine engine, EntityFactory entityFactory, Entity player,
                             PositionComponent pos, int dir) {
+        WeaponAnimationComponent weaponAnim
+                = WeaponAnimationComponent.create(engine, totalAnimationFrames, frameSize, dir, numFrames,
+                swingTime, lastFrameHoldTime, weaponWidth, weaponLength, stabSize, frameDirOffset, attackType);
+        this.weaponAnim = weaponAnim;
         return entityFactory.createBaseWeapon(engine, player, pos.x, pos.y)
                 .add(TextureComponent.create(engine, asset.get()))
-                .add(WeaponAnimationComponent.create(engine, totalAnimationFrames, frameSize, dir, numFrames,
-                        swingTime, lastFrameHoldTime, weaponWidth, weaponLength, stabSize, frameDirOffset, attackType));
+                .add(weaponAnim);
     }
 }

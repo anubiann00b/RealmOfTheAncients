@@ -30,6 +30,7 @@ import me.shreyasr.ancients.systems.render.UIRenderSystem;
 import me.shreyasr.ancients.systems.render.util.PostRenderSystem;
 import me.shreyasr.ancients.systems.render.util.PreBatchRenderSystem;
 import me.shreyasr.ancients.systems.render.util.ShapeRenderSystem;
+import me.shreyasr.ancients.systems.update.DashSystem;
 import me.shreyasr.ancients.systems.update.KnockbackSystem;
 import me.shreyasr.ancients.systems.update.PositionUpdateSystem;
 import me.shreyasr.ancients.systems.update.WeaponUpdateSystem;
@@ -83,6 +84,7 @@ public class GameScreen extends ScreenAdapter {
         // @formatter:off
         engine.addSystem(new       PacketHandleSystem(++priority, queuedListener));
         engine.addSystem(new   MyPlayerMovementSystem(++priority));
+        engine.addSystem(new               DashSystem(++priority, engine, entityFactory, client));
         engine.addSystem(new          KnockbackSystem(++priority));
         engine.addSystem(new     PositionUpdateSystem(++priority));
         engine.addSystem(new        InputActionSystem(++priority, engine, entityFactory, client));
@@ -95,7 +97,6 @@ public class GameScreen extends ScreenAdapter {
         engine.addSystem(new    NameRenderSystem       (++priority, game));
         engine.addSystem(new ShapeRenderSystem         (++priority, game.batch, game.shape));
         engine.addSystem(new    DebugRenderSystem      (++priority, game));
-//        engine.addSystem(new    ScoreboardRenderSystem (++priority, game));
         engine.addSystem(new PostRenderSystem          (++priority, game));
         engine.addSystem(new UIRenderSystem            (++priority,  engine, chatManager, client, playerUUID, name));
 

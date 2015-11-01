@@ -18,7 +18,7 @@ import me.shreyasr.ancients.components.TextureComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
-import me.shreyasr.ancients.components.player.AttackComponent;
+import me.shreyasr.ancients.components.player.attack.AttackComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.packet.Packet;
 import me.shreyasr.ancients.packet.PacketHandler;
@@ -50,7 +50,7 @@ public class ServerPlayerUpdatePacket extends Packet<PacketHandler<ServerPlayerU
                 finalComponents.add(c);
             }
         }
-        finalComponents.add(LastUpdateTimeComponent.create(Time.getServerMillis(conn)));
+        finalComponents.add(LastUpdateTimeComponent.create(Time.getServerMillis()));
         packet.components = finalComponents.toArray(new Component[finalComponents.size()]);
         return packet;
     }

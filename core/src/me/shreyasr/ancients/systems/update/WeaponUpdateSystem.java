@@ -33,7 +33,12 @@ public class WeaponUpdateSystem extends IteratingSystem {
 
         ownerId.updateEngineId(engine);
 
-        Entity owner = engine.getEntity(ownerId.ownerEngineID);
+        Entity owner = ownerId.getOwner(engine);
+        if (owner == null) {
+            System.out.println("Null owner in weapon update :( " + ownerId.toString());
+            return;
+        }
+
         PositionComponent ownerPos = PositionComponent.MAPPER.get(owner);
 
         pos.x = ownerPos.x;

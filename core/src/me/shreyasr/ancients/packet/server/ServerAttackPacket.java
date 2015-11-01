@@ -18,7 +18,8 @@ import me.shreyasr.ancients.packet.PacketHandler;
 
 public class ServerAttackPacket extends Packet<PacketHandler<ServerAttackPacket>> {
 
-    public static final int ATTACK_DELAY_MS = 300;
+    public static final int ATTACK_DELAY_MS = 100;
+    public static final int DASH_DELAY_MS = 100;
 
     public static ServerAttackPacket create(Component[] components) {
         ServerAttackPacket packet = new ServerAttackPacket();

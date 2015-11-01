@@ -128,7 +128,7 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
         stage.addListener(new InputListener() {
             @Override
             public boolean keyTyped(InputEvent event, char character) {
-                if (event.getKeyCode() == Input.Keys.T && stage.getKeyboardFocus() == null) {
+                if (event.getKeyCode() == Input.Keys.ENTER && stage.getKeyboardFocus() == null) {
                     chatTable.setVisible(true);
                     stage.setKeyboardFocus(chatInput);
                     event.cancel();

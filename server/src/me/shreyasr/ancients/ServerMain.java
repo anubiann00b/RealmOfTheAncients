@@ -9,13 +9,13 @@ import com.esotericsoftware.minlog.Log;
 import java.io.IOException;
 
 import me.shreyasr.ancients.handler.ServerAttackPacketHandler;
+import me.shreyasr.ancients.handler.ServerChatMessagePacketHandler;
 import me.shreyasr.ancients.handler.ServerNameRegistrationPacketHandler;
 import me.shreyasr.ancients.handler.ServerPlayerUpdatePacketHandler;
-import me.shreyasr.ancients.handler.ServerChatMessagePacketHandler;
 import me.shreyasr.ancients.packet.server.ServerAttackPacket;
+import me.shreyasr.ancients.packet.server.ServerChatMessagePacket;
 import me.shreyasr.ancients.packet.server.ServerNameRegistrationPacket;
 import me.shreyasr.ancients.packet.server.ServerPlayerUpdatePacket;
-import me.shreyasr.ancients.packet.server.ServerChatMessagePacket;
 import me.shreyasr.ancients.system.ChatUpdateSystem;
 import me.shreyasr.ancients.system.ClientUpdateSystem;
 import me.shreyasr.ancients.system.CollisionDetectionSystem;
@@ -75,8 +75,9 @@ public class ServerMain {
         int priority = 0;
         // @formatter:off
         engine.addSystem(       new PacketHandleSystem(++priority, queuedListener));
-        engine.addSystem( new CollisionDetectionSystem(++priority, server, engine));
         engine.addSystem(       new WeaponUpdateSystem(++priority, engine));
+        engine.addSystem( new CollisionDetectionSystem(++priority, server, engine));
+//        engine.addSystem(               new DashSystem(++priority, engine, en));
         engine.addSystem(          new KnockbackSystem(++priority));
         engine.addSystem(       new ClientUpdateSystem(++priority, 16, server));
         engine.addSystem(    new RemoveOldEntitySystem(++priority, engine, server));
