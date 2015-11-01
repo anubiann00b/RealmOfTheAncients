@@ -91,14 +91,14 @@ public class GameScreen extends ScreenAdapter {
         engine.addSystem(new    SquareAnimationSystem(++priority));
         engine.addSystem(new       WeaponUpdateSystem(++priority, engine));
 
-        engine.addSystem(new PreBatchRenderSystem      (++priority, game.batch));
-        engine.addSystem(new    MainRenderSystem       (++priority, game));
-        engine.addSystem(new    MiscRenderSystem       (++priority, game, client));
-        engine.addSystem(new    NameRenderSystem       (++priority, game));
-        engine.addSystem(new ShapeRenderSystem         (++priority, game.batch, game.shape));
-        engine.addSystem(new    DebugRenderSystem      (++priority, game));
-        engine.addSystem(new PostRenderSystem          (++priority, game));
-        engine.addSystem(new UIRenderSystem            (++priority,  engine, chatManager, client, playerUUID, name));
+        engine.addSystem(new PreBatchRenderSystem (++priority, game.batch));
+        engine.addSystem(new    MainRenderSystem  (++priority, game));
+        engine.addSystem(new    MiscRenderSystem  (++priority, game, client));
+        engine.addSystem(new    NameRenderSystem  (++priority, game));
+        engine.addSystem(new ShapeRenderSystem    (++priority, game.batch, game.shape));
+        engine.addSystem(new    DebugRenderSystem (++priority, game));
+        engine.addSystem(new PostRenderSystem     (++priority, game));
+        engine.addSystem(new UIRenderSystem       (++priority, engine, chatManager, client, playerUUID, name));
 
         engine.addSystem(new      NetworkUpdateSystem(++priority, client));
         engine.addSystem(new         PingUpdateSystem(++priority, client));
@@ -118,6 +118,7 @@ public class GameScreen extends ScreenAdapter {
         inputMultiplexer.addProcessor(engine.getSystem(UIRenderSystem.class).getStageInputProcessor());
         inputMultiplexer.addProcessor(engine.getSystem(MyPlayerMovementSystem.class));
         inputMultiplexer.addProcessor(engine.getSystem(InputActionSystem.class));
+        inputMultiplexer.addProcessor(engine.getSystem(InputActionSystem.class).getTuningInputProcessor());
         Gdx.input.setInputProcessor(inputMultiplexer);
 
         initialized = true;

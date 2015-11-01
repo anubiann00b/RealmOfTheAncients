@@ -24,6 +24,7 @@ import me.shreyasr.ancients.components.player.dash.FaceDashBehavior;
 import me.shreyasr.ancients.components.player.dash.SpinDashBehavior;
 import me.shreyasr.ancients.components.weapon.HitboxGenerator;
 import me.shreyasr.ancients.packet.server.ServerAttackPacket;
+import me.shreyasr.ancients.util.AccumulatingKeyboardProcessor;
 import me.shreyasr.ancients.util.Assets;
 import me.shreyasr.ancients.util.EntityFactory;
 
@@ -35,6 +36,12 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
     private Entity player;
     private Attack[] possibleAttacks = new Attack[3];
     private DashComponent[] possibleDashes = new DashComponent[3];
+
+    private AccumulatingKeyboardProcessor accumulatingInput = new AccumulatingKeyboardProcessor();
+
+    public InputProcessor getTuningInputProcessor() {
+        return accumulatingInput;
+    }
 
     Attack spinToWin;
     Attack spearLunge;
@@ -100,28 +107,28 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
 
             BasicWeaponAttack attack = (BasicWeaponAttack) currentAttack.attack;
 
-            if(Gdx.input.isKeyPressed(Input.Keys.RIGHT_BRACKET)) attack.cooldownTime++;
-            if(Gdx.input.isKeyPressed(Input.Keys.APOSTROPHE)) attack.cooldownTime--;
-            if(Gdx.input.isKeyPressed(Input.Keys.LEFT_BRACKET)) attack.swingTime++;
-            if(Gdx.input.isKeyPressed(Input.Keys.SEMICOLON)) attack.swingTime--;
-            if(Gdx.input.isKeyPressed(Input.Keys.P)) attack.lastFrameHoldTime++;
-            if(Gdx.input.isKeyPressed(Input.Keys.L)) attack.lastFrameHoldTime--;
-            if(Gdx.input.isKeyPressed(Input.Keys.O)) attack.knockbackMultiplier+=0.02;
-            if(Gdx.input.isKeyPressed(Input.Keys.K)) attack.knockbackMultiplier-=0.02;
+            if(accumulatingInput.isKeyPressed(Input.Keys.RIGHT_BRACKET)) attack.cooldownTime++;
+            if(accumulatingInput.isKeyPressed(Input.Keys.APOSTROPHE)) attack.cooldownTime--;
+            if(accumulatingInput.isKeyPressed(Input.Keys.LEFT_BRACKET)) attack.swingTime++;
+            if(accumulatingInput.isKeyPressed(Input.Keys.SEMICOLON)) attack.swingTime--;
+            if(accumulatingInput.isKeyPressed(Input.Keys.P)) attack.lastFrameHoldTime++;
+            if(accumulatingInput.isKeyPressed(Input.Keys.L)) attack.lastFrameHoldTime--;
+            if(accumulatingInput.isKeyPressed(Input.Keys.O)) attack.knockbackMultiplier+=0.02;
+            if(accumulatingInput.isKeyPressed(Input.Keys.K)) attack.knockbackMultiplier-=0.02;
         }
 
         BasicWeaponAttack dashAttack = null;
         if (dash.attack instanceof BasicWeaponAttack) {
             dashAttack = (BasicWeaponAttack) dash.attack;
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.I)) dash.duration+=5;
-        if(Gdx.input.isKeyPressed(Input.Keys.J)) dash.duration-=5;
-        if(Gdx.input.isKeyPressed(Input.Keys.U)) dash.distance+=5;
-        if(Gdx.input.isKeyPressed(Input.Keys.H)) dash.distance-=5;
-        if(Gdx.input.isKeyPressed(Input.Keys.Y)) dash.cooldown+=5;
-        if(Gdx.input.isKeyPressed(Input.Keys.G)) dash.cooldown-=5;
-        if(Gdx.input.isKeyPressed(Input.Keys.T)) dash.stunTime+=2;
-        if(Gdx.input.isKeyPressed(Input.Keys.F)) dash.stunTime-=2;
+        if(accumulatingInput.isKeyPressed(Input.Keys.I)) dash.duration+=5;
+        if(accumulatingInput.isKeyPressed(Input.Keys.J)) dash.duration-=5;
+        if(accumulatingInput.isKeyPressed(Input.Keys.U)) dash.distance+=5;
+        if(accumulatingInput.isKeyPressed(Input.Keys.H)) dash.distance-=5;
+        if(accumulatingInput.isKeyPressed(Input.Keys.Y)) dash.cooldown+=5;
+        if(accumulatingInput.isKeyPressed(Input.Keys.G)) dash.cooldown-=5;
+        if(accumulatingInput.isKeyPressed(Input.Keys.T)) dash.stunTime+=2;
+        if(accumulatingInput.isKeyPressed(Input.Keys.F)) dash.stunTime-=2;
         if(dashAttack!=null) {
             dashAttack.cooldownTime = dash.duration;
             if (dashAttack == spinToWin) {
