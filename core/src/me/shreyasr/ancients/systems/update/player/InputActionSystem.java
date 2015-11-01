@@ -51,11 +51,11 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
         this.engine = engine;
         this.factory = factory;
         this.client = client;
-        possibleAttacks[0] = new BasicWeaponAttack(250, 30, 40, 150, false, Assets.DAGGER_SLASH, 16, 48, 3,
+        possibleAttacks[0] = new BasicWeaponAttack(250, 30, 40, 25, false, Assets.DAGGER_SLASH, 16, 48, 3,
                 64, 64, 64, -1, HitboxGenerator.AttackType.STAB);
-        possibleAttacks[1] = new BasicWeaponAttack(800, 50, 150, 300, true, Assets.SWORD_SLASH, 8, 48, 3,
+        possibleAttacks[1] = new BasicWeaponAttack(800, 50, 150, 85, true, Assets.SWORD_SLASH, 8, 48, 3,
                 64, 64, 64, 0, HitboxGenerator.AttackType.SLASH);
-        possibleAttacks[2] = new BasicWeaponAttack(1200, 30, 100, 400, false, Assets.SPEAR_STAB, 8, 80, 2,
+        possibleAttacks[2] = new BasicWeaponAttack(1200, 30, 100, 100, false, Assets.SPEAR_STAB, 8, 80, 2,
                 64, 64, 128, 0, HitboxGenerator.AttackType.STAB);
 
         spinToWin = new BasicWeaponAttack(0, 56, 56, 1.5f, false, Assets.SWORD_SLASH, 8, 48, 9,
@@ -63,9 +63,9 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
         spearLunge = new BasicWeaponAttack(0, 240, 160, 0.1f, false, Assets.SPEAR_STAB, 8, 80, 2,
                 64, 64, 128, 0, HitboxGenerator.AttackType.STAB);
         //                                                                           cldwn drtn dist stun
-        possibleDashes[0] = DashComponent.create(null,                   null,       1500,  -1, 250, 300, false);
+        possibleDashes[0] = DashComponent.create(null,                   null,       1500,  -1, 250, 200, false);
         possibleDashes[1] = DashComponent.create(new SpinDashBehavior(), spinToWin,  2500, 400, 300, 500, false);
-        possibleDashes[2] = DashComponent.create(new FaceDashBehavior(), spearLunge, 2000, 200, 250, 800, true );
+        possibleDashes[2] = DashComponent.create(new FaceDashBehavior(), spearLunge, 2000, 200, 350, 800, true );
     }
 
     public void addedToEngine(Engine engine) {
@@ -116,10 +116,10 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
             if(accumulatingInput.isKeyPressed(Input.Keys.K)) attack.knockbackMultiplier--;
         }
 
-        if(accumulatingInput.isKeyPressed(Input.Keys.I)) dash.duration+=5;
-        if(accumulatingInput.isKeyPressed(Input.Keys.J)) dash.duration-=5;
-        if(accumulatingInput.isKeyPressed(Input.Keys.U)) dash.distance+=5;
-        if(accumulatingInput.isKeyPressed(Input.Keys.H)) dash.distance-=5;
+        if(accumulatingInput.isKeyPressed(Input.Keys.I)) dash.duration+=1;
+        if(accumulatingInput.isKeyPressed(Input.Keys.J)) dash.duration-=1;
+        if(accumulatingInput.isKeyPressed(Input.Keys.U)) dash.distance+=1;
+        if(accumulatingInput.isKeyPressed(Input.Keys.H)) dash.distance-=1;
         if(accumulatingInput.isKeyPressed(Input.Keys.Y)) dash.cooldown+=5;
         if(accumulatingInput.isKeyPressed(Input.Keys.G)) dash.cooldown-=5;
         if(accumulatingInput.isKeyPressed(Input.Keys.T)) dash.stunTime+=2;
