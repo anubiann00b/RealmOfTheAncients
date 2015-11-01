@@ -10,17 +10,18 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.kryonet.Time;
 
-import me.shreyasr.ancients.components.player.attack.AttackComponent;
-import me.shreyasr.ancients.util.CustomUUID;
 import me.shreyasr.ancients.components.HitboxComponent;
 import me.shreyasr.ancients.components.KnockbackComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.StatsComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
+import me.shreyasr.ancients.components.player.attack.AttackComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.components.weapon.OwnerUUIDComponent;
 import me.shreyasr.ancients.components.weapon.WeaponAnimationComponent;
 import me.shreyasr.ancients.packet.client.ClientHitPacket;
+import me.shreyasr.ancients.packet.server.ServerAttackPacket;
+import me.shreyasr.ancients.util.CustomUUID;
 
 public class CollisionDetectionSystem extends EntitySystem {
 
@@ -63,8 +64,10 @@ public class CollisionDetectionSystem extends EntitySystem {
 
             for (Entity e : entities) {
                 CustomUUID entityUUID = UUIDComponent.MAPPER.get(e).val;
+                KnockbackComponent knockback = KnockbackComponent.MAPPER.get(e);
+
                 if (entityUUID.equals(ownerUUID)) continue;
-                if (KnockbackComponent.MAPPER.has(e)) continue;
+                if (knockback != null && !knockback.isDone()) continue;
 
                 HitboxComponent hitbox = HitboxComponent.MAPPER.get(e);
                 PositionComponent pos = PositionComponent.MAPPER.get(e);
@@ -72,7 +75,9 @@ public class CollisionDetectionSystem extends EntitySystem {
                 if (hitbox.intersects(weaponHitbox)) {
                     Component[] components = e.getComponents().toArray(Component.class);
                     KnockbackComponent knockbackComponent
-                            = KnockbackComponent.create(engine, pos.x - weaponPos.x, pos.y - weaponPos.y, Time.getMillis());
+                            = KnockbackComponent.create(engine, pos.x, pos.y,
+                            pos.x - weaponPos.x, pos.y - weaponPos.y,
+                            Time.getMillis() + ServerAttackPacket.KNOCKBACK_DELAY_MS);
                     if (ownerAttackComponent != null && ownerAttackComponent.attack != null) {
                         knockbackComponent.power = ownerAttackComponent.attack.getKnockbackMultiplier();
                     }

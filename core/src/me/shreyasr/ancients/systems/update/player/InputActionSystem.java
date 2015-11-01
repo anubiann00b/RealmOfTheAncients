@@ -51,21 +51,21 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
         this.engine = engine;
         this.factory = factory;
         this.client = client;
-        possibleAttacks[0] = new BasicWeaponAttack(250, 30, 40, 0.25f, false, Assets.DAGGER_SLASH, 16, 48, 3,
+        possibleAttacks[0] = new BasicWeaponAttack(250, 30, 40, 150, false, Assets.DAGGER_SLASH, 16, 48, 3,
                 64, 64, 64, -1, HitboxGenerator.AttackType.STAB);
-        possibleAttacks[1] = new BasicWeaponAttack(800, 50, 150, 1.25f, true, Assets.SWORD_SLASH, 8, 48, 3,
+        possibleAttacks[1] = new BasicWeaponAttack(800, 50, 150, 300, true, Assets.SWORD_SLASH, 8, 48, 3,
                 64, 64, 64, 0, HitboxGenerator.AttackType.SLASH);
-        possibleAttacks[2] = new BasicWeaponAttack(1200, 30, 100, 1.1f, false, Assets.SPEAR_STAB, 8, 80, 2,
+        possibleAttacks[2] = new BasicWeaponAttack(1200, 30, 100, 400, false, Assets.SPEAR_STAB, 8, 80, 2,
                 64, 64, 128, 0, HitboxGenerator.AttackType.STAB);
 
-        spinToWin = new BasicWeaponAttack(500, 56, 56, 1.5f, false, Assets.SWORD_SLASH, 8, 48, 9,
+        spinToWin = new BasicWeaponAttack(0, 56, 56, 1.5f, false, Assets.SWORD_SLASH, 8, 48, 9,
                 64, 64, 64, 0, HitboxGenerator.AttackType.SLASH);
-        spearLunge = new BasicWeaponAttack(300, 240, 160, 0.1f, false, Assets.SPEAR_STAB, 8, 80, 2,
+        spearLunge = new BasicWeaponAttack(0, 240, 160, 0.1f, false, Assets.SPEAR_STAB, 8, 80, 2,
                 64, 64, 128, 0, HitboxGenerator.AttackType.STAB);
-        //                                                                           cool  dur  dist stun
-        possibleDashes[0] = DashComponent.create(null, null,                         1500,  -1, 1000, 300, false);
-        possibleDashes[1] = DashComponent.create(new SpinDashBehavior(), spinToWin,  2500, 400, 1200, 500, false);
-        possibleDashes[2] = DashComponent.create(new FaceDashBehavior(), spearLunge, 2000, 200, 1400, 800, true);
+        //                                                                           cldwn drtn dist stun
+        possibleDashes[0] = DashComponent.create(null,                   null,       1500,  -1, 250, 300, false);
+        possibleDashes[1] = DashComponent.create(new SpinDashBehavior(), spinToWin,  2500, 400, 300, 500, false);
+        possibleDashes[2] = DashComponent.create(new FaceDashBehavior(), spearLunge, 2000, 200, 250, 800, true );
     }
 
     public void addedToEngine(Engine engine) {
@@ -80,47 +80,42 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
     public void update(float deltaTime) {
         AttackComponent currentAttack = AttackComponent.MAPPER.get(player);
         PositionComponent pos = PositionComponent.MAPPER.get(player);
+        KnockbackComponent knockback = KnockbackComponent.MAPPER.get(player);
         DashComponent dash = DashComponent.MAPPER.get(player);
+
         float dx = Gdx.input.getX() - pos.x;
         float dy = Gdx.graphics.getHeight() - Gdx.input.getY() - pos.y;
 
-        boolean inKnockback = KnockbackComponent.MAPPER.has(player);
+        boolean inKnockback = knockback != null && knockback.isActive();
 
         if (dashButtonPressed && dash.isReady() && !inKnockback) {
-            dash.start(dx, dy, Time.getServerMillis() + client.getReturnTripTime() / 2 + ServerAttackPacket.DASH_DELAY_MS);
+            dash.start(pos.x, pos.y, dx, dy, Time.getServerMillis() + client.getReturnTripTime() / 2 + ServerAttackPacket.DASH_DELAY_MS);
+            if (dash.attack != null) {
+                Entity newWeapon = dash.attack.update(engine, factory, player, pos, 1, true, dx, dy);
+                if (newWeapon != null) sendNewWeapon(newWeapon);
+            }
         }
 
-        boolean attemptAttack = attackButtonPressed && !dash.isStunned() && !inKnockback;
+        boolean attemptAttack = attackButtonPressed && !dash.isActive() && !dash.isStunned() && !inKnockback;
 
         if (currentAttack != null && currentAttack.attack != null) {
             Entity newWeapon = currentAttack.attack.update(engine, factory, player, pos,
                     deltaTime, attemptAttack, dx, dy);
 
-            if (newWeapon != null) {
-                newWeapon.add(StartTimeComponent.create(
-                        Time.getServerMillis() + client.getReturnTripTime() / 2 + ServerAttackPacket.ATTACK_DELAY_MS));
-                engine.addEntity(newWeapon);
-
-                Component[] newAttackComponents = newWeapon.getComponents().toArray(Component.class);
-                client.sendUDP(ServerAttackPacket.create(newAttackComponents));
-            }
+            if (newWeapon != null) sendNewWeapon(newWeapon);
 
             BasicWeaponAttack attack = (BasicWeaponAttack) currentAttack.attack;
 
-            if(accumulatingInput.isKeyPressed(Input.Keys.RIGHT_BRACKET)) attack.cooldownTime++;
-            if(accumulatingInput.isKeyPressed(Input.Keys.APOSTROPHE)) attack.cooldownTime--;
-            if(accumulatingInput.isKeyPressed(Input.Keys.LEFT_BRACKET)) attack.swingTime++;
-            if(accumulatingInput.isKeyPressed(Input.Keys.SEMICOLON)) attack.swingTime--;
-            if(accumulatingInput.isKeyPressed(Input.Keys.P)) attack.lastFrameHoldTime++;
-            if(accumulatingInput.isKeyPressed(Input.Keys.L)) attack.lastFrameHoldTime--;
-            if(accumulatingInput.isKeyPressed(Input.Keys.O)) attack.knockbackMultiplier+=0.02;
-            if(accumulatingInput.isKeyPressed(Input.Keys.K)) attack.knockbackMultiplier-=0.02;
+            if(accumulatingInput.isKeyPressed(Input.Keys.RIGHT_BRACKET)) attack.cooldownTime+=5;
+            if(accumulatingInput.isKeyPressed(Input.Keys.APOSTROPHE)) attack.cooldownTime-=5;
+            if(accumulatingInput.isKeyPressed(Input.Keys.LEFT_BRACKET)) attack.swingTime+=2;
+            if(accumulatingInput.isKeyPressed(Input.Keys.SEMICOLON)) attack.swingTime-=2;
+            if(accumulatingInput.isKeyPressed(Input.Keys.P)) attack.lastFrameHoldTime+=2;
+            if(accumulatingInput.isKeyPressed(Input.Keys.L)) attack.lastFrameHoldTime-=2;
+            if(accumulatingInput.isKeyPressed(Input.Keys.O)) attack.knockbackMultiplier++;
+            if(accumulatingInput.isKeyPressed(Input.Keys.K)) attack.knockbackMultiplier--;
         }
 
-        BasicWeaponAttack dashAttack = null;
-        if (dash.attack instanceof BasicWeaponAttack) {
-            dashAttack = (BasicWeaponAttack) dash.attack;
-        }
         if(accumulatingInput.isKeyPressed(Input.Keys.I)) dash.duration+=5;
         if(accumulatingInput.isKeyPressed(Input.Keys.J)) dash.duration-=5;
         if(accumulatingInput.isKeyPressed(Input.Keys.U)) dash.distance+=5;
@@ -129,8 +124,9 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
         if(accumulatingInput.isKeyPressed(Input.Keys.G)) dash.cooldown-=5;
         if(accumulatingInput.isKeyPressed(Input.Keys.T)) dash.stunTime+=2;
         if(accumulatingInput.isKeyPressed(Input.Keys.F)) dash.stunTime-=2;
-        if(dashAttack!=null) {
-            dashAttack.cooldownTime = dash.duration;
+
+        if(dash.attack instanceof BasicWeaponAttack) {
+            BasicWeaponAttack dashAttack = (BasicWeaponAttack) dash.attack;
             if (dashAttack == spinToWin) {
                 dashAttack.swingTime = dash.duration/9;
                 dashAttack.lastFrameHoldTime = dash.duration/9;
@@ -138,6 +134,18 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
             if (dashAttack == spearLunge) {
                 dashAttack.swingTime = dash.duration - 60;
             }
+            dashAttack.knockbackMultiplier = currentAttack.attack.getKnockbackMultiplier();
+        }
+    }
+
+    private void sendNewWeapon(Entity newWeapon) {
+        if (newWeapon != null) {
+            newWeapon.add(StartTimeComponent.create(
+                    Time.getServerMillis() + client.getReturnTripTime() / 2 + ServerAttackPacket.ATTACK_DELAY_MS));
+            engine.addEntity(newWeapon);
+
+            Component[] newAttackComponents = newWeapon.getComponents().toArray(Component.class);
+            client.sendUDP(ServerAttackPacket.create(newAttackComponents));
         }
     }
 

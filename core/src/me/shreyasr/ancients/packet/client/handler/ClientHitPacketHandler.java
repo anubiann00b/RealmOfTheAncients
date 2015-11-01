@@ -7,7 +7,9 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.esotericsoftware.kryonet.Connection;
 
+import me.shreyasr.ancients.components.KnockbackComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
+import me.shreyasr.ancients.components.player.MyPlayerComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.packet.PacketHandler;
 import me.shreyasr.ancients.packet.client.ClientHitPacket;
@@ -25,6 +27,11 @@ public class ClientHitPacketHandler extends PacketHandler<ClientHitPacket> {
     public void handle(ClientHitPacket packet, Connection conn) {
         UUIDComponent recvUUID = getUUIDFromComponents(packet.components);
 
+        if (game.playerUUID.equals(recvUUID.val)) {
+            updateMyPlayer(game.engine, packet.components);
+            return;
+        }
+
         ImmutableArray<Entity> otherPlayers = getOtherPlayers(game.engine);
 
         for (Entity otherPlayer : otherPlayers) {
@@ -33,6 +40,15 @@ public class ClientHitPacketHandler extends PacketHandler<ClientHitPacket> {
                     otherPlayer.add(c);
                 }
                 return;
+            }
+        }
+    }
+
+    private void updateMyPlayer(PooledEngine engine, Component[] components) {
+        Entity player = engine.getEntitiesFor(Family.all(MyPlayerComponent.class).get()).first();
+        for (Component c : components) {
+            if (c instanceof KnockbackComponent) {
+                player.add(c);
             }
         }
     }

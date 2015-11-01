@@ -6,7 +6,9 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.esotericsoftware.kryonet.Time;
 
 import me.shreyasr.ancients.components.KnockbackComponent;
+import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
+import me.shreyasr.ancients.util.MathHelper;
 
 public class KnockbackSystem extends IteratingSystem {
 
@@ -21,16 +23,30 @@ public class KnockbackSystem extends IteratingSystem {
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
+        PositionComponent pos = PositionComponent.MAPPER.get(entity);
         VelocityComponent vel = VelocityComponent.MAPPER.get(entity);
         KnockbackComponent knockback = KnockbackComponent.MAPPER.get(entity);
 
-        knockback.timeSinceKnockbackStart = Time.getServerMillis() - knockback.startTime;
+
+        long elapsed = Time.getServerMillis()-knockback.startTime;
+        float percentageDone = MathHelper.clamp(0f, (float) elapsed / knockback.duration, 1f);
+        if (knockback.isDone()) percentageDone = 1;
+        percentageDone = interpolateKnockback(percentageDone);
+        pos.x = knockback.x + (knockback.dx*knockback.getDistance())*(percentageDone);
+        pos.y = knockback.y + (knockback.dy*knockback.getDistance())*(percentageDone);
 
         if (knockback.isDone()) {
             entity.remove(KnockbackComponent.class);
+        } else {
+            vel.dx = 0;
+            vel.dy = 0;
         }
 
-        vel.dx = knockback.dx * knockback.getMult();
-        vel.dy = knockback.dy * knockback.getMult();
+//        vel.dx = knockback.dx * knockback.getMult();
+//        vel.dy = knockback.dy * knockback.getMult();
+    }
+
+    private float interpolateKnockback(float percent) {
+        return 2*percent - percent*percent;
     }
 }

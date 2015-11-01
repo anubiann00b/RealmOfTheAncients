@@ -5,7 +5,11 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.utils.Pool;
 
+import java.text.DecimalFormat;
+
 public class PositionComponent implements Component, Pool.Poolable {
+
+    private static DecimalFormat format = new DecimalFormat("#0.00");
 
     public static ComponentMapper<PositionComponent> MAPPER
             = ComponentMapper.getFor(PositionComponent.class);
@@ -19,6 +23,11 @@ public class PositionComponent implements Component, Pool.Poolable {
 
     public float x;
     public float y;
+
+    @Override
+    public String toString() {
+        return "[" + format.format(x) + " " + format.format(y) + "]";
+    }
 
     public PositionComponent() {
         reset();

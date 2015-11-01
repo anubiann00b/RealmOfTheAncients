@@ -10,11 +10,13 @@ public class LagLinkedListQueuedListener extends LinkedListQueuedListener {
 
     private final ScheduledExecutorService threadPool;
     private int lag;
-    private int loss;
+    private int error;
+    private double loss;
 
-    public LagLinkedListQueuedListener(Listener listener, int lag, int loss) {
+    public LagLinkedListQueuedListener(Listener listener, int lag, int error, double loss) {
         super(listener);
         this.lag = lag;
+        this.error = error;
         this.loss = loss;
         threadPool = Executors.newScheduledThreadPool(1);
     }
@@ -28,7 +30,7 @@ public class LagLinkedListQueuedListener extends LinkedListQueuedListener {
                         temp.add(r);
                     }
                 }
-            }, (long) (lag + lag * Math.random()), TimeUnit.MILLISECONDS);
+            }, (long) (lag + error * Math.random()), TimeUnit.MILLISECONDS);
         }
     }
 }

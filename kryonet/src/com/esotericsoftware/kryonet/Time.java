@@ -10,7 +10,7 @@ public class Time {
     }
 
     public static long getServerMillis() {
-        return getMillis() + (conn != null ? conn.getTimeOffset() : 0);
+        return getServerMillis(conn);
     }
 
     public static long getServerMillis(Connection conn) {

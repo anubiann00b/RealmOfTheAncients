@@ -28,8 +28,9 @@ public class SquareAnimationSystem extends IteratingSystem {
         TextureTransformComponent transform = TextureTransformComponent.MAPPER.get(entity);
         SquareDirectionComponent direction = SquareDirectionComponent.MAPPER.get(entity);
         VelocityComponent vel = VelocityComponent.MAPPER.get(entity);
+        KnockbackComponent knockback = KnockbackComponent.MAPPER.get(entity);
 
-        if (KnockbackComponent.MAPPER.has(entity)) {
+        if (knockback != null && knockback.isActive()) {
             vel = null;
         }
 

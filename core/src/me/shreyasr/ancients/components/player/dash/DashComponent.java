@@ -33,12 +33,16 @@ public class DashComponent implements Component, Pool.Poolable {
     public int cooldown;
     public int stunTime;
 
-    public boolean square;
+    public float x;
+    public float y;
     public float dx;
     public float dy;
+    public boolean square;
     public boolean firstFrame;
 
-    public void start(float dx, float dy, long time) {
+    public void start(float x, float y, float dx, float dy, long time) {
+        this.x = x;
+        this.y = y;
         firstFrame = true;
         startTime = time;
         if (square) {
@@ -71,8 +75,12 @@ public class DashComponent implements Component, Pool.Poolable {
                 && Time.getServerMillis() <= startTime + duration;
     }
 
+    public boolean isScheduledOrStunned() {
+        return inFuture() || isActive() || isStunned();
+    }
+
     public boolean isStunned() {
-        return startTime <= Time.getServerMillis()
+        return startTime + duration < Time.getServerMillis()
                 && Time.getServerMillis() <= startTime + duration + stunTime;
     }
 
@@ -95,6 +103,6 @@ public class DashComponent implements Component, Pool.Poolable {
         stunTime = 0;
         dx = 0;
         dy = 0;
-        firstFrame = true;
+        firstFrame = false;
     }
 }

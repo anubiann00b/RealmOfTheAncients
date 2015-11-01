@@ -20,6 +20,7 @@ public class ServerAttackPacket extends Packet<PacketHandler<ServerAttackPacket>
 
     public static final int ATTACK_DELAY_MS = 100;
     public static final int DASH_DELAY_MS = 100;
+    public static final int KNOCKBACK_DELAY_MS = 0;
 
     public static ServerAttackPacket create(Component[] components) {
         ServerAttackPacket packet = new ServerAttackPacket();

@@ -1,6 +1,5 @@
 package me.shreyasr.ancients.systems.update;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -10,12 +9,11 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Time;
 
 import me.shreyasr.ancients.components.PositionComponent;
-import me.shreyasr.ancients.components.StartTimeComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
 import me.shreyasr.ancients.components.player.dash.DashComponent;
-import me.shreyasr.ancients.packet.server.ServerAttackPacket;
 import me.shreyasr.ancients.util.EntityFactory;
+import me.shreyasr.ancients.util.MathHelper;
 
 public class DashSystem extends IteratingSystem {
 
@@ -44,39 +42,27 @@ public class DashSystem extends IteratingSystem {
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
+        PositionComponent pos = PositionComponent.MAPPER.get(entity);
         VelocityComponent vel = VelocityComponent.MAPPER.get(entity);
         DashComponent dash = DashComponent.MAPPER.get(entity);
 
         boolean doDash = !dash.inFuture() && (dash.isActive() || dash.firstFrame);
 
-        if (doDash) {
-            dash.firstFrame = false;
-
-            vel.dx = dash.dx * dash.distance / Math.max(dash.duration, 16);
-            vel.dy = dash.dy * dash.distance / Math.max(dash.duration, 16);
-
-            if (dash.behavior != null && dash.duration != -1) {
-                dash.behavior.update(entity,
-                        ((double) Time.getServerMillis() - (double) dash.startTime) / (double) dash.duration,
-                        dash.dx, dash.dy);
-            }
-        } else if (dash.isStunned()) {
+        if (doDash || dash.isStunned()) {
             vel.dx = 0;
             vel.dy = 0;
-        }
+            dash.firstFrame = false;
 
-        if (dash.attack != null) {
-            PositionComponent pos = PositionComponent.MAPPER.get(player);
-            Entity newWeapon = dash.attack.update(engine, factory, player, pos,
-                    deltaTime, doDash, dash.dx, dash.dy);
+            long elapsed = Time.getServerMillis()-dash.startTime;
+            float percentageDone = MathHelper.clamp(0f, (float)elapsed/dash.duration, 1f);
+            if (dash.duration == -1) percentageDone = 1;
+            if (dash.isStunned()) percentageDone = 1;
 
-            if (newWeapon != null) {
-                newWeapon.add(StartTimeComponent.create(
-                        Time.getServerMillis() + client.getReturnTripTime() / 2 + ServerAttackPacket.ATTACK_DELAY_MS));
-                engine.addEntity(newWeapon);
+            pos.x = dash.x + (dash.dx*dash.distance)*(percentageDone);
+            pos.y = dash.y + (dash.dy*dash.distance)*(percentageDone);
 
-                Component[] newAttackComponents = newWeapon.getComponents().toArray(Component.class);
-                client.sendUDP(ServerAttackPacket.create(newAttackComponents));
+            if (dash.behavior != null && dash.duration != -1) {
+                dash.behavior.update(entity, percentageDone, dash.dx, dash.dy);
             }
         }
     }

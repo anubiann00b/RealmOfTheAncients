@@ -1,13 +1,13 @@
 package me.shreyasr.ancients.packet.server;
 
 import com.badlogic.ashley.core.Component;
-import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Time;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import me.shreyasr.ancients.components.HitboxComponent;
+import me.shreyasr.ancients.components.KnockbackComponent;
 import me.shreyasr.ancients.components.LastUpdateTimeComponent;
 import me.shreyasr.ancients.components.NameComponent;
 import me.shreyasr.ancients.components.PositionComponent;
@@ -19,6 +19,7 @@ import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
 import me.shreyasr.ancients.components.player.attack.AttackComponent;
+import me.shreyasr.ancients.components.player.dash.DashComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.packet.Packet;
 import me.shreyasr.ancients.packet.PacketHandler;
@@ -31,12 +32,14 @@ public class ServerPlayerUpdatePacket extends Packet<PacketHandler<ServerPlayerU
     /**
      * Called in the client to create a packet to be sent to the server.
      */
-    public static ServerPlayerUpdatePacket create(Component[] components, Connection conn) {
+    public static ServerPlayerUpdatePacket create(Component[] components) {
         ServerPlayerUpdatePacket packet = new ServerPlayerUpdatePacket();
         List<Component> finalComponents = new ArrayList<Component>();
         for (Component c : components) {
             if (c instanceof AttackComponent
+                    || c instanceof DashComponent
                     || c instanceof HitboxComponent
+                    || c instanceof KnockbackComponent
                     || c instanceof NameComponent
                     || c instanceof PositionComponent
                     || c instanceof SpeedComponent

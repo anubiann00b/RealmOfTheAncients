@@ -8,10 +8,13 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.esotericsoftware.kryonet.Connection;
 
+import me.shreyasr.ancients.components.KnockbackComponent;
 import me.shreyasr.ancients.components.LastUpdateTimeComponent;
+import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.StatsComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
+import me.shreyasr.ancients.components.player.dash.DashComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.packet.PacketHandler;
 import me.shreyasr.ancients.packet.client.ClientPlayerUpdatePacket;
@@ -69,9 +72,28 @@ public class ClientPlayerUpdatePacketHandler extends PacketHandler<ClientPlayerU
         return e;
     }
 
-    private void updatePlayer(Entity otherPlayer, Component[] components) {
+    private void updatePlayer(Entity player, Component[] components) {
+        boolean hasDashOrKnockback = false;
         for (Component c : components) {
-            otherPlayer.add(c);
+            if (c instanceof DashComponent) {
+                if (((DashComponent) c).isScheduledOrStunned()) {
+                    hasDashOrKnockback = true;
+                    break;
+                }
+            }
+            if (c instanceof KnockbackComponent) {
+                if (((KnockbackComponent) c).isScheduled()) {
+                    hasDashOrKnockback = true;
+                    break;
+                }
+            }
+        }
+        for (Component c : components) {
+            if ((c instanceof PositionComponent) && hasDashOrKnockback) {
+                continue; // don't add position if we have active dashes or knockbacks
+            } else {
+                player.add(c);
+            }
         }
     }
 

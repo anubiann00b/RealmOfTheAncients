@@ -21,6 +21,6 @@ public class NetworkUpdateSystem extends EntitySystem {
 
     public void update(float deltaTime) {
         Component[] componentsArr = player.getComponents().toArray(Component.class);
-        client.sendUDP(ServerPlayerUpdatePacket.create(componentsArr, client));
+        client.sendUDP(ServerPlayerUpdatePacket.create(componentsArr));
     }
 }

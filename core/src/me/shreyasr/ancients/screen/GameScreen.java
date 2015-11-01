@@ -68,8 +68,8 @@ public class GameScreen extends ScreenAdapter {
     public void show() {
         EntityFactory entityFactory = new EntityFactory(640, 480);
 
-        // LinkedListQueuedListener queuedListener = new LagLinkedListQueuedListener(100, 0);
-        LinkedListQueuedListener queuedListener = new LinkedListQueuedListener(new PacketListener());
+         LinkedListQueuedListener queuedListener = new LinkedListQueuedListener(new PacketListener());
+//        LinkedListQueuedListener queuedListener = new LagLinkedListQueuedListener(new PacketListener(), 100, 0, 0);
         client.addListener(queuedListener);
 
         engine = new PooledEngine();

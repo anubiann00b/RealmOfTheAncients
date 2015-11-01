@@ -53,7 +53,7 @@ public class ServerMain {
         server = new Server();
         engine = new PooledEngine();
 
-//        queuedListener = new LagLinkedListQueuedListener(100, 0);
+//        queuedListener = new LagLinkedListQueuedListener(new PacketListener(), 100, 0, 0);
         queuedListener = new LinkedListQueuedListener(new PacketListener());
         chatManager = new ChatManager();
 
@@ -105,13 +105,13 @@ public class ServerMain {
             long currentTime = Time.getMillis();
             engine.update(currentTime - lastTime);
             lastTime = currentTime;
-            if (server.getConnections().length == 0) {
+//            if (server.getConnections().length == 0) {
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            }
+//            }
         }
     }
 }
