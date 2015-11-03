@@ -3,6 +3,7 @@ package me.shreyasr.ancients.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.GL20;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Time;
 
@@ -49,14 +50,10 @@ public class LoadingScreen extends ScreenAdapter implements Input.TextInputListe
         }).start();
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Error loading look and feel: " + e);
-        } catch (InstantiationException e) {
-            System.out.println("Error loading look and feel: " + e);
-        } catch (IllegalAccessException e) {
-            System.out.println("Error loading look and feel: " + e);
-        } catch (UnsupportedLookAndFeelException e) {
-            System.out.println("Error loading look and feel: " + e);
+        } catch (ClassNotFoundException ignored) {
+        } catch (InstantiationException ignored) {
+        } catch (IllegalAccessException ignored) {
+        } catch (UnsupportedLookAndFeelException ignored) {
         }
 
         promptName();
@@ -72,6 +69,8 @@ public class LoadingScreen extends ScreenAdapter implements Input.TextInputListe
 
     @Override
     public void render(float deltaTime) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if (hasName && connected) game.setScreen(new GameScreen(game, client, name));
     }
 

@@ -3,6 +3,7 @@ package me.shreyasr.ancients.systems.render;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Align;
 
 import me.shreyasr.ancients.AncientsGame;
@@ -28,6 +29,7 @@ public class NameRenderSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         PositionComponent playerPos = PositionComponent.MAPPER.get(entity);
         String name = NameComponent.MAPPER.get(entity).str;
+        game.font.setColor(Color.WHITE);
         game.font.draw(game.batch, name, playerPos.x - 32, playerPos.y - 36, 0, name.length(), 64, Align.center, false);
     }
 }

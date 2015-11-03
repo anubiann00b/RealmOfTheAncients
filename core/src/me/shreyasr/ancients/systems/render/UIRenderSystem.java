@@ -16,13 +16,14 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.esotericsoftware.kryonet.Client;
 
 import java.util.Iterator;
@@ -41,23 +42,27 @@ import me.shreyasr.ancients.util.chat.ChatMessage;
 
 public class UIRenderSystem extends EntitySystem implements EntityListener {
 
+    private final Engine engine;
     private final ChatManager chatManager;
     private final Client client;
     private Entity player;
 
     private TreeSet<Entity> sortedPlayers;
-//    private Comparator<Entity> comparator = ;
 
     private Skin skin;
     private Stage stage;
     private Table chatTable;
     private Table scoreboardTable;
     private Table infoTable;
+    private Image minimap;
+
+    private ExtendViewport viewport;
 
     int scoreboardMargin = 50;
 
     public UIRenderSystem(int priority, Engine engine, ChatManager chatManager, Client client) {
         super(priority);
+        this.engine = engine;
         this.chatManager = chatManager;
         this.client = client;
 
@@ -80,7 +85,8 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
 
     private void init() {
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-        stage = new Stage(new FitViewport(640, 480));
+        viewport = new ExtendViewport(800, 600, 1280, 720);
+        stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
 
         chatTable = new Table();
@@ -254,11 +260,46 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
         });
         infoTable.row();
 
+        minimap = new Image(new MinimapDrawable(engine, new Texture(pix), 3840, 3840));
+
         stage.addActor(chatTable);
-        stage.addActor(scoreboardTable);
         stage.addActor(infoTable);
+        stage.addActor(minimap);
+        stage.addActor(scoreboardTable);
 
         chatTable.setVisible(false);
+    }
+
+    @Override
+    public void update(float deltaTime) {
+        stage.act(deltaTime);
+        viewport.getCamera().position.set(stage.getWidth()/2,stage.getHeight()/2,0);
+        stage.getViewport().apply();
+        viewport.getCamera().update();
+        stage.draw();
+    }
+
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height);
+        scoreboardTable.setSize(
+                stage.getWidth() - scoreboardMargin * 2,
+                stage.getHeight() - scoreboardMargin * 2);
+        chatTable.setSize(stage.getWidth(), stage.getHeight() - 265);
+        infoTable.setPosition(0, stage.getHeight());
+
+        int minimapSize = (int) (stage.getHeight()/3);
+        minimap.setPosition(stage.getWidth()-minimapSize, stage.getHeight()-minimapSize);
+        minimap.setSize(minimapSize, minimapSize);
+    }
+
+    @Override
+    public void entityAdded(Entity entity) {
+        sortedPlayers.add(entity);
+    }
+
+    @Override
+    public void entityRemoved(Entity entity) {
+        sortedPlayers.remove(entity);
     }
 
     private Label createLabelPair(Table table, String label, final ValueUpdateAction action) {
@@ -344,30 +385,5 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
         }
 
         public abstract String getValue(BasicWeaponAttack atk, DashComponent dash);
-    }
-
-    @Override
-    public void update(float deltaTime) {
-        stage.act(deltaTime);
-        stage.draw();
-    }
-
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
-        scoreboardTable.setSize(
-                stage.getWidth() - scoreboardMargin * 2,
-                stage.getHeight() - scoreboardMargin * 2);
-        chatTable.setSize(stage.getWidth(), stage.getHeight() - 265);
-        infoTable.setPosition(0, stage.getHeight());
-    }
-
-    @Override
-    public void entityAdded(Entity entity) {
-        sortedPlayers.add(entity);
-    }
-
-    @Override
-    public void entityRemoved(Entity entity) {
-        sortedPlayers.remove(entity);
     }
 }

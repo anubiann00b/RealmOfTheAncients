@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
+import me.shreyasr.ancients.util.MathHelper;
 
 public class CameraUpdateSystem extends EntitySystem {
 
@@ -32,7 +33,10 @@ public class CameraUpdateSystem extends EntitySystem {
     @Override
     public void update(float deltaTime) {
         PositionComponent pos = PositionComponent.MAPPER.get(player);
-        camera.position.set(pos.x, pos.y, 0);
+        camera.position.set(
+                MathHelper.clamp(viewport.getWorldWidth()/2,  pos.x, 3840-viewport.getWorldWidth()/2),
+                MathHelper.clamp(viewport.getWorldHeight()/2, pos.y, 3840-viewport.getWorldHeight() /2),
+                0);
         viewport.apply();
         camera.update();
         batch.setProjectionMatrix(camera.combined);
