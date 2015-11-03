@@ -5,7 +5,10 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.minlog.Log;
 
 import me.shreyasr.ancients.AncientsGame;
 import me.shreyasr.ancients.packet.client.ClientAttackPacket;
@@ -21,6 +24,7 @@ import me.shreyasr.ancients.packet.client.handler.ClientPlayerUpdatePacketHandle
 import me.shreyasr.ancients.systems.network.NetworkUpdateSystem;
 import me.shreyasr.ancients.systems.network.PacketHandleSystem;
 import me.shreyasr.ancients.systems.network.PingUpdateSystem;
+import me.shreyasr.ancients.systems.render.CameraUpdateSystem;
 import me.shreyasr.ancients.systems.render.DebugRenderSystem;
 import me.shreyasr.ancients.systems.render.MainRenderSystem;
 import me.shreyasr.ancients.systems.render.MiscRenderSystem;
@@ -53,6 +57,8 @@ public class GameScreen extends ScreenAdapter {
     public ChatManager chatManager;
 
     private InputMultiplexer inputMultiplexer;
+    private OrthographicCamera camera;
+    ExtendViewport viewport;
 
     private String name;
 
@@ -66,42 +72,45 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void show() {
+        engine = new PooledEngine();
         EntityFactory entityFactory = new EntityFactory(640, 480);
 
-         LinkedListQueuedListener queuedListener = new LinkedListQueuedListener(new PacketListener());
-//        LinkedListQueuedListener queuedListener = new LagLinkedListQueuedListener(new PacketListener(), 100, 0, 0);
-        client.addListener(queuedListener);
-
-        engine = new PooledEngine();
         chatManager = new ChatManager();
 
-        playerUUID = CustomUUID.randomUUID();
-        System.out.println("My UUID: " + playerUUID);
+         LinkedListQueuedListener queuedListener = new LinkedListQueuedListener(new PacketListener());
+        client.addListener(queuedListener);
 
+        camera = new OrthographicCamera(640, 480);
+        viewport = new ExtendViewport(800, 600, 1280, 720, camera);
+
+        playerUUID = CustomUUID.randomUUID();
+        Log.info("My UUID: " + playerUUID);
         engine.addEntity(entityFactory.createPlayer(engine, playerUUID, name));
 
         int priority = 0;
         // @formatter:off
-        engine.addSystem(new       PacketHandleSystem(++priority, queuedListener));
-        engine.addSystem(new   MyPlayerMovementSystem(++priority));
-        engine.addSystem(new               DashSystem(++priority, engine, entityFactory, client));
-        engine.addSystem(new          KnockbackSystem(++priority));
-        engine.addSystem(new     PositionUpdateSystem(++priority));
-        engine.addSystem(new        InputActionSystem(++priority, engine, entityFactory, client));
-        engine.addSystem(new    SquareAnimationSystem(++priority));
-        engine.addSystem(new       WeaponUpdateSystem(++priority, engine));
+        engine.addSystem(new     PacketHandleSystem(++priority, queuedListener));
+        engine.addSystem(new MyPlayerMovementSystem(++priority));
+        engine.addSystem(new             DashSystem(++priority, engine, entityFactory, client));
+        engine.addSystem(new        KnockbackSystem(++priority));
+        engine.addSystem(new   PositionUpdateSystem(++priority));
+        engine.addSystem(new      InputActionSystem(++priority, engine, entityFactory, client, viewport));
+        engine.addSystem(new  SquareAnimationSystem(++priority));
+        engine.addSystem(new     WeaponUpdateSystem(++priority, engine));
 
+        engine.addSystem(new CameraUpdateSystem   (++priority, game.batch, camera, viewport));
+        engine.addSystem(new TileRenderSystem     (++priority, game, camera));
         engine.addSystem(new PreBatchRenderSystem (++priority, game.batch));
         engine.addSystem(new    MainRenderSystem  (++priority, game));
         engine.addSystem(new    MiscRenderSystem  (++priority, game, client));
         engine.addSystem(new    NameRenderSystem  (++priority, game));
-        engine.addSystem(new ShapeRenderSystem    (++priority, game.batch, game.shape));
+        engine.addSystem(new ShapeRenderSystem    (++priority, game.batch, game.shape, camera));
         engine.addSystem(new    DebugRenderSystem (++priority, game));
         engine.addSystem(new PostRenderSystem     (++priority, game));
-        engine.addSystem(new UIRenderSystem       (++priority, engine, chatManager, client, playerUUID, name));
+        engine.addSystem(new    UIRenderSystem    (++priority, engine, chatManager, client  ));
 
-        engine.addSystem(new      NetworkUpdateSystem(++priority, client));
-        engine.addSystem(new         PingUpdateSystem(++priority, client));
+        engine.addSystem(new NetworkUpdateSystem(++priority, client));
+        engine.addSystem(new    PingUpdateSystem(++priority, client));
         // @formatter:on
 
         entityListener = engine.getSystem(PacketHandleSystem.class);
@@ -131,7 +140,8 @@ public class GameScreen extends ScreenAdapter {
     }
 
     @Override
-    public void resize (int width, int height) {
+    public void resize(int width, int height) {
         engine.getSystem(UIRenderSystem.class).resize(width, height);
+        viewport.update(width, height);
     }
 }

@@ -66,3 +66,5 @@ build/
 ## Custom
 /*.jar
 /classes/
+/.ssh_key
+/.ssh_key.pub

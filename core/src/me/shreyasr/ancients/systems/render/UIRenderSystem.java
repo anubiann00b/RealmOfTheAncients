@@ -5,7 +5,6 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -23,19 +22,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.esotericsoftware.kryonet.Client;
 
-import java.util.Comparator;
 import java.util.Iterator;
+import java.util.TreeSet;
 
 import me.shreyasr.ancients.components.NameComponent;
 import me.shreyasr.ancients.components.StatsComponent;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
+import me.shreyasr.ancients.components.player.attack.AttackComponent;
+import me.shreyasr.ancients.components.player.attack.BasicWeaponAttack;
+import me.shreyasr.ancients.components.player.dash.DashComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.packet.server.ServerChatMessagePacket;
-import me.shreyasr.ancients.util.CustomUUID;
 import me.shreyasr.ancients.util.chat.ChatManager;
 import me.shreyasr.ancients.util.chat.ChatMessage;
 
@@ -43,35 +43,35 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
 
     private final ChatManager chatManager;
     private final Client client;
-    private final CustomUUID playerUUID;
-    private final String playerName;
+    private Entity player;
 
-    private Array<Entity> sortedPlayers;
+    private TreeSet<Entity> sortedPlayers;
+//    private Comparator<Entity> comparator = ;
 
-    private Comparator<Entity> comparator = new StatsComponent.ReversedStatsComparator();
-
+    private Skin skin;
     private Stage stage;
     private Table chatTable;
     private Table scoreboardTable;
+    private Table infoTable;
 
-    public UIRenderSystem(int priority, Engine engine, ChatManager chatManager,
-                          Client client, CustomUUID playerUUID, String playerName) {
+    int scoreboardMargin = 50;
+
+    public UIRenderSystem(int priority, Engine engine, ChatManager chatManager, Client client) {
         super(priority);
         this.chatManager = chatManager;
         this.client = client;
-        this.playerUUID = playerUUID;
-        this.playerName = playerName;
 
-        sortedPlayers = new Array<Entity>(false, 16);
-        Family family = Family.all(TypeComponent.Player.class).get();
-        ImmutableArray<Entity> newPlayers  = engine.getEntitiesFor(family);
-        sortedPlayers.clear();
-        for (Entity player : newPlayers) {
-            sortedPlayers.add(player);
-        }
-        sortedPlayers.sort(comparator);
-        engine.addEntityListener(family, this);
+        sortedPlayers = new TreeSet<Entity>(new StatsComponent.ReversedStatsComparator());
+        engine.addEntityListener(Family.all(TypeComponent.Player.class).get(), this);
+
         init();
+    }
+
+    @Override
+    public void addedToEngine(Engine engine) {
+        player = engine.getEntitiesFor(Family.all(MyPlayerComponent.class).get()).first();
+        entityAdded(player);
+        addPlayerInfo(infoTable);
     }
 
     public InputProcessor getStageInputProcessor() {
@@ -79,12 +79,11 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
     }
 
     private void init() {
-        Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-        stage = new Stage(new ScreenViewport());
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+        stage = new Stage(new FitViewport(640, 480));
         Gdx.input.setInputProcessor(stage);
 
         chatTable = new Table();
-        chatTable.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() - 265);
         chatTable.setPosition(0, 0);
         chatTable.setDebug(false);
 
@@ -119,7 +118,7 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
             @Override
             public void keyTyped(TextField textField, char c) {
                 if ((c == '\r' || c == '\n') && !textField.getText().trim().isEmpty()) {
-                    client.sendTCP(ServerChatMessagePacket.create(textField.getText(), playerUUID, playerName));
+                    client.sendTCP(ServerChatMessagePacket.create(textField.getText(), player));
                     textField.setText("");
                 }
             }
@@ -183,13 +182,8 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
         pix.fill();
         chatTable.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(pix))));
 
-        int margin = 50;
-
         scoreboardTable = new Table();
-        scoreboardTable.setSize(
-                Gdx.graphics.getWidth() - margin * 2,
-                Gdx.graphics.getHeight() - margin * 2);
-        scoreboardTable.setPosition(margin, margin);
+        scoreboardTable.setPosition(scoreboardMargin, scoreboardMargin);
         scoreboardTable.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(pix))));
         scoreboardTable.setDebug(false);
 
@@ -243,10 +237,113 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
             }
         });
 
+        infoTable = new Table(skin);
+        infoTable.align(Align.topLeft);
+
+        createLabelPair(infoTable, "FPS", new ValueUpdateAction() {
+            @Override
+            public void updateValue(Label label, float deltaTime) {
+                label.setText(String.valueOf((int) (1000 / deltaTime)));
+            }
+        });
+        createLabelPair(infoTable, "PING", new ValueUpdateAction() {
+            @Override
+            public void updateValue(Label label, float deltaTime) {
+                label.setText(String.valueOf(client.getReturnTripTime()));
+            }
+        });
+        infoTable.row();
+
         stage.addActor(chatTable);
         stage.addActor(scoreboardTable);
+        stage.addActor(infoTable);
 
         chatTable.setVisible(false);
+    }
+
+    private Label createLabelPair(Table table, String label, final ValueUpdateAction action) {
+        Label name = new Label(label, skin);
+        final Label value = new Label(null, skin);
+        name.setColor(Color.WHITE);
+        value.setColor(Color.WHITE);
+        table.add(name).align(Align.left);
+        table.add(value).align(Align.left).row();
+        value.addAction(new Action() {
+            @Override
+            public boolean act(float delta) {
+                action.updateValue(value, delta);
+                return false;
+            }
+        });
+        return value;
+    }
+
+    private void addPlayerInfo(Table infoTable) {
+        createLabelPair(infoTable, "Cooldown", new PlayerInfoValueUpdateAction() {
+            @Override
+            public String getValue(BasicWeaponAttack atk, DashComponent dash) {
+                return String.valueOf(atk.cooldownTime);
+            }
+        });
+        createLabelPair(infoTable, "Swing", new PlayerInfoValueUpdateAction() {
+            @Override
+            public String getValue(BasicWeaponAttack atk, DashComponent dash) {
+                return String.valueOf(atk.swingTime);
+            }
+        });
+        createLabelPair(infoTable, "Hold", new PlayerInfoValueUpdateAction() {
+            @Override
+            public String getValue(BasicWeaponAttack atk, DashComponent dash) {
+                return String.valueOf(atk.lastFrameHoldTime);
+            }
+        });
+        createLabelPair(infoTable, "Knockback", new PlayerInfoValueUpdateAction() {
+            @Override
+            public String getValue(BasicWeaponAttack atk, DashComponent dash) {
+                return String.valueOf(atk.knockbackMultiplier);
+            }
+        });
+
+        createLabelPair(infoTable, "Duration", new PlayerInfoValueUpdateAction() {
+            @Override
+            public String getValue(BasicWeaponAttack atk, DashComponent dash) {
+                return String.valueOf(dash.duration);
+            }
+        });
+        createLabelPair(infoTable, "Distance", new PlayerInfoValueUpdateAction() {
+            @Override
+            public String getValue(BasicWeaponAttack atk, DashComponent dash) {
+                return String.valueOf(dash.distance);
+            }
+        });
+        createLabelPair(infoTable, "Cooldown", new PlayerInfoValueUpdateAction() {
+            @Override
+            public String getValue(BasicWeaponAttack atk, DashComponent dash) {
+                return String.valueOf(dash.cooldown);
+            }
+        });
+        createLabelPair(infoTable, "Stun", new PlayerInfoValueUpdateAction() {
+            @Override
+            public String getValue(BasicWeaponAttack atk, DashComponent dash) {
+                return String.valueOf(dash.stunTime);
+            }
+        });
+    }
+
+    private interface ValueUpdateAction {
+        void updateValue(Label label, float deltaTime);
+    }
+
+    private abstract class PlayerInfoValueUpdateAction implements ValueUpdateAction {
+        @Override
+        public void updateValue(Label label, float deltaTime) {
+            AttackComponent attackComponent = AttackComponent.MAPPER.get(player);
+            final DashComponent dash = DashComponent.MAPPER.get(player);
+            final BasicWeaponAttack atk = (BasicWeaponAttack) attackComponent.attack;
+            label.setText(getValue(atk, dash));
+        }
+
+        public abstract String getValue(BasicWeaponAttack atk, DashComponent dash);
     }
 
     @Override
@@ -257,17 +354,20 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
 
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
+        scoreboardTable.setSize(
+                stage.getWidth() - scoreboardMargin * 2,
+                stage.getHeight() - scoreboardMargin * 2);
+        chatTable.setSize(stage.getWidth(), stage.getHeight() - 265);
+        infoTable.setPosition(0, stage.getHeight());
     }
 
     @Override
     public void entityAdded(Entity entity) {
         sortedPlayers.add(entity);
-        sortedPlayers.sort(comparator);
     }
 
     @Override
     public void entityRemoved(Entity entity) {
-        sortedPlayers.removeValue(entity, true);
-        sortedPlayers.sort(comparator);
+        sortedPlayers.remove(entity);
     }
 }

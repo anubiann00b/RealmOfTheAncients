@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="1" height="1" tilewidth="16" tileheight="16" nextobjectid="1">
+ <tileset firstgid="1" name="grass" tilewidth="16" tileheight="16" tilecount="4">
+  <image source="../tiles/grass.png" width="64" height="16"/>
+  <tile id="1" probability="0.4"/>
+  <tile id="2" probability="0.1"/>
+  <tile id="3" probability="0.05"/>
+ </tileset>
+ <layer name="regions" width="1" height="1">
+  <data encoding="base64" compression="zlib">
+   eJxjZGBgAAAACAAC
+  </data>
+ </layer>
+ <layer name="input_base" width="1" height="1">
+  <data encoding="base64" compression="zlib">
+   eJxjZGBgAAAACAAC
+  </data>
+ </layer>
+ <layer name="output1_main" width="1" height="1">
+  <data encoding="base64" compression="zlib">
+   eJxjZGBgAAAACAAC
+  </data>
+ </layer>
+ <layer name="Copy of output1_main" width="1" height="1">
+  <data encoding="base64" compression="zlib">
+   eJxjZGBgAAAACAAC
+  </data>
+ </layer>
+ <layer name="output2_main" width="1" height="1">
+  <data encoding="base64" compression="zlib">
+   eJxjYmBgAAAADAAD
+  </data>
+ </layer>
+ <layer name="output3_main" width="1" height="1">
+  <data encoding="base64" compression="zlib">
+   eJxjZmBgAAAAEAAE
+  </data>
+ </layer>
+ <layer name="output4_main" width="1" height="1">
+  <data encoding="base64" compression="zlib">
+   eJxjYWBgAAAAFAAF
+  </data>
+ </layer>
+</map>

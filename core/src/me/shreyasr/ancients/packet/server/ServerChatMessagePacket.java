@@ -1,13 +1,20 @@
 package me.shreyasr.ancients.packet.server;
 
+import com.badlogic.ashley.core.Entity;
 import com.esotericsoftware.kryonet.Time;
 
+import me.shreyasr.ancients.components.NameComponent;
+import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.packet.Packet;
 import me.shreyasr.ancients.packet.PacketHandler;
 import me.shreyasr.ancients.util.CustomUUID;
 import me.shreyasr.ancients.util.chat.ChatMessage;
 
 public class ServerChatMessagePacket extends Packet<PacketHandler<ServerChatMessagePacket>> {
+
+    public static ServerChatMessagePacket create(String message, Entity player) {
+        return create(message, UUIDComponent.MAPPER.get(player).val, NameComponent.MAPPER.get(player).str);
+    }
 
     public static ServerChatMessagePacket create(String message, CustomUUID owner, String playerName) {
         ServerChatMessagePacket packet = new ServerChatMessagePacket();

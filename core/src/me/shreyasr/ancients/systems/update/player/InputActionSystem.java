@@ -9,6 +9,8 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Time;
 
@@ -33,6 +35,7 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
     private final PooledEngine engine;
     private final EntityFactory factory;
     private final Client client;
+    private final Viewport viewport;
     private Entity player;
     private Attack[] possibleAttacks = new Attack[3];
     private DashComponent[] possibleDashes = new DashComponent[3];
@@ -46,11 +49,12 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
     Attack spinToWin;
     Attack spearLunge;
 
-    public InputActionSystem(int priority, PooledEngine engine, EntityFactory factory, Client client) {
+    public InputActionSystem(int priority, PooledEngine engine, EntityFactory factory, Client client, Viewport viewport) {
         super(priority);
         this.engine = engine;
         this.factory = factory;
         this.client = client;
+        this.viewport = viewport;
         possibleAttacks[0] = new BasicWeaponAttack(250, 30, 40, 25, false, Assets.DAGGER_SLASH, 16, 48, 3,
                 64, 64, 64, -1, HitboxGenerator.AttackType.STAB);
         possibleAttacks[1] = new BasicWeaponAttack(800, 50, 150, 85, true, Assets.SWORD_SLASH, 8, 48, 3,
@@ -69,7 +73,7 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
     }
 
     public void addedToEngine(Engine engine) {
-        player = engine.getEntitiesFor(Family.all(MyPlayerComponent.class).get()).get(0);
+        player = engine.getEntitiesFor(Family.all(MyPlayerComponent.class).get()).first();
         setRandomWeapon(player);
     }
 
@@ -83,8 +87,10 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
         KnockbackComponent knockback = KnockbackComponent.MAPPER.get(player);
         DashComponent dash = DashComponent.MAPPER.get(player);
 
-        float dx = Gdx.input.getX() - pos.x;
-        float dy = Gdx.graphics.getHeight() - Gdx.input.getY() - pos.y;
+        Vector2 mouse = viewport.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+
+        float dx = mouse.x - pos.x;
+        float dy = mouse.y - pos.y;
 
         boolean inKnockback = knockback != null && knockback.isActive();
 
