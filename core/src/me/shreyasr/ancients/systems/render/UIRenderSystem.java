@@ -2,9 +2,9 @@ package me.shreyasr.ancients.systems.render;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -40,7 +40,7 @@ import me.shreyasr.ancients.packet.server.ServerChatMessagePacket;
 import me.shreyasr.ancients.util.chat.ChatManager;
 import me.shreyasr.ancients.util.chat.ChatMessage;
 
-public class UIRenderSystem extends EntitySystem implements EntityListener {
+public class UIRenderSystem extends EntitySystem {
 
     private final Engine engine;
     private final ChatManager chatManager;
@@ -48,6 +48,7 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
     private Entity player;
 
     private TreeSet<Entity> sortedPlayers;
+    private ImmutableArray<Entity> players;
 
     private Skin skin;
     private Stage stage;
@@ -66,8 +67,8 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
         this.chatManager = chatManager;
         this.client = client;
 
+        players = engine.getEntitiesFor(Family.all(TypeComponent.Player.class).get());
         sortedPlayers = new TreeSet<Entity>(new StatsComponent.ReversedStatsComparator());
-        engine.addEntityListener(Family.all(TypeComponent.Player.class).get(), this);
 
         init();
     }
@@ -75,7 +76,6 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
     @Override
     public void addedToEngine(Engine engine) {
         player = engine.getEntitiesFor(Family.all(MyPlayerComponent.class).get()).first();
-        entityAdded(player);
         addPlayerInfo(infoTable);
     }
 
@@ -220,6 +220,10 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
             @Override
             public boolean act(float delta) {
                 scoreboardTable.setVisible(Gdx.input.isKeyPressed(Input.Keys.TAB));
+                sortedPlayers.clear();
+                for (Entity e : players) {
+                    sortedPlayers.add(e);
+                }
                 Iterator<Entity> playerIterator = sortedPlayers.iterator();
                 for (int i = 0; i < numScoreboardRows; i++) {
                     if (!playerIterator.hasNext()) {
@@ -235,8 +239,8 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
                         scoreNameLabels[i].setColor(c);
                         scoreHitLabels[i].setColor(c);
 
-                        scoreNameLabels[i].setText(name.str);
-                        scoreHitLabels[i].setText(String.valueOf(stats.hits));
+                        if (name != null) scoreNameLabels[i].setText(name.str);
+                        if (stats != null) scoreHitLabels[i].setText(String.valueOf(stats.hits));
                     }
                 }
                 return false;
@@ -284,22 +288,12 @@ public class UIRenderSystem extends EntitySystem implements EntityListener {
         scoreboardTable.setSize(
                 stage.getWidth() - scoreboardMargin * 2,
                 stage.getHeight() - scoreboardMargin * 2);
-        chatTable.setSize(stage.getWidth(), stage.getHeight() - 265);
+        chatTable.setSize(stage.getWidth(), stage.getHeight()*2/5f);
         infoTable.setPosition(0, stage.getHeight());
 
         int minimapSize = (int) (stage.getHeight()/3);
         minimap.setPosition(stage.getWidth()-minimapSize, stage.getHeight()-minimapSize);
         minimap.setSize(minimapSize, minimapSize);
-    }
-
-    @Override
-    public void entityAdded(Entity entity) {
-        sortedPlayers.add(entity);
-    }
-
-    @Override
-    public void entityRemoved(Entity entity) {
-        sortedPlayers.remove(entity);
     }
 
     private Label createLabelPair(Table table, String label, final ValueUpdateAction action) {

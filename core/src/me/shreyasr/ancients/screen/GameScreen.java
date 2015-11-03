@@ -25,7 +25,6 @@ import me.shreyasr.ancients.systems.network.NetworkUpdateSystem;
 import me.shreyasr.ancients.systems.network.PacketHandleSystem;
 import me.shreyasr.ancients.systems.network.PingUpdateSystem;
 import me.shreyasr.ancients.systems.render.CameraUpdateSystem;
-import me.shreyasr.ancients.systems.render.DebugRenderSystem;
 import me.shreyasr.ancients.systems.render.MainRenderSystem;
 import me.shreyasr.ancients.systems.render.MiscRenderSystem;
 import me.shreyasr.ancients.systems.render.NameRenderSystem;
@@ -105,7 +104,7 @@ public class GameScreen extends ScreenAdapter {
         engine.addSystem(new    MiscRenderSystem  (++priority, game, client));
         engine.addSystem(new    NameRenderSystem  (++priority, game));
         engine.addSystem(new ShapeRenderSystem    (++priority, game.batch, game.shape, camera));
-        engine.addSystem(new    DebugRenderSystem (++priority, game));
+//        engine.addSystem(new    DebugRenderSystem (++priority, game));
         engine.addSystem(new PostRenderSystem     (++priority, game));
         engine.addSystem(new    UIRenderSystem    (++priority, engine, chatManager, client  ));
 
