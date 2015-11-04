@@ -9,17 +9,20 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 public enum Assets {
 
     PLAYER       (Texture.class, "player.png"),
-    SWORD_SLASH  (Texture.class, "sword_slash.png"),
-    DAGGER_SLASH (Texture.class, "dagger_slash.png"),
-    AXE_CLEAVE   (Texture.class, "axe_cleave.png"),
-    SPEAR_STAB   (Texture.class, "spear_stab.png"),
+    SWORD_SLASH  (Texture.class, "attacks/sword_slash.png"),
+    DAGGER_SLASH (Texture.class, "attacks/dagger_slash.png"),
+    AXE_CLEAVE   (Texture.class, "attacks/axe_cleave.png"),
+    SPEAR_STAB   (Texture.class, "attacks/spear_stab.png"),
+
+    JOYSTICK_CENTER (Texture.class, "joystick/joystick_center.png"),
+    JOYSTICK_BG     (Texture.class, "joystick/joystick_bg.png"),
 
     MAP (TiledMap.class, "maps/map.tmx");
 
     private final Class type;
     private final String file;
 
-    public String get() {
+    public String getFile() {
         return file;
     }
 
@@ -31,7 +34,7 @@ public enum Assets {
     public static void loadAll(AssetManager assetManager) {
         assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
         for (Assets asset : Assets.values()) {
-            assetManager.load(asset.get(), asset.type);
+            assetManager.load(asset.getFile(), asset.type);
         }
     }
 }

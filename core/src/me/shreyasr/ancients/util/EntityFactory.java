@@ -49,7 +49,7 @@ public class EntityFactory {
         e.add(SpeedComponent.create(engine, 3));
         e.add(SquareDirectionComponent.create(engine));
         e.add(SquareAnimationComponent.create(engine, 4, 16, 16, 166));
-        e.add(TextureComponent.create(engine, Assets.PLAYER.get()));
+        e.add(TextureComponent.create(engine, Assets.PLAYER.getFile()));
         e.add(TextureTransformComponent.create(engine));
         e.add(UUIDComponent.create(engine, playerUUID));
         e.add(VelocityComponent.create(engine, 0, 0));

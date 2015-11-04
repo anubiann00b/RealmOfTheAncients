@@ -21,7 +21,7 @@ public class TileRenderSystem extends EntitySystem {
         super(priority);
         this.game = game;
         this.camera = camera;
-        map = game.assetManager.get(Assets.MAP.get());
+        map = game.assetManager.get(Assets.MAP.getFile());
         renderer = new OrthogonalTiledMapRenderer(map, 4f, game.batch);
     }
 

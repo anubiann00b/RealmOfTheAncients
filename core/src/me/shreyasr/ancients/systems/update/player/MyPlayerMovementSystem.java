@@ -10,8 +10,15 @@ import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.SquareDirectionComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
+import me.shreyasr.ancients.systems.render.UIRenderSystem;
 
 public class MyPlayerMovementSystem extends IteratingSystem implements InputProcessor {
+
+    private UIRenderSystem joystickSource;
+
+    public void setJoystickSource(UIRenderSystem joystickSource) {
+        this.joystickSource = joystickSource;
+    }
 
     public MyPlayerMovementSystem(int priority) {
         super(
@@ -22,7 +29,6 @@ public class MyPlayerMovementSystem extends IteratingSystem implements InputProc
                         .get(),
                 priority);
     }
-
     boolean pressedW = false;
     boolean pressedA = false;
     boolean pressedS = false;
@@ -33,8 +39,8 @@ public class MyPlayerMovementSystem extends IteratingSystem implements InputProc
         SquareDirectionComponent dir = SquareDirectionComponent.MAPPER.get(entity);
         VelocityComponent vel = VelocityComponent.MAPPER.get(entity);
 
-        vel.dx = 0;
-        vel.dy = 0;
+        vel.dx = joystickSource.getMoveStickX();
+        vel.dy = joystickSource.getMoveStickY();
 
         if (pressedD) {
             vel.dx += 1;
@@ -52,19 +58,7 @@ public class MyPlayerMovementSystem extends IteratingSystem implements InputProc
             vel.dy -= 1;
         }
 
-        if (vel.dx > 0) {
-            dir.dir = SquareDirectionComponent.Direction.RIGHT;
-        }
-        if (vel.dx < 0) {
-            dir.dir = SquareDirectionComponent.Direction.LEFT;
-        }
-
-        if (vel.dy > 0) {
-            dir.dir = SquareDirectionComponent.Direction.UP;
-        }
-        if (vel.dy < 0) {
-            dir.dir = SquareDirectionComponent.Direction.DOWN;
-        }
+        dir.dir = SquareDirectionComponent.Direction.getFromPos(vel.dx, vel.dy);
     }
 
     @Override

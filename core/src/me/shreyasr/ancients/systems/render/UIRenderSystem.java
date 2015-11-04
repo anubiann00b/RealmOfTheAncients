@@ -16,11 +16,13 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -29,6 +31,7 @@ import com.esotericsoftware.kryonet.Client;
 import java.util.Iterator;
 import java.util.TreeSet;
 
+import me.shreyasr.ancients.AncientsGame;
 import me.shreyasr.ancients.components.NameComponent;
 import me.shreyasr.ancients.components.StatsComponent;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
@@ -37,11 +40,13 @@ import me.shreyasr.ancients.components.player.attack.BasicWeaponAttack;
 import me.shreyasr.ancients.components.player.dash.DashComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.packet.server.ServerChatMessagePacket;
+import me.shreyasr.ancients.util.Assets;
 import me.shreyasr.ancients.util.chat.ChatManager;
 import me.shreyasr.ancients.util.chat.ChatMessage;
 
 public class UIRenderSystem extends EntitySystem {
 
+    private final AncientsGame game;
     private final Engine engine;
     private final ChatManager chatManager;
     private final Client client;
@@ -56,13 +61,22 @@ public class UIRenderSystem extends EntitySystem {
     private Table scoreboardTable;
     private Table infoTable;
     private Image minimap;
+    private Touchpad moveStick;
 
     private ExtendViewport viewport;
 
     int scoreboardMargin = 50;
 
-    public UIRenderSystem(int priority, Engine engine, ChatManager chatManager, Client client) {
+    public float getMoveStickX() {
+        return moveStick.getKnobPercentX();
+    }
+    public float getMoveStickY() {
+        return moveStick.getKnobPercentY();
+    }
+
+    public UIRenderSystem(int priority, AncientsGame game, Engine engine, ChatManager chatManager, Client client) {
         super(priority);
+        this.game = game;
         this.engine = engine;
         this.chatManager = chatManager;
         this.client = client;
@@ -87,7 +101,7 @@ public class UIRenderSystem extends EntitySystem {
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
         viewport = new ExtendViewport(800, 600, 1280, 720);
         stage = new Stage(viewport);
-        Gdx.input.setInputProcessor(stage);
+        stage.getRoot().setTouchable(Touchable.childrenOnly);
 
         chatTable = new Table();
         chatTable.setPosition(0, 0);
@@ -266,10 +280,22 @@ public class UIRenderSystem extends EntitySystem {
 
         minimap = new Image(new MinimapDrawable(engine, new Texture(pix), 3840, 3840));
 
+
+        Texture center = game.assetManager.get(Assets.JOYSTICK_CENTER.getFile(), Texture.class);
+        Texture bg = game.assetManager.get(Assets.JOYSTICK_BG.getFile(), Texture.class);
+        TextureRegionDrawable stick = new TextureRegionDrawable(new TextureRegion(center));
+        stick.setMinWidth(32);
+        stick.setMinHeight(32);
+        TextureRegionDrawable pad = new TextureRegionDrawable(new TextureRegion(bg));
+        pad.setMinHeight(128);
+        pad.setMinWidth(128);
+        moveStick = new Touchpad(0, new Touchpad.TouchpadStyle(pad, stick));
+
         stage.addActor(chatTable);
         stage.addActor(infoTable);
         stage.addActor(minimap);
         stage.addActor(scoreboardTable);
+        if (AncientsGame.TOUCH_CONTROLS) stage.addActor(moveStick);
 
         chatTable.setVisible(false);
     }
@@ -277,7 +303,7 @@ public class UIRenderSystem extends EntitySystem {
     @Override
     public void update(float deltaTime) {
         stage.act(deltaTime);
-        viewport.getCamera().position.set(stage.getWidth()/2,stage.getHeight()/2,0);
+        viewport.getCamera().position.set(stage.getWidth()/2, stage.getHeight()/2, 0);
         stage.getViewport().apply();
         viewport.getCamera().update();
         stage.draw();
@@ -288,12 +314,15 @@ public class UIRenderSystem extends EntitySystem {
         scoreboardTable.setSize(
                 stage.getWidth() - scoreboardMargin * 2,
                 stage.getHeight() - scoreboardMargin * 2);
-        chatTable.setSize(stage.getWidth(), stage.getHeight()*2/5f);
+        chatTable.setSize(stage.getWidth(), stage.getHeight() * 2 / 5f);
         infoTable.setPosition(0, stage.getHeight());
 
         int minimapSize = (int) (stage.getHeight()/3);
         minimap.setPosition(stage.getWidth()-minimapSize, stage.getHeight()-minimapSize);
         minimap.setSize(minimapSize, minimapSize);
+
+        moveStick.setPosition(128, 128);
+        moveStick.setSize(128, 128);
     }
 
     private Label createLabelPair(Table table, String label, final ValueUpdateAction action) {

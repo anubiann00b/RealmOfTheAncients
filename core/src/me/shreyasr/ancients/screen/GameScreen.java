@@ -106,13 +106,14 @@ public class GameScreen extends ScreenAdapter {
         engine.addSystem(new ShapeRenderSystem    (++priority, game.batch, game.shape, camera));
 //        engine.addSystem(new    DebugRenderSystem (++priority, game));
         engine.addSystem(new PostRenderSystem     (++priority, game));
-        engine.addSystem(new    UIRenderSystem    (++priority, engine, chatManager, client  ));
+        engine.addSystem(new    UIRenderSystem    (++priority, game, engine, chatManager, client));
 
         engine.addSystem(new NetworkUpdateSystem(++priority, client));
         engine.addSystem(new    PingUpdateSystem(++priority, client));
         // @formatter:on
 
         entityListener = engine.getSystem(PacketHandleSystem.class);
+        engine.getSystem(MyPlayerMovementSystem.class).setJoystickSource(engine.getSystem(UIRenderSystem.class));
 
         // @formatter:off
               ClientAttackPacket.setHandler(new ClientAttackPacketHandler(this));
@@ -122,11 +123,15 @@ public class GameScreen extends ScreenAdapter {
          ClientChatMessagePacket.setHandler(new ClientChatMessageHandler(this));
         // @formatter:on
 
+        InputActionSystem inputActionSystem = engine.getSystem(InputActionSystem.class);
+
         inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(engine.getSystem(UIRenderSystem.class).getStageInputProcessor());
         inputMultiplexer.addProcessor(engine.getSystem(MyPlayerMovementSystem.class));
-        inputMultiplexer.addProcessor(engine.getSystem(InputActionSystem.class));
-        inputMultiplexer.addProcessor(engine.getSystem(InputActionSystem.class).getTuningInputProcessor());
+        inputMultiplexer.addProcessor(inputActionSystem);
+        if (!AncientsGame.TOUCH_CONTROLS) {
+            inputMultiplexer.addProcessor(inputActionSystem.getTuningInputProcessor());
+        }
         Gdx.input.setInputProcessor(inputMultiplexer);
 
         initialized = true;

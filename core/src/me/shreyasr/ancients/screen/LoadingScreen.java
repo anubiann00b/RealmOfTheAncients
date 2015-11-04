@@ -9,9 +9,6 @@ import com.esotericsoftware.kryonet.Time;
 
 import java.io.IOException;
 
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
 import me.shreyasr.ancients.AncientsGame;
 import me.shreyasr.ancients.packet.server.ServerNameRegistrationPacket;
 import me.shreyasr.ancients.util.KryoRegistrar;
@@ -48,13 +45,7 @@ public class LoadingScreen extends ScreenAdapter implements Input.TextInputListe
                 }
             }
         }).start();
-        try {
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-        } catch (ClassNotFoundException ignored) {
-        } catch (InstantiationException ignored) {
-        } catch (IllegalAccessException ignored) {
-        } catch (UnsupportedLookAndFeelException ignored) {
-        }
+//        UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 
         promptName();
     }

@@ -14,10 +14,16 @@ public class AncientsGame extends Game {
 
     public static boolean DEBUG_MODE = true;
 
+    public static boolean TOUCH_CONTROLS;
+
     public SpriteBatch batch;
     public ShapeRenderer shape;
     public AssetManager assetManager;
     public BitmapFont font;
+
+    public AncientsGame(boolean touchControls) {
+        TOUCH_CONTROLS = touchControls;
+    }
 
     @Override
     public void create() {

@@ -9,11 +9,13 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Time;
 
+import me.shreyasr.ancients.AncientsGame;
 import me.shreyasr.ancients.components.KnockbackComponent;
 import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.StartTimeComponent;
@@ -30,7 +32,7 @@ import me.shreyasr.ancients.util.AccumulatingKeyboardProcessor;
 import me.shreyasr.ancients.util.Assets;
 import me.shreyasr.ancients.util.EntityFactory;
 
-public class InputActionSystem extends EntitySystem implements InputProcessor {
+public class InputActionSystem extends EntitySystem implements InputProcessor, GestureDetector.GestureListener {
 
     private final PooledEngine engine;
     private final EntityFactory factory;
@@ -41,6 +43,12 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
     private DashComponent[] possibleDashes = new DashComponent[3];
 
     private AccumulatingKeyboardProcessor accumulatingInput = new AccumulatingKeyboardProcessor();
+    private GestureDetector gestureDetector;
+
+
+    public void setGestureDetector(GestureDetector gestureDetector) {
+        this.gestureDetector = gestureDetector;
+    }
 
     public InputProcessor getTuningInputProcessor() {
         return accumulatingInput;
@@ -79,6 +87,7 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
 
     boolean attackButtonPressed = false;
     boolean dashButtonPressed = false;
+    int pointer = 0;
 
     @Override
     public void update(float deltaTime) {
@@ -87,12 +96,13 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
         KnockbackComponent knockback = KnockbackComponent.MAPPER.get(player);
         DashComponent dash = DashComponent.MAPPER.get(player);
 
-        Vector2 mouse = viewport.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+        Vector2 mouse = viewport.unproject(new Vector2(Gdx.input.getX(pointer), Gdx.input.getY(pointer)));
 
         float dx = mouse.x - pos.x;
         float dy = mouse.y - pos.y;
 
         boolean inKnockback = knockback != null && knockback.isActive();
+
 
         if (dashButtonPressed && dash.isReady() && !inKnockback) {
             dash.start(pos.x, pos.y, dx, dy, Time.getServerMillis() + client.getReturnTripTime() / 2 + ServerAttackPacket.DASH_DELAY_MS);
@@ -174,20 +184,49 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
         player.add(possibleDashes[idx]);
     }
 
+    long lastUp = 0;
+    long doubleTapTime = 500;
+
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        switch (button) {
-            case Input.Buttons.LEFT: attackButtonPressed = true; return true;
-            case Input.Buttons.RIGHT: dashButtonPressed = true; return true;
+        if (AncientsGame.TOUCH_CONTROLS) {
+            if (System.currentTimeMillis() - lastUp <= doubleTapTime) {
+                dashButtonPressed = true;
+                attackButtonPressed = false;
+            } else {
+                dashButtonPressed = false;
+                attackButtonPressed = true;
+            }
+            this.pointer = pointer;
+            return true;
+        } else {
+            switch (button) {
+                case Input.Buttons.LEFT:
+                    attackButtonPressed = true;
+                    return true;
+                case Input.Buttons.RIGHT:
+                    dashButtonPressed = true;
+                    return true;
+            }
         }
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        switch (button) {
-            case Input.Buttons.LEFT: attackButtonPressed = false; return true;
-            case Input.Buttons.RIGHT: dashButtonPressed = false; return true;
+        if (AncientsGame.TOUCH_CONTROLS) {
+            lastUp = System.currentTimeMillis();
+            attackButtonPressed = false;
+            dashButtonPressed = false;
+        } else {
+            switch (button) {
+                case Input.Buttons.LEFT:
+                    attackButtonPressed = false;
+                    return true;
+                case Input.Buttons.RIGHT:
+                    dashButtonPressed = false;
+                    return true;
+            }
         }
         return false;
     }
@@ -224,6 +263,58 @@ public class InputActionSystem extends EntitySystem implements InputProcessor {
 
     @Override
     public boolean scrolled(int amount) {
+        return false;
+    }
+
+    // GestureListener
+
+    @Override
+    public boolean touchDown(float x, float y, int pointer, int button) {
+        System.out.println("touch x = [" + x + "], y = [" + y + "], pointer = [" + pointer + "], button = [" + button + "]");
+        attackButtonPressed = true;
+        this.pointer = pointer;
+        return false;
+    }
+
+    @Override
+    public boolean tap(float x, float y, int count, int button) {
+        System.out.println("tap x = [" + x + "], y = [" + y + "], count = [" + count + "], button = [" + button + "]");
+        if (count == 1) {
+            attackButtonPressed = true;
+        } else if (count >= 2) {
+            dashButtonPressed = true;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean longPress(float x, float y) {
+        System.out.println("long press x = [" + x + "], y = [" + y + "]");
+        return false;
+    }
+
+    @Override
+    public boolean fling(float velocityX, float velocityY, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean pan(float x, float y, float deltaX, float deltaY) {
+        return false;
+    }
+
+    @Override
+    public boolean panStop(float x, float y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean zoom(float initialDistance, float distance) {
+        return false;
+    }
+
+    @Override
+    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
         return false;
     }
 }

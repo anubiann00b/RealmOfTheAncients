@@ -78,7 +78,7 @@ public class BasicWeaponAttack extends Attack {
                 swingTime, lastFrameHoldTime, weaponWidth, weaponLength, stabSize, frameDirOffset, attackType);
         this.weaponAnim = weaponAnim;
         return entityFactory.createBaseWeapon(engine, player, pos.x, pos.y)
-                .add(TextureComponent.create(engine, asset.get()))
+                .add(TextureComponent.create(engine, asset.getFile()))
                 .add(weaponAnim);
     }
 }
