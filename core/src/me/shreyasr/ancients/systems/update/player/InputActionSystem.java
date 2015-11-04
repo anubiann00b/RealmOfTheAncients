@@ -42,13 +42,11 @@ public class InputActionSystem extends EntitySystem implements InputProcessor, G
     private Attack[] possibleAttacks = new Attack[3];
     private DashComponent[] possibleDashes = new DashComponent[3];
 
-    private AccumulatingKeyboardProcessor accumulatingInput = new AccumulatingKeyboardProcessor();
-    private GestureDetector gestureDetector;
-
-
-    public void setGestureDetector(GestureDetector gestureDetector) {
-        this.gestureDetector = gestureDetector;
-    }
+    private AccumulatingKeyboardProcessor accumulatingInput = new AccumulatingKeyboardProcessor(
+            Input.Keys.I, Input.Keys.J, Input.Keys.U, Input.Keys.H, Input.Keys.Y, Input.Keys.G,
+            Input.Keys.T, Input.Keys.F, Input.Keys.P, Input.Keys.L, Input.Keys.O, Input.Keys.K,
+            Input.Keys.RIGHT_BRACKET, Input.Keys.APOSTROPHE, Input.Keys.LEFT_BRACKET, Input.Keys.SEMICOLON
+    );
 
     public InputProcessor getTuningInputProcessor() {
         return accumulatingInput;
@@ -150,7 +148,9 @@ public class InputActionSystem extends EntitySystem implements InputProcessor, G
             if (dashAttack == spearLunge) {
                 dashAttack.swingTime = dash.duration - 60;
             }
-            dashAttack.knockbackMultiplier = currentAttack.attack.getKnockbackMultiplier();
+            if (currentAttack != null) {
+                dashAttack.knockbackMultiplier = currentAttack.attack.getKnockbackMultiplier();
+            }
         }
     }
 
@@ -215,9 +215,11 @@ public class InputActionSystem extends EntitySystem implements InputProcessor, G
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (AncientsGame.TOUCH_CONTROLS) {
-            lastUp = System.currentTimeMillis();
-            attackButtonPressed = false;
-            dashButtonPressed = false;
+            if (pointer == this.pointer) {
+                lastUp = System.currentTimeMillis();
+                attackButtonPressed = false;
+                dashButtonPressed = false;
+            }
         } else {
             switch (button) {
                 case Input.Buttons.LEFT:

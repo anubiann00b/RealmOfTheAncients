@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -144,55 +145,6 @@ public class UIRenderSystem extends EntitySystem {
             }
         });
 
-        stage.addListener(new InputListener() {
-            @Override
-            public boolean keyTyped(InputEvent event, char character) {
-                if (event.getKeyCode() == Input.Keys.ENTER && stage.getKeyboardFocus() == null) {
-                    chatTable.setVisible(true);
-                    stage.setKeyboardFocus(chatInput);
-                    event.cancel();
-                    return true;
-                }
-                return false;
-            }
-
-            boolean firstFrameEscape = false;
-            boolean escapeDown = false;
-
-            @Override
-            public boolean keyDown(InputEvent event, int keycode) {
-                if (event.getKeyCode() == Input.Keys.ESCAPE) {
-                    firstFrameEscape = !escapeDown;
-                    escapeDown = true;
-                    stage.unfocusAll();
-
-                    if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && firstFrameEscape) {
-                        chatTable.setVisible(false);
-                    }
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public boolean keyUp(InputEvent event, int keycode) {
-                if (event.getKeyCode() == Input.Keys.ESCAPE) {
-                    escapeDown = false;
-                    firstFrameEscape = false;
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if (stage.hit(x, y, true) == null) {
-                    stage.unfocusAll();
-                }
-                return false;
-            }
-        });
-
         chatTable.add(chatbox).expand().fill().bottom().left();
         chatTable.row();
         chatTable.add(chatInput).expandX().fillX();
@@ -280,7 +232,6 @@ public class UIRenderSystem extends EntitySystem {
 
         minimap = new Image(new MinimapDrawable(engine, new Texture(pix), 3840, 3840));
 
-
         Texture center = game.assetManager.get(Assets.JOYSTICK_CENTER.getFile(), Texture.class);
         Texture bg = game.assetManager.get(Assets.JOYSTICK_BG.getFile(), Texture.class);
         TextureRegionDrawable stick = new TextureRegionDrawable(new TextureRegion(center));
@@ -298,6 +249,60 @@ public class UIRenderSystem extends EntitySystem {
         if (AncientsGame.TOUCH_CONTROLS) stage.addActor(moveStick);
 
         chatTable.setVisible(false);
+
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyTyped(InputEvent event, char character) {
+                if (event.getKeyCode() == Input.Keys.ENTER && stage.getKeyboardFocus() == null) {
+                    chatTable.setVisible(true);
+                    stage.setKeyboardFocus(chatInput);
+                    event.cancel();
+                    return true;
+                }
+                return false;
+            }
+
+            boolean firstFrameEscape = false;
+            boolean escapeDown = false;
+
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                switch (keycode) {
+                    case Input.Keys.ESCAPE:
+                        firstFrameEscape = !escapeDown;
+                        escapeDown = true;
+                        stage.unfocusAll();
+
+                        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && firstFrameEscape) {
+                            chatTable.setVisible(false);
+                        }
+                        return true;
+                    case Input.Keys.M:
+                        minimap.setVisible(!minimap.isVisible());
+                        return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                if (event.getKeyCode() == Input.Keys.ESCAPE) {
+                    escapeDown = false;
+                    firstFrameEscape = false;
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Actor hit = stage.hit(x, y, true);
+                if (hit == null) {
+                    stage.unfocusAll();
+                }
+                return false;
+            }
+        });
     }
 
     @Override

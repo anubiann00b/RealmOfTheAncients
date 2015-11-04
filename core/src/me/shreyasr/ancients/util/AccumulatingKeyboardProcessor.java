@@ -2,23 +2,42 @@ package me.shreyasr.ancients.util;
 
 import com.badlogic.gdx.InputProcessor;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public class AccumulatingKeyboardProcessor implements InputProcessor {
 
-    boolean[] keys = new boolean[256];
+
+    private final Set<Integer> keycodes;
+    private boolean[] pressed = new boolean[256];
+    private boolean[] justPressed = new boolean[256];
 
     public boolean isKeyPressed(int keycode) {
-        return keys[keycode];
+        return pressed[keycode];
+    }
+
+    public boolean isKeyJustPressed(int keycode) {
+        return justPressed[keycode];
+    }
+
+    public AccumulatingKeyboardProcessor(Integer... keys) {
+        keycodes = new HashSet<Integer>(Arrays.asList(keys));
     }
 
     @Override
     public boolean keyDown(int keycode) {
-        keys[keycode] = true;
+        if (!keycodes.contains(keycode)) return false;
+        justPressed[keycode] = !pressed[keycode];
+        pressed[keycode] = true;
         return true;
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        keys[keycode] = false;
+        if (!keycodes.contains(keycode)) return false;
+        pressed[keycode] = false;
+        justPressed[keycode] = false;
         return true;
     }
 
