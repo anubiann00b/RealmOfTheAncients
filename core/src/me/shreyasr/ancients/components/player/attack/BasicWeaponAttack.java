@@ -36,6 +36,11 @@ public class BasicWeaponAttack extends Attack {
         return knockbackMultiplier;
     }
 
+    @Override
+    public void cancel() {
+        if (weaponAnim != null) weaponAnim.cancel();
+    }
+
     public BasicWeaponAttack() { }
 
     public BasicWeaponAttack(int cooldownTime, int swingTime, int lastFrameHoldTime, float knockbackMultiplier,

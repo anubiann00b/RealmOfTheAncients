@@ -3,6 +3,7 @@ package me.shreyasr.ancients.components;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Pool;
 
 public class TextureTransformComponent implements Component, Pool.Poolable {
@@ -29,6 +30,8 @@ public class TextureTransformComponent implements Component, Pool.Poolable {
 
     public boolean hide;
 
+    public Color color;
+
     public TextureTransformComponent() {
         reset();
     }
@@ -45,6 +48,7 @@ public class TextureTransformComponent implements Component, Pool.Poolable {
         srcHeight = 0;
         rotation = 0;
         hide = false;
+        color = Color.WHITE;
     }
 }
 

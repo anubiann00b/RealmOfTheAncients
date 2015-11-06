@@ -3,6 +3,7 @@ package me.shreyasr.ancients.systems.render;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.graphics.Color;
 
 import me.shreyasr.ancients.components.HitboxComponent;
 import me.shreyasr.ancients.components.KnockbackComponent;
@@ -11,6 +12,7 @@ import me.shreyasr.ancients.components.SquareAnimationComponent;
 import me.shreyasr.ancients.components.SquareDirectionComponent;
 import me.shreyasr.ancients.components.TextureTransformComponent;
 import me.shreyasr.ancients.components.VelocityComponent;
+import me.shreyasr.ancients.util.MathHelper;
 
 public class SquareAnimationSystem extends IteratingSystem {
 
@@ -59,6 +61,12 @@ public class SquareAnimationSystem extends IteratingSystem {
         transform.srcWidth = anim.frameWidth;
         transform.srcHeight = anim.frameHeight;
         transform.rotation = 0;
+
+        if (knockback != null && knockback.isActive()) {
+            transform.color = ((int)(MathHelper.clamp(0, knockback.getPercentageDone(), 1) * 4)) % 2 == 0 ? Color.WHITE : Color.RED;
+        } else {
+            transform.color = Color.WHITE;
+        }
 
         PositionComponent pos = PositionComponent.MAPPER.get(entity);
         HitboxComponent hitbox = HitboxComponent.MAPPER.get(entity);

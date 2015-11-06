@@ -88,6 +88,11 @@ public class DashComponent implements Component, Pool.Poolable {
         return startTime + duration + cooldown <= Time.getServerMillis();
     }
 
+    public void cancel() {
+        startTime = -1;
+        if (attack != null) attack.cancel();
+    }
+
     public DashComponent() {
         reset();
     }

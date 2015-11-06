@@ -10,6 +10,7 @@ import com.esotericsoftware.kryonet.Connection;
 import me.shreyasr.ancients.components.KnockbackComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.player.MyPlayerComponent;
+import me.shreyasr.ancients.components.player.dash.DashComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.packet.PacketHandler;
 import me.shreyasr.ancients.packet.client.ClientHitPacket;
@@ -36,6 +37,7 @@ public class ClientHitPacketHandler extends PacketHandler<ClientHitPacket> {
 
         for (Entity otherPlayer : otherPlayers) {
             if (UUIDComponent.MAPPER.get(otherPlayer).equals(recvUUID)) {
+                DashComponent.MAPPER.get(otherPlayer).cancel();
                 for (Component c : packet.components) {
                     otherPlayer.add(c);
                 }
@@ -46,6 +48,7 @@ public class ClientHitPacketHandler extends PacketHandler<ClientHitPacket> {
 
     private void updateMyPlayer(PooledEngine engine, Component[] components) {
         Entity player = engine.getEntitiesFor(Family.all(MyPlayerComponent.class).get()).first();
+        DashComponent.MAPPER.get(player).cancel();
         for (Component c : components) {
             if (c instanceof KnockbackComponent) {
                 player.add(c);

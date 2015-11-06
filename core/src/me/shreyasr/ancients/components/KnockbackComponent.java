@@ -54,6 +54,10 @@ public class KnockbackComponent implements Component, Pool.Poolable {
         return power/weight;
     }
 
+    public float getPercentageDone() {
+        return (float)(Time.getServerMillis() - startTime)/(float)duration;
+    }
+
     public KnockbackComponent() {
         reset();
     }

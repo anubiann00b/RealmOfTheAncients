@@ -1,6 +1,7 @@
 package me.shreyasr.ancients.util;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.graphics.Color;
 import com.esotericsoftware.kryo.Kryo;
 
 import me.shreyasr.ancients.components.HitboxComponent;
@@ -55,6 +56,7 @@ public class KryoRegistrar {
         kryo.register(Component[].class);
         kryo.register(CustomUUID.class);
         kryo.register(Assets.class);
+        kryo.register(Color.class);
 
         kryo.register(HitboxComponent.class);
         kryo.register(KnockbackComponent.class);

@@ -37,6 +37,7 @@ public class LoadingScreen extends ScreenAdapter implements Input.TextInputListe
             @Override
             public void run() {
                 try {
+                    // remote server: "104.131.149.236"
                     // from device: "192.168.29.194"
                     // from emulator: "10.0.3.2"
                     // from desktop: "127.0.0.1"

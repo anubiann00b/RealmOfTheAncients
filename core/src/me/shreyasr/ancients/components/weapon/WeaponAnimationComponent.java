@@ -40,6 +40,8 @@ public class WeaponAnimationComponent implements Component, Pool.Poolable {
 
     public int frameDirOffset;
 
+    public boolean cancel;
+
     public HitboxGenerator hitboxGenerator;
 
     public int getCurrentDir() {
@@ -52,7 +54,7 @@ public class WeaponAnimationComponent implements Component, Pool.Poolable {
     }
 
     public boolean isDone() {
-        return timeSinceAnimStart > swingFrameTime*(numFrames-1) + holdFrameTime;
+        return cancel || timeSinceAnimStart > swingFrameTime * (numFrames - 1) + holdFrameTime;
     }
 
     public boolean isStarted() {
@@ -78,5 +80,10 @@ public class WeaponAnimationComponent implements Component, Pool.Poolable {
         timeSinceAnimStart = 0;
         frameDirOffset = 0;
         hitboxGenerator = null;
+        cancel = false;
+    }
+
+    public void cancel() {
+        cancel = true;
     }
 }

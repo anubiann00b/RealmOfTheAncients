@@ -16,6 +16,7 @@ import me.shreyasr.ancients.components.PositionComponent;
 import me.shreyasr.ancients.components.StatsComponent;
 import me.shreyasr.ancients.components.UUIDComponent;
 import me.shreyasr.ancients.components.player.attack.AttackComponent;
+import me.shreyasr.ancients.components.player.dash.DashComponent;
 import me.shreyasr.ancients.components.type.TypeComponent;
 import me.shreyasr.ancients.components.weapon.OwnerUUIDComponent;
 import me.shreyasr.ancients.components.weapon.WeaponAnimationComponent;
@@ -83,6 +84,7 @@ public class CollisionDetectionSystem extends EntitySystem {
                     }
                     e.add(knockbackComponent);
 
+                    DashComponent.MAPPER.get(e).cancel();
                     StatsComponent.MAPPER.get(owner).hits++;
 
                     server.sendToAllTCP(ClientHitPacket.create(components, knockbackComponent));

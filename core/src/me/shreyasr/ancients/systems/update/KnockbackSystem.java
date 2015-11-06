@@ -16,7 +16,7 @@ public class KnockbackSystem extends IteratingSystem {
     public KnockbackSystem(int priority) {
         super(
                 Family.all(KnockbackComponent.class,
-                           VelocityComponent.class)
+                           PositionComponent.class)
                         .get(),
                 priority);
     }
@@ -26,7 +26,6 @@ public class KnockbackSystem extends IteratingSystem {
         PositionComponent pos = PositionComponent.MAPPER.get(entity);
         VelocityComponent vel = VelocityComponent.MAPPER.get(entity);
         KnockbackComponent knockback = KnockbackComponent.MAPPER.get(entity);
-
 
         long elapsed = Time.getServerMillis()-knockback.startTime;
         float percentageDone = MathHelper.clamp(0f, (float) elapsed / knockback.duration, 1f);
@@ -41,9 +40,6 @@ public class KnockbackSystem extends IteratingSystem {
             vel.dx = 0;
             vel.dy = 0;
         }
-
-//        vel.dx = knockback.dx * knockback.getMult();
-//        vel.dy = knockback.dy * knockback.getMult();
     }
 
     private float interpolateKnockback(float percent) {

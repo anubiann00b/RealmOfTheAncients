@@ -130,8 +130,8 @@ public class InputActionSystem extends EntitySystem implements InputProcessor, G
             if(accumulatingInput.isKeyPressed(Input.Keys.K)) attack.knockbackMultiplier--;
         }
 
-        if(accumulatingInput.isKeyPressed(Input.Keys.I)) dash.duration+=1;
-        if(accumulatingInput.isKeyPressed(Input.Keys.J)) dash.duration-=1;
+        if(accumulatingInput.isKeyPressed(Input.Keys.I)) dash.duration+=2;
+        if(accumulatingInput.isKeyPressed(Input.Keys.J)) dash.duration-=2;
         if(accumulatingInput.isKeyPressed(Input.Keys.U)) dash.distance+=1;
         if(accumulatingInput.isKeyPressed(Input.Keys.H)) dash.distance-=1;
         if(accumulatingInput.isKeyPressed(Input.Keys.Y)) dash.cooldown+=5;

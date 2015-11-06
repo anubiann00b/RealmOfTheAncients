@@ -10,6 +10,8 @@ public abstract class Attack {
 
     public float getKnockbackMultiplier() { return 1; }
 
+    public abstract void cancel();
+
     /**
      * Updates this attack, returning a new Entity of type Weapon if necessary.
      *
@@ -25,7 +27,6 @@ public abstract class Attack {
      */
     public abstract Entity update(PooledEngine engine, EntityFactory entityFactory, Entity player, PositionComponent pos,
                                   float deltaTime, boolean attack, float mouseDx, float mouseDy);
-
     /**
      * Utility method to get a dir from relative (mouse) coordinates.
      *
