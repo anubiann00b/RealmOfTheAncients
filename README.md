@@ -25,7 +25,7 @@ All of the weapons have their own advantages and disadvantages. Here are some ro
 
 ### Dagger
 
- * The dagger rapidly hits a single tile in one of the 4 cardinal directions. It's dash is a small blink.
+ * The dagger rapidly hits a single tile in one of the 4 cardinal directions. Its dash is a small blink.
  * The dagger hits very rapidly. If you get close to your victim, you can hit them a handful of times before they can respond. 
  * The blink allows you to escape from, catch up to, and to circle a target. You can blink out of the way of a sword dash. You can blink towards or behind a spear wielding player. You can blink in circles around a player to avoid getting hit.
  * The dagger hits a very small area. You have to be very close to someone to hit them.
@@ -33,14 +33,14 @@ All of the weapons have their own advantages and disadvantages. Here are some ro
 
 ### Sword
 
- * The sword hits three connected tiles around the player. It's dash is a charge where it spins in a circle around the player.
+ * The sword hits three connected tiles around the player. Its dash is a charge where it spins in a circle around the player.
  * The sword can hit diagonals. Use this to your advantage against dagger and spear opponents, who can only hit in the cardinal directions.
  * The dash allows you to hit multiple targets or catch up to a far away one. Be careful not to come from an angle where you can get stabbed by a spear.
  * You don't attack very fast, and you don't have the range of the spear. You have to use your diagonals to their full potential to avoid getting hit.
 
 ### Spear
 
- * The spear hits two tiles in a cardinal direction in a line away from the player. It's dash is a lunge with the weapon extended in front.
+ * The spear hits two tiles in a cardinal direction in a line away from the player. Its dash is a lunge with the weapon extended in front.
  * The spear has more range than any other weapon. Use that to your advantage to run and poke your opponents from afar.
  * The lunge can go through players, or hit someone further away.
  * The spear can't hit diagonals, and has a low attack rate. Try not to miss!
@@ -48,12 +48,12 @@ All of the weapons have their own advantages and disadvantages. Here are some ro
 
 ### General gameplay advice
  * If you go off the screen, you can right click in the center to dash back.
- * Be aware of your opponents strengths and weaknesses.
+ * Be aware of your opponents' strengths and weaknesses.
  * Try to anticipate and avoid dashes. You can use your dash to avoid someone else's, or dodge and punish them while it's down.
 
 ## Stats
 
-Currently, players can change their own attack and dash statistics. This is in order to maximize balance and fun.
+Currently, players can change their own attack and dash statistics. This is in an effort to maximize balance and fun.
 
 ### Attack
 
