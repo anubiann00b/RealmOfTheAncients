@@ -1,6 +1,8 @@
 # Realm Of The Ancients
 
-Multiplayer cross platform game.
+Multiplayer hack n' slash.
+
+![Recording of sword combat](sword-demo.gif)
 
 ## Controls
 
@@ -53,7 +55,7 @@ All of the weapons have their own advantages and disadvantages. Here are some ro
 
 ## Stats
 
-Currently, players can change their own attack and dash statistics. This is in an effort to maximize balance and fun.
+Currently, players can change their own attack and dash statistics. This is to tune the values, as the defaults currently are not yet ideal.
 
 ### Attack
 
